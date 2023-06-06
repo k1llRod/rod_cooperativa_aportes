@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <!-- Top menu item -->
+      <menuitem name="Aportes"
+                id="rod_cooperativa_aportes.menu_root"
+                sequence="100"
+                web_icon="rod_cooperativa_aportes,static/description/coaa.png"/>
+      <!-- menu categories -->
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes"
+                name="Aportes"
+                parent="rod_cooperativa_aportes.menu_root"
+                sequence="1"
+                action="rod_cooperativa_aportes.action_partner_payroll"/>
+
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_archivador"
+                name="Archivador"
+                parent="rod_cooperativa_aportes.menu_root"
+                sequence="2"
+                action="rod_cooperativa_aportes.action_nominal_relationship_mindef_contributions"/>
+
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_configuration"
+                name="Configuración"
+                parent="rod_cooperativa_aportes.menu_root"
+                sequence="3"
+                action="rod_cooperativa_aportes.action_cooperativa_aportes_configuration"/>
+
+
+
+  </data>
+</odoo>

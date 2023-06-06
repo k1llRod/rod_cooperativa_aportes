@@ -1,0 +1,24 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="homolagate_form_form_id" model="ir.ui.view">
+            <field name="name">homolagate.form.form</field>
+            <field name="model">homolagate.form</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <group>
+                        <field name="date_field" />
+                        <field name="month" readonly="1"/>
+                        <field name="year" readonly="1"/>
+                        <field name="count_period" readonly="1"/>
+                        <field name="count_register_reconciled" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="homolagate" string="Confirmar" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

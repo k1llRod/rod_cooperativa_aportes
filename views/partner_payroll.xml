@@ -1,0 +1,90 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo partner payroll -->
+
+        <record model="ir.ui.view" id="partner_payroll_tree_id">
+            <field name="name">partner.payroll.tree</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <header>
+                        <button name="import_payroll" string="Conciliar" class="oe_highlight" type="object"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="date_registration"/>
+                    <field name="total_contribution"/>
+                    <field name="advanced_payments"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
+                           widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario loan.application  -->
+
+        <record model="ir.ui.view" id="partner_payroll_form_id">
+            <field name="name">partner.payroll.form</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
+                    <header>
+                        <button name="init_payroll_partner_wizard" string="Establecer capital inicial" type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"/>
+
+                        <button name="init_payroll_partner_wizard" string="Imprimir planilla total" type="object"
+                                class="oe_highlight" />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="partner_status" readonly="1"/>
+                                <field name="capital_base" readonly="1"/>
+                                <field name="capital_total"/>
+                                <field name="interest_total"/>
+                                <field name="total_contribution"/>
+                            </group>
+                            <group>
+                                <field name="date_burn_partner"/>
+                                <field name="date_registration" readonly="1"/>
+                                <field name="advanced_payments"/>
+                                <field name="miscellaneous_income" string="Ingreso pendiente" readonly="1"/>
+                            </group>
+                        </group>
+                         <notebook>
+                            <page string="Depositos">
+                                <field name="payroll_payments_ids" clickable="True" context="{'view_mode': 'form', 'target': 'main'}"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+
+                        <field name="message_follower_ids" groups="base.group_user"/>
+
+                        <field name="activity_ids"/>
+
+                        <field name="message_ids"/>
+
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar loan.application -->
+
+        <record id="action_partner_payroll" model="ir.actions.act_window">
+            <field name="name">Aportes</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

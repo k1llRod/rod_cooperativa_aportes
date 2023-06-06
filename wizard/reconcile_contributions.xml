@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="reconcile_contributions_form_id" model="ir.ui.view">
+            <field name="name">reconcile.contributions.form</field>
+            <field name="model">reconcile.contributions</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <group>
+                        <field name="date_field_select" />
+                    </group>
+                    <group col="3">
+                        <field name="month"/>
+                        <field name="year"/>
+                        <field name="reconcile_records"/>
+                    </group>
+                    <footer>
+                        <button name="action_reconcile" string="Conciliar" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

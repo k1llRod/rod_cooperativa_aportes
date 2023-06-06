@@ -1,0 +1,99 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo payroll payments -->
+
+        <record model="ir.ui.view" id="payroll_payments_tree_id">
+            <field name="name">payroll.payments.tree</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" readonly="1"/>
+                    <field name="partner_payroll_id" invisible="1"/>
+                    <field name="period_register" />
+                    <field name="income"/>
+                    <field name="miscellaneous_income"/>
+                    <field name="regulation_cup"/>
+                    <field name="mandatory_contribution_certificate" />
+                    <field name="voluntary_contribution_certificate"/>
+                    <field name="payment_date"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
+                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario payroll payments -->
+
+        <record model="ir.ui.view" id="payroll_payments_form_id">
+            <field name="name">payroll.payments.form</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
+                    <header>
+                        <button name="confirm_payroll" string="Registrar forma de pago" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+                        <button name="confirm_payroll" string="Imprimir certificado de pago" type="object"
+                                class="oe_close_button"
+                                />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+<!--                        <div class="oe_button_box" name="button_box">-->
+<!--                            <button name="button_value_dolar" class="oe_stat_button" type="object" icon="fa-usd">-->
+<!--                                <div class="o_field_widget o_stat_info">-->
+<!--                                    <span class="o_stat_value">-->
+<!--                                        <field string=" " name="value_dolar" widget="statinfo"/>-->
+<!--                                    </span>-->
+<!--                                    <span class="o_stat_text">-->
+<!--                                        Dolar-->
+<!--                                    </span>-->
+<!--                                </div>-->
+<!--                            </button>-->
+<!--                        </div>-->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_payroll_id" invisible="1"/>
+                                <field name="income" />
+                                <field name="miscellaneous_income" readonly="1"/>
+                                <field name="regulation_cup" readonly="1"/>
+                                <field name="mandatory_contribution_certificate" readonly="1"/>
+                                <field name="voluntary_contribution_certificate"/>
+                                <field name="payment_date"/>
+                                <field name="period_register"/>
+                            </group>
+                            <group>
+                                <field name="capital"/>
+                                <field name="interest"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+
+                        <field name="message_follower_ids" groups="base.group_user"/>
+
+                        <field name="activity_ids"/>
+
+                        <field name="message_ids"/>
+
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar payroll payments -->
+
+        <record id="action_payroll_payments" model="ir.actions.act_window">
+            <field name="name">Aportes</field>
+            <field name="res_model">payroll.payments</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

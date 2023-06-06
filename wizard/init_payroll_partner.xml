@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="init_payroll_partner_form_id" model="ir.ui.view">
+            <field name="name">init.payroll.partner.form</field>
+            <field name="model">init.payroll.partner</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <group>
+                        <field name="partner_payroll_id" readonly="1" invisible="1"/>
+                        <field name="capital_minimum" readonly="1"/>
+                        <field name="capital_base"/>
+                    </group>
+                    <footer>
+                        <button name="action_confirm" string="Confirmar" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
