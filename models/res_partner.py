@@ -38,6 +38,9 @@ class ResPartner(models.Model):
         if self.state == 'draft':
             self.state = 'activate'
 
+    def verificate(self):
+        return 1
+
 
 
 
