@@ -6,10 +6,24 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="rod_cooperativa.res_partner_form_inh"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='state']" position="before">
-                    <button name="init_partner" string="Iniciar aportes" type="object" />
-                    <button name="approve_verification" string="Aprobar socio" type="object" />
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="init_partner" string="Iniciar aportes" type="object"
+                                attrs="{'invisible': [('state', '!=', 'activate'),('contributions_count','>=','0')]}"/>
+                        <button name="approve_verification" string="Verificar" type="object"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="approve_partner" string="Aprobar socio" type="object"
+                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
+                        <button name="return_form" string="Solicitud rechazada" type="object"
+                                attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
+                    </header>
                 </xpath>
+<!--                <xpath expr="//header" position="inside">-->
+<!--                    <field name="state" widget="statusbar" invisible="1"/>-->
+<!--                    <button name="init_partner" string="Iniciar aportes" type="object" />-->
+<!--                    <button name="approve_verification" string="Verificar" type="object" />-->
+<!--                </xpath>-->
 <!--                <xpath expr="//field[@name='partner']" position="after">-->
 <!--                    <field name="contributions_count"/>-->
 <!--                </xpath>-->

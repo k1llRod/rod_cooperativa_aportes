@@ -10,12 +10,12 @@
                     <field name="name" readonly="1"/>
                     <field name="partner_payroll_id" invisible="1"/>
                     <field name="period_register" />
-                    <field name="income"/>
-                    <field name="miscellaneous_income"/>
-                    <field name="regulation_cup"/>
-                    <field name="mandatory_contribution_certificate" />
-                    <field name="voluntary_contribution_certificate"/>
-                    <field name="payment_date"/>
+                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
                     <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
                 </tree>
@@ -30,11 +30,22 @@
             <field name="arch" type="xml">
                 <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
                     <header>
-                        <button name="confirm_payroll" string="Registrar forma de pago" type="object"
+                        <button name="confirm_payroll" string="Por transferencia bancaria" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+                        <button name="ministry_defense" string="Ministerio de defensa" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+                        <button name="drawback" string="Reintegro" type="object"
                                 class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
                         <button name="confirm_payroll" string="Imprimir certificado de pago" type="object"
+                                class="oe_close_button"
+                                />
+                        <button name="return_draft" string="Borrador" type="object"
                                 class="oe_close_button"
                                 />
                         <field name="state" widget="statusbar"/>
@@ -60,10 +71,10 @@
                         <group>
                             <group>
                                 <field name="partner_payroll_id" invisible="1"/>
-                                <field name="income" />
+                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="miscellaneous_income" readonly="1"/>
                                 <field name="regulation_cup" readonly="1"/>
-                                <field name="mandatory_contribution_certificate" readonly="1"/>
+                                <field name="mandatory_contribution_certificate" />
                                 <field name="voluntary_contribution_certificate"/>
                                 <field name="payment_date"/>
                                 <field name="period_register"/>

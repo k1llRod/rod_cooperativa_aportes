@@ -20,12 +20,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','contacts','mail'],
+    'depends': ['base','contacts','mail', 'rod_cooperativa'],
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
         'security/security.xml',
+        'security/ir.model.access.csv',
         'views/nominal_relationship_mindef_contributions.xml',
         'views/res_config_settings.xml',
         'views/partner_payroll.xml',

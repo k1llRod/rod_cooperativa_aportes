@@ -10,6 +10,7 @@
                         <field name="partner_payroll_id" readonly="1" invisible="1"/>
                         <field name="capital_minimum" readonly="1"/>
                         <field name="capital_base"/>
+                        <field name="date_register"/>
                     </group>
                     <footer>
                         <button name="action_confirm" string="Confirmar" type="object" class="oe_highlight"/>

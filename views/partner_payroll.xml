@@ -31,13 +31,30 @@
                     <header>
                         <button name="init_payroll_partner_wizard" string="Establecer capital inicial" type="object"
                                 class="oe_close_button"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"/>
-
-                        <button name="init_payroll_partner_wizard" string="Imprimir planilla total" type="object"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="wizard_pay_contribution" string="Registrar pago" type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}" />
+                        <button name="print_report_total" string="Imprimir planilla total" type="object"
                                 class="oe_highlight" />
+                         <button name="return_draft" string="Borrador" type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}" />
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
+                        <div class="alert alert-warning text-center o_form_header" role="alert" attrs="{'invisible': [('outstanding_payments','=',0)]}">
+                            <a class="close" data-dismiss="alert" href="#">x</a>
+                            <div>
+                                <strong>Planilla de aportes</strong>
+                            </div>
+                            <div>Pagos pendientes
+                                <field name="outstanding_payments" required="0" readonly="1"/>
+                            </div>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" string="Nombre"/>
@@ -47,21 +64,26 @@
                             <group>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_status" readonly="1"/>
-                                <field name="capital_base" readonly="1"/>
-                                <field name="capital_total"/>
-                                <field name="interest_total"/>
-                                <field name="total_contribution"/>
+                                <field name="partner_status_especific" readonly="1"/>
+                                <field name="voluntary_contribution_certificate_total"/>
+                                <field name="mandatory_contribution_certificate_total"/>
+<!--                                <field name="capital_base" readonly="1"/>-->
+<!--                                <field name="capital_total"/>-->
+<!--                                <field name="interest_total"/>-->
+<!--                                <field name="total_contribution"/>-->
                             </group>
                             <group>
                                 <field name="date_burn_partner"/>
                                 <field name="date_registration" readonly="1"/>
                                 <field name="advanced_payments"/>
-                                <field name="miscellaneous_income" string="Ingreso pendiente" readonly="1"/>
+                                <field name="miscellaneous_income" string="Costo afiliación pendiente" readonly="1"/>
+                                <field name="count_pay_contributions" />
+                                <field name="updated_partner"/>
                             </group>
                         </group>
                          <notebook>
                             <page string="Depositos">
-                                <field name="payroll_payments_ids" clickable="True" context="{'view_mode': 'form', 'target': 'main'}"/>
+                                <field name="payroll_payments_ids" clickable="True" editable="top"/>
                             </page>
                         </notebook>
                     </sheet>

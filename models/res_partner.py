@@ -1,8 +1,12 @@
 from odoo import models, fields, api, _
 from datetime import datetime, timedelta
+from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    state = fields.Selection([('draft', 'Borrador'), ('verificate', 'Verificación'), ('activate', 'Socio activo'),
+                              ('rejected', 'Rechazado')],
+                             string='Estado', default='draft', track_visibility='onchange')
     def init_partner(self):
         partner_payroll = self.env['partner.payroll'].create({'partner_id': self.id,
                                             'date_registration': datetime.now(),
@@ -36,10 +40,26 @@ class ResPartner(models.Model):
     def approve_verification(self):
         self.ensure_one()
         if self.state == 'draft':
+            if not self.code_contact:
+                raise ValidationError(_('Debe ingresar el código de contacto'))
+            if not self.partner_status_especific:
+                raise ValidationError(_('Debe ingresar la situación del socio'))
+            if not self.ci_photocopy:
+                raise ValidationError(_('Debe ingresar la Fotocopía de la cédula de identidad'))
+            if not self.photocopy_military_ci:
+                raise ValidationError(_('Debe ingresar la Fotocopia de la  cédula militar'))
+            self.state = 'verificate'
+
+    def approve_partner(self):
+        self.ensure_one()
+        if self.state == 'verificate':
             self.state = 'activate'
 
-    def verificate(self):
-        return 1
+
+    def return_form(self):
+        self.ensure_one()
+        if self.state == 'verificate':
+            self.state = 'draft'
 
 
 
