@@ -39,6 +39,5 @@
         'wizard/reconcile_contributions.xml',
         'wizard/homolagate_form.xml',
         'wizard/alert_message.xml',
-        '',
     ],
 }
