@@ -23,10 +23,10 @@ class PayrollPayments(models.Model):
     payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
-        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
-         ('drawback', 'Reintegro')], default='draft', tracking=True)
+        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa')], default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
+    drawback = fields.Boolean(string='Reintegro')
 
     @api.depends('payment_date')
     def compute_period_register(self):
@@ -65,7 +65,7 @@ class PayrollPayments(models.Model):
                 verify = record.partner_payroll_id.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and (
                                 x.period_register == record.period_register))
-                if len(verify) > 0:
+                if len(verify) > 0 and record.drawback == False:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
                 record.state = 'transfer'
 
@@ -96,7 +96,7 @@ class PayrollPayments(models.Model):
             self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.month_ids'))
         sw = 0
         for month in month_flag:
-            if month == self.payment_date.month:
+            if month == self.payment_date.month and self.drawback == False:
                 self.mandatory_contribution_certificate = 100
                 sw = 1
         if sw == 0:
@@ -123,16 +123,22 @@ class PayrollPayments(models.Model):
         a = 1
         return super(PayrollPayments, self).write(vals)
 
-    def drawback(self):
+    @api.onchange('drawback')
+    def onchange_drawback(self):
         for record in self:
-            if record.state == 'draft':
-                if record.income < 0:
-                    raise ValidationError('El reintegro no puede ser menor o igual a cero')
-                verify = record.partner_payroll_id.payroll_payments_ids.filtered(
-                    lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and (x.period_register == record.period_register))
-                if len(verify) > 0:
-                    record.state = 'drawback'
-                else:
-                    raise ValidationError('El reintegro no tiene un periodo para completar el pago')
+            record.mandatory_contribution_certificate = 0
+            record.onchange_income()
+
+    # def drawback(self):
+    #     for record in self:
+    #         if record.state == 'draft':
+    #             if record.income < 0:
+    #                 raise ValidationError('El reintegro no puede ser menor o igual a cero')
+    #             verify = record.partner_payroll_id.payroll_payments_ids.filtered(
+    #                 lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and (x.period_register == record.period_register))
+    #             if len(verify) > 0:
+    #                 record.state = 'drawback'
+    #             else:
+    #                 raise ValidationError('El reintegro no tiene un periodo para completar el pago')
 
 

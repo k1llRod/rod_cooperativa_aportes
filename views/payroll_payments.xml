@@ -38,10 +38,10 @@
                                 class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
-                        <button name="drawback" string="Reintegro" type="object"
-                                class="oe_highlight"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+<!--                        <button name="drawback" string="Reintegro" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible': [('state', '!=', 'draft')]}"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>-->
                         <button name="confirm_payroll" string="Imprimir certificado de pago" type="object"
                                 class="oe_close_button"
                                 />
@@ -80,6 +80,7 @@
                                 <field name="period_register"/>
                             </group>
                             <group>
+                                <field name="drawback" attrs="{'readonly': [('state','!=','draft')] }"/>
                                 <field name="capital"/>
                                 <field name="interest"/>
                             </group>
