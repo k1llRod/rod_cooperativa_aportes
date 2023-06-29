@@ -13,6 +13,7 @@ class PartnerPayroll(models.Model):
     state = fields.Selection([('draft', 'Borrador'), ('process', 'En proceso'), ('finalized', 'Liquidado')],
                              default='draft')
     partner_id = fields.Many2one('res.partner', string='Socio')
+
     partner_status = fields.Selection([('activate', 'Servicio activo'),
                                        ('active_reserve', 'Reserva activa'),
                                        ('passive_reserve_a', 'Reserva pasivo "A"'),
@@ -44,6 +45,7 @@ class PartnerPayroll(models.Model):
 
     voluntary_contribution_certificate_total = fields.Float(string='Certificado voluntario total', compute="compute_voluntary_contribution_certificate_total")
     mandatory_contribution_certificate_total = fields.Float(string='Certificado obligatorio total', compute="compute_mandatory_contribution_certificate_total")
+    performance_management_ids = fields.One2many('performance.management', 'performance_management_id', string='Rendimientos')
     @api.model
     def create(self, vals):
         name = self.env['ir.sequence'].next_by_code('partner.payroll')
@@ -129,7 +131,7 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_count_pay_contributions(self):
         for record in self:
-            record.count_pay_contributions = int(len(record.payroll_payments_ids.search([('state', '!=', 'draft')])))
+            record.count_pay_contributions = int(len(record.payroll_payments_ids.filtered(lambda x:x.state == 'ministry_defense')))
             # if int(len(record.payroll_payments_ids)) > 0:
             #     # record.advance_regulation_cup = record.payroll_payments_ids.search([]).mapped('regulation_cup')
             #     record.advance_regulation_cup = float(self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
@@ -143,7 +145,7 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_advanced_payments(self):
         for record in self:
-            total_normal = self.count_pay_contributions * 0.50
+            total_normal = record.count_pay_contributions * 0.50
             total_payments = sum(record.payroll_payments_ids.mapped('regulation_cup'))
             record.advanced_payments = total_payments - total_normal
     # @api.depends('payroll_payments_ids')
@@ -151,17 +153,19 @@ class PartnerPayroll(models.Model):
 
     @api.depends('payroll_payments_ids')
     def compute_updated_partner(self):
+        diff_months = 0
         for record in self:
             if record.date_burn_partner:
                 diff = relativedelta(datetime.now(), record.date_burn_partner)
                 diff_months = diff.years * 12 + diff.months
             count_payments = len(record.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense' or x.state == 'transfer'))
-            if count_payments >= diff_months:
+            if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
                 self.env.user.notify_success(message='Planilla de aportes actualizado'.format(record.partner_id.name),title='Verificado')
             else:
                 record.updated_partner = False
                 self.env.user.notify_warning(message='Planilla de aportes desactualizada'.format(record.partner_id.name))
+
 
     def print_report_total(self):
         return {
@@ -177,5 +181,9 @@ class PartnerPayroll(models.Model):
     def compute_outstanding_payments(self):
         for record in self:
             record.outstanding_payments = len(record.payroll_payments_ids.filtered(lambda x: x.state == 'draft'))
+
+    def _create(self, data_list):
+        a = 1
+        return super(PartnerPayroll, self)._create(data_list)
 
 

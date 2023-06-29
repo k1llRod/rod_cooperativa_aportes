@@ -33,11 +33,16 @@
         'views/res_partner.xml',
         'views/payroll_payments.xml',
         'views/month.xml',
+        'views/performance_management.xml',
         'data/sequence.xml',
         # 'views/contacts.xml',
         'wizard/init_payroll_partner.xml',
         'wizard/reconcile_contributions.xml',
         'wizard/homolagate_form.xml',
         'wizard/alert_message.xml',
+        'data/month_data.xml',
+        'reports/payroll_payment_pdf.xml',
+        'reports/report.xml',
+
     ],
 }

@@ -32,11 +32,11 @@
                         <button name="init_payroll_partner_wizard" string="Establecer capital inicial" type="object"
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                        <button name="wizard_pay_contribution" string="Registrar pago" type="object"
-                                class="oe_close_button"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                attrs="{'invisible': [('state', '!=', 'process')]}" />
+                                attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','!=','passive_reserve_a')]}"/>
+<!--                        <button name="wizard_pay_contribution" string="Registrar pago" type="object"-->
+<!--                                class="oe_close_button"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
+<!--                                attrs="{'invisible': [('state', '!=', 'process'),('partner_status_especific','!=','passive_reserve_a')]}" />-->
                         <button name="print_report_total" string="Imprimir planilla total" type="object"
                                 class="oe_highlight" />
                          <button name="return_draft" string="Borrador" type="object"
@@ -85,6 +85,10 @@
                             <page string="Depositos">
                                 <field name="payroll_payments_ids" clickable="True" editable="top"/>
                             </page>
+                             <page string="Rendimiento">
+                                 <field name="performance_management_ids" clickable="True" editable="top"/>
+
+                             </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

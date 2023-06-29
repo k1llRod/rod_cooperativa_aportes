@@ -34,8 +34,11 @@ class ReconcileContributions(models.TransientModel):
         period = self.month + '/' + self.year
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].search(
             [('period_process', '=', period),('state','=','draft')])
-        partner_payroll_ids = self.env['partner.payroll'].search([('state', '=', 'process')])
+        partner_payroll_ids = self.env['partner.payroll'].search(['|',('state', '=', 'process'),('partner_status','=','active')])
         for partner in partner_payroll_ids:
+            if len(partner.payroll_payments_ids) == 0:
+                partner.write({'state': 'process',
+                               'date_burn_partner': datetime.now()}),
             search_partner = filing_cabinet_ids.filtered(lambda x: x.eit_item == partner.partner_id.code_contact)
             if search_partner:
                 if partner.miscellaneous_income == miscellaneous_income:
@@ -58,6 +61,8 @@ class ReconcileContributions(models.TransientModel):
                 rec.write({'state': 'no_reconciled'})
                 rec.write({'period_process': self.month+'/'+self.year})
                 rec.write({'date_process': self.date_field_select})
+        if len(partner_payroll_ids) == 0:
+            no_reconciled = len(filing_cabinet_ids.filtered(lambda x: x.period_process == False or x.state == 'draft'))
         context = {'default_message': 'Se han conciliado '+ str(len(filing_cabinet_ids)-no_reconciled) + ' registros de '+ str(len(filing_cabinet_ids))}
         return {
             'name': 'Registros conciliados',

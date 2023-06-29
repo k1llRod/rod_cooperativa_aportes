@@ -10,7 +10,7 @@
                     <header>
                         <field name="state" widget="statusbar"/>
                         <button name="init_partner" string="Iniciar aportes" type="object"
-                                attrs="{'invisible': [('state', '!=', 'activate'),('contributions_count','>=','0')]}"/>
+                                attrs="{'invisible': ['|',('state', '!=', 'activate'),('contributions_count','>','0')]}"/>
                         <button name="approve_verification" string="Verificar" type="object"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="approve_partner" string="Aprobar socio" type="object"

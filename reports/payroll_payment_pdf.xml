@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_payroll_payment_header">
+            <!-- Cabecera personalizada -->
+            <t t-call="web.html_container">
+
+            </t>
+
+        </template>
+        <template id="report_payroll_payment">
+            <t t-call="web.html_container">
+                <t t-call="web.internal_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <div class="page" t-att-style="'background-image: url(/rod_cooperativa_aportes/static/src/img/cooperativa_transparencia.png);background-repeat:repeat-y;'">
+                            <div style="font-family:Arial; text-align:center; font-size:14px; font-style:italic; font-weight:bold;">
+                                <ul style="list-style:none;margin:0; padding:0;">
+                                    <li>LA COOPERATIVA DE AHORRO Y CRÉDITO DE VÍNCULO LABORAL</li>
+                                    <li>"COA-4 DE DICIEMBRE" R.L.</li>
+                                    <li>
+                                        <span style="font-size: 12px;">Personería Jurídica No. 102/2022 de fecha
+                                            28/04/2022
+                                        </span>
+                                    </li>
+                                </ul>
+                                <center>
+                                    <img t-att-src="'/rod_cooperativa_aportes/static/src/img/cooperativa_fondo.png'"
+                                         style="width: 100px; height: 100px; margin-top: 10px;"/>
+                                </center>
+                                <br/>
+                                <div style="text-align: right;">
+                                    <span>CERT. APOR. COA-4 DE DICIEMBRE No:</span>
+                                </div>
+                            </div>
+                            <br/>
+                            <div>
+                                <p style="font-family:Times; font-style: italic; font-size: 20px; line-height: 2; text-align: justify; padding-right:20px;">
+                                    La Cooperativa de Ahorro y Crédito de Vínculo Laboral “COA-4 DE DICIEMBRE” R.L.
+                                    Sector
+                                    Servicios, Clase
+                                    Ahorro y Crédito, Ubicado en la Av. Ecuador, Edificio Miguel Ángel Mezzanine Of. 9,
+                                    Zona
+                                    Sopocachi del
+                                    Departamento de La Paz con Personería Jurídica <strong>Nro. 102/2022</strong> de
+                                    fecha
+                                    28 de
+                                    abril de 2022, Constituido
+                                    en fecha 12 de Noviembre de 2021, extiende el presente:
+                                </p>
+                            </div>
+                            <br/>
+                            <div style="font-family:Times; font-weight:bold;">
+                                <center>
+                                    <h1>CERTIFICADO DE APORTACIÓN</h1>
+                                </center>
+                            </div>
+                            <br/>
+                            <div style="font-family:Times;font-size:20px; font-style: italic; line-height:2;">
+                                <ul style="list-style:none;padding:0;margin:0;">
+                                    <li>A favor del asociado (a): <span>DANTE SAÚL NAVARRO RIVERA</span>  , con Cedula
+                                        de
+                                        Identidad No.
+                                        <span>3343665 QR.</span>
+                                    </li>
+                                    <li>Ha suscrito el valor nominal de
+                                        <span>Bs. 100,00.- (CIEN 00/100 BOLIVIANOS.)</span>
+                                    </li>
+                                    <li>En cumplimiento a la Ley General de Cooperativas.</li>
+                                    <li>Lugar y fecha de Emisión:
+                                        <span>La Paz 13 de Marzo de 2023</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <br/>
+
+                            <div>
+                                <table width="100%" style="margin-top:70px; font-family:Times; font-style:italic;">
+                                    <tr style="text-align:center;">
+                                        <td>
+                                            <ul style="list-style:none;">
+                                                <li>Rolando Martin Vargas Iriarte</li>
+                                                <li>
+                                                    <span style="font-weight:bold;">TESORERO</span>
+                                                </li>
+                                                <li>
+                                                    <span style="font-weight:bold;">CONSEJO DE ADMINISTRACIÓN</span>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul style="list-style:none;">
+                                                <li>Elmer Antonio Yave Marín</li>
+                                                <li style="font-weight:bold;">SECRETARIO GENERAL</li>
+                                                <li style="font-weight:bold;">CONSEJO DE ADMINISTRACIÓN</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="height:70px;">
+
+                                        </td>
+
+                                    </tr>
+                                    <tr style="text-align:center;">
+                                        <td colspan="2">
+                                            <ul style="list-style:none;">
+                                                <li>Dante Saúl Navarro Rivera</li>
+                                                <li style="font-weight:bold;">PRESIDENTE</li>
+                                                <li style="font-weight:bold;">CONSEJO DE ADMINISTRACIÓN</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

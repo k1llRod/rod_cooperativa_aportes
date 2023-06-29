@@ -19,10 +19,21 @@
                 sequence="2"
                 action="rod_cooperativa_aportes.action_nominal_relationship_mindef_contributions"/>
 
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
+                name="Reportes"
+                parent="rod_cooperativa_aportes.menu_root"
+                sequence="3"
+                />
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports_payments"
+                name="Depositos"
+                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
+                sequence="1"
+                action="rod_cooperativa_aportes.action_payments_reports"/>
+
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_configuration"
                 name="Configuración"
                 parent="rod_cooperativa_aportes.menu_root"
-                sequence="3"
+                sequence="4"
                 action="rod_cooperativa_aportes.action_cooperativa_aportes_configuration"/>
 
 

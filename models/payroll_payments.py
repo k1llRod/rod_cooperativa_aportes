@@ -13,6 +13,7 @@ class PayrollPayments(models.Model):
 
     name = fields.Char(string='Nombre')
     partner_payroll_id = fields.Many2one('partner.payroll', string='Planilla de socio')
+    partner_name = fields.Char(String='Nombre del socio', related='partner_payroll_id.partner_id.name')
     income = fields.Float(string='Ingresos', required=True, tracking=True)
     mandatory_contribution_certificate = fields.Float(string='Cert. Apor. O.', default=0.0)
     voluntary_contribution_certificate = fields.Float(string='Cert. Apor. V.',
@@ -38,6 +39,10 @@ class PayrollPayments(models.Model):
         name = self.env['ir.sequence'].next_by_code('payroll.payments')
         vals_list['name'] = name
         res = super(PayrollPayments, self).create(vals_list)
+        if len(res.partner_payroll_id.payroll_payments_ids) == 1:
+            res.partner_payroll_id.date_burn_partner = fields.Datetime.now()
+            if res.partner_payroll_id.partner_status_especific == 'active_service' or res.partner_payroll_id.partner_status_especific == 'letter_a' or res.partner_payroll_id.partner_status_especific == 'passive_reserve_b':
+                res.partner_payroll_id.state = 'process'
         res.partner_payroll_id.message_post(body="Pago creado: " + vals_list['name'])
         return res
 
@@ -118,7 +123,6 @@ class PayrollPayments(models.Model):
                 if len(verify) > 0:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
                 record.state = 'ministry_defense'
-
     def write(self, vals):
         a = 1
         return super(PayrollPayments, self).write(vals)
@@ -129,6 +133,11 @@ class PayrollPayments(models.Model):
             record.mandatory_contribution_certificate = 0
             record.onchange_income()
 
+    def generate_certificate_report(self):
+        certificate = self.env['report.payment.payroll'].browse(self.id)
+        if certificate:
+            report = self.env.ref('certificate.report_certificate')
+            return report.report_action(certificate)
     # def drawback(self):
     #     for record in self:
     #         if record.state == 'draft':
@@ -140,5 +149,17 @@ class PayrollPayments(models.Model):
     #                 record.state = 'drawback'
     #             else:
     #                 raise ValidationError('El reintegro no tiene un periodo para completar el pago')
+
+
+    def _payments_reports(self):
+        view_id = self.env.ref('rod_cooperativa_aportes.payroll_payments_reports_tree_id').id
+        return {
+            'name': 'Punto de venta',
+            'res_model': 'payroll.payments',
+            'type': 'ir.actions.act_window',
+            'view_id': view_id,
+            'view_mode': 'tree',
+            'domain': [],
+        }
 
 

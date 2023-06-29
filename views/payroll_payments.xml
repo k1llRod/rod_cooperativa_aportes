@@ -42,9 +42,9 @@
 <!--                                class="oe_highlight"-->
 <!--                                attrs="{'invisible': [('state', '!=', 'draft')]}"-->
 <!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>-->
-                        <button name="confirm_payroll" string="Imprimir certificado de pago" type="object"
-                                class="oe_close_button"
-                                />
+<!--                        <button name="generate_certificate_report" string="Imprimir certificado de pago" type="object"-->
+<!--                                class="oe_close_button"-->
+<!--                                />-->
                         <button name="return_draft" string="Borrador" type="object"
                                 class="oe_close_button"
                                 />
@@ -105,6 +105,37 @@
             <field name="name">Aportes</field>
             <field name="res_model">payroll.payments</field>
             <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="payroll_payments_reports_tree_id">
+            <field name="name">payroll.payments.reports.tree</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" readonly="1"/>
+                    <field name="partner_payroll_id"/>
+                    <field name="partner_name" string="Socio"/>
+                    <field name="period_register" />
+                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
+                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Vista de la tabla de aportes -->
+        <record model="ir.actions.server" id="action_payments_reports">
+            <field name="name">Reporte de pagos</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_payroll_payments"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = model._payments_reports()
+            </field>
         </record>
 
     </data>

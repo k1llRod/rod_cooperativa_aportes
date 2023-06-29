@@ -28,7 +28,7 @@ class ResConfigSettings(models.TransientModel):
             miscellaneous_income=miscellaneous_income,
             certified_period=certified_period,
             capital_minimum=capital_minimum,
-            month_ids=[(6, 0, literal_eval(month_ids))],
+            month_ids=[(6, 0, literal_eval(month_ids))] if month_ids else [(6, 0, '')]
         )
         return res
 
