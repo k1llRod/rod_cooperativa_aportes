@@ -113,15 +113,15 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" readonly="1"/>
-                    <field name="partner_payroll_id"/>
-                    <field name="partner_name" string="Socio"/>
+                    <field name="partner_payroll_id" optional="show"/>
+                    <field name="partner_name" string="Socio" optional="hide"/>
                     <field name="period_register" />
-                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
+                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
                     <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                     <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
-                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
                     <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
                 </tree>

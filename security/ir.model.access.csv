@@ -25,3 +25,5 @@ access_homolagate_form_operador,homolagate.form,model_homolagate_form,rod_cooper
 access_alert_message_operador,alert.message,model_alert_message,rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,1,1,1,0
 
 access_performance_management,performance.management,model_performance_management,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
+
+access_set_interes,set.interes,model_set_interes,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1

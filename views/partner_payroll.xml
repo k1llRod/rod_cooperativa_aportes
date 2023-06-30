@@ -9,12 +9,23 @@
                 <tree create="0">
                     <header>
                         <button name="import_payroll" string="Conciliar" class="oe_highlight" type="object"/>
+                        <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
+                                class="oe_highlight"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                />
                     </header>
                     <field name="name"/>
                     <field name="partner_id"/>
+                    <field name="partner_status"/>
+                    <field name="partner_status_especific" optional="hide"/>
                     <field name="date_registration"/>
-                    <field name="total_contribution"/>
-                    <field name="advanced_payments"/>
+                    <field name="date_burn_partner" optional="hide"/>
+                    <field name="advanced_payments" optional="hide"/>
+                    <field name="count_pay_contributions" optional="hide"/>
+                    <field name="outstanding_payments"/>
+                    <field name="voluntary_contribution_certificate_total"/>
+                    <field name="mandatory_contribution_certificate_total"/>
+                    <field name="contribution_total"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
                            widget="badge"/>
                 </tree>
@@ -43,6 +54,10 @@
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'process')]}" />
+                        <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
+                                class="oe_highlight"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                />
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -67,6 +82,7 @@
                                 <field name="partner_status_especific" readonly="1"/>
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
+                                <field name="contribution_total"/>
 <!--                                <field name="capital_base" readonly="1"/>-->
 <!--                                <field name="capital_total"/>-->
 <!--                                <field name="interest_total"/>-->
@@ -85,20 +101,15 @@
                             <page string="Depositos">
                                 <field name="payroll_payments_ids" clickable="True" editable="top"/>
                             </page>
-                             <page string="Rendimiento">
+                             <page string="Interes">
                                  <field name="performance_management_ids" clickable="True" editable="top"/>
-
                              </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
-
                         <field name="message_follower_ids" groups="base.group_user"/>
-
                         <field name="activity_ids"/>
-
                         <field name="message_ids"/>
-
                     </div>
                 </form>
             </field>
@@ -110,6 +121,14 @@
             <field name="name">Aportes</field>
             <field name="res_model">partner.payroll</field>
             <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_init_partner_payroll" model="ir.actions.server">
+            <field name="name">Activar socio</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="binding_model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="state">code</field>
+            <field name="code">action = records.select_init_partner_payroll()</field>
         </record>
 
     </data>

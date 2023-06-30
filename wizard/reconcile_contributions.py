@@ -11,6 +11,8 @@ class ReconcileContributions(models.TransientModel):
     month = fields.Char(string="Mes", compute="compute_date_format")
     year = fields.Char(string="Año", compute="compute_date_format")
     reconcile_records = fields.Integer(string="Registros para conciliar", readonly=True)
+    drawback = fields.Boolean(string="Reintegro", default=False)
+    months = fields.Many2many('month', string="Meses")
 
     @api.depends('date_field_select')
     def compute_date_format(self):
@@ -25,45 +27,57 @@ class ReconcileContributions(models.TransientModel):
                 record.reconcile_records = len(self.env['nominal.relationship.mindef.contributions'].search(
                     [('period_process', '=', period), ('state', '=', 'draft')]))
 
-
-
     def action_reconcile(self):
         # Acción para conciliar los pagos de aportes
         miscellaneous_income = float(
             self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income'))
+        mandatory_contribution_certificate = self.env['ir.config_parameter'].sudo().get_param(
+            'rod_cooperativa_aportes.mandatory_contribution_certificate')
+
         period = self.month + '/' + self.year
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].search(
-            [('period_process', '=', period),('state','=','draft')])
-        partner_payroll_ids = self.env['partner.payroll'].search(['|',('state', '=', 'process'),('partner_status','=','active')])
+            [('period_process', '=', period), ('state', '=', 'draft')])
+        partner_payroll_ids = self.env['partner.payroll'].search(
+            ['|', ('state', '=', 'process'), ('partner_status', '=', 'active')])
+        status_dinamic = 'ministry_defense'
+        if self.drawback == True:
+            status_dinamic = 'drawback'
         for partner in partner_payroll_ids:
-            if len(partner.payroll_payments_ids) == 0:
-                partner.write({'state': 'process',
-                               'date_burn_partner': datetime.now()}),
             search_partner = filing_cabinet_ids.filtered(lambda x: x.eit_item == partner.partner_id.code_contact)
             if search_partner:
-                if partner.miscellaneous_income == miscellaneous_income:
+                if len(partner.payroll_payments_ids) == 0:
                     partner.payroll_payments_ids = [
                         (0, 0, {'payment_date': self.date_field_select, 'income': search_partner.amount_bs,
-                                'state': 'ministry_defense'})]  # Agregar el pago de aportes
+                                'state': 'ministry_defense', 'income': search_partner.amount_bs,
+                                'mandatory_contribution_certificate': mandatory_contribution_certificate})]
                 else:
-                    partner.payroll_payments_ids = [
-                        (0, 0, {'payment_date': self.date_field_select, 'income': search_partner.amount_bs,
-                                'state': 'ministry_defense',
-                                'miscellaneous_income': miscellaneous_income - partner.miscellaneous_income})]  # Agregar el pago de a
+                    val = {'partner_payroll_id': partner.id,
+                           'payment_date': self.date_field_select,
+                           'income': search_partner.amount_bs,
+                           'state': 'ministry_defense','drawback':self.drawback}
+                    mo = self.env['payroll.payments'].create(val)
+                    # mo.onchange_income()
+                    mo.onchange_drawback()
+                    if self.drawback == True:
+                        list = ''
+                        for rec in self.months:
+                            list = rec.name + ',' + list
+                        partner.message_post(body="Reintegro: " + list)
+                        mo.message_post(body="Reintegro: " + list)
 
                 search_partner.date_process = self.date_field_select
                 search_partner.state = 'reconciled'
-                search_partner.period_process = self.month+'/'+self.year
+                search_partner.period_process = self.month + '/' + self.year
 
-            no_reconciled = len(filing_cabinet_ids.filtered(lambda x: x.period_process == False))
-            array_no_reconciled = self.env['nominal.relationship.mindef.contributions'].search([('period_process','=',False)])
-            for rec in array_no_reconciled:
-                rec.write({'state': 'no_reconciled'})
-                rec.write({'period_process': self.month+'/'+self.year})
-                rec.write({'date_process': self.date_field_select})
-        if len(partner_payroll_ids) == 0:
-            no_reconciled = len(filing_cabinet_ids.filtered(lambda x: x.period_process == False or x.state == 'draft'))
-        context = {'default_message': 'Se han conciliado '+ str(len(filing_cabinet_ids)-no_reconciled) + ' registros de '+ str(len(filing_cabinet_ids))}
+        array_no_reconciled = filing_cabinet_ids.filtered(lambda x: x.period_process == period and x.state == 'draft')
+        no_reconciled = len(array_no_reconciled)
+        for rec in array_no_reconciled:
+            rec.write({'state': 'no_reconciled'})
+            rec.write({'period_process': self.month + '/' + self.year})
+            rec.write({'date_process': self.date_field_select})
+
+        context = {'default_message': 'Se han conciliado ' + str(
+            len(filing_cabinet_ids) - no_reconciled) + ' registros de ' + str(len(filing_cabinet_ids))}
         return {
             'name': 'Registros conciliados',
             'type': 'ir.actions.act_window',
@@ -76,9 +90,6 @@ class ReconcileContributions(models.TransientModel):
 
         # raise UserError(_('Se han conciliado %s registros de %s') % (len(filing_cabinet_ids)-no_reconciled, len(filing_cabinet_ids)))
 
-
     # @api.depends('date_field_select')
     # def compute_reconcile_records(self):
     #     self.reconcile_records =
-
-

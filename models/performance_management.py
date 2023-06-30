@@ -7,12 +7,13 @@ class PerformanceManagement(models.Model):
     _description = 'Gestión de rendimientos de aportes'
     # _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Nombre')
-    index = fields.Float(string='Índice')
-    management_date = fields.Date(string='Fecha de gestión')
+    name = fields.Char(string='Gestion')
+    index = fields.Float(string='Índice', digits=(16,4))
+    management_date = fields.Date(string='Fecha de registro')
     management = fields.Char(string='Gestión')
+    contributions_total = fields.Float(string='Total de aportes')
     yield_amount = fields.Float(string='Monto de rendimiento')
-    performance_management_id = fields.Many2one('partner.payroll', string='Rendimientos')
+    partner_payroll_id = fields.Many2one('partner.payroll', string='Rendimientos')
 
     def create(self, data_list):
         a = 1

@@ -6,18 +6,26 @@
             <field name="model">reconcile.contributions</field>
             <field name="arch" type="xml">
                 <form string="Your Wizard">
-                    <group>
-                        <field name="date_field_select" />
-                    </group>
-                    <group col="3">
-                        <field name="month"/>
-                        <field name="year"/>
-                        <field name="reconcile_records"/>
-                    </group>
-                    <footer>
-                        <button name="action_reconcile" string="Conciliar" type="object" class="oe_highlight"/>
-                        <button string="Cancel" class="oe_link" special="cancel"/>
-                    </footer>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date_field_select"/>
+                                <field name="month"/>
+                                <field name="year"/>
+                                <field name="reconcile_records"/>
+                            </group>
+                            <group>
+                                <field name="drawback"/>
+                                <field name="months" widget="many2many_tags"
+                                       attrs="{'invisible': [('drawback','!=',True)]}"/>
+                            </group>
+                        </group>
+
+                        <footer>
+                            <button name="action_reconcile" string="Conciliar" type="object" class="oe_highlight"/>
+                            <button string="Cancel" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

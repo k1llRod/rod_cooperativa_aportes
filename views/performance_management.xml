@@ -8,9 +8,9 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name"/>
-                    <field name="index"/>
                     <field name="management_date"/>
-                    <field name="management"/>
+                    <field name="index"/>
+                    <field name="contributions_total"/>
                     <field name="yield_amount"/>
                 </tree>
             </field>
@@ -26,14 +26,14 @@
                     <sheet>
                         <div class="oe_title">
                             <h1>
-                                <field name="name" string="Nombre"/>
+                                <field name="name" string="Gestion"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="index"/>
                                 <field name="management_date"/>
-                                <field name="management"/>
+                                <field name="management" invisible="1"/>
                                 <field name="yield_amount"/>
                             </group>
 

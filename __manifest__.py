@@ -40,6 +40,7 @@
         'wizard/reconcile_contributions.xml',
         'wizard/homolagate_form.xml',
         'wizard/alert_message.xml',
+        'wizard/set_interest.xml',
         'data/month_data.xml',
         'reports/payroll_payment_pdf.xml',
         'reports/report.xml',

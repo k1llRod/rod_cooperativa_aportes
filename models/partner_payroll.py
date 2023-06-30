@@ -27,7 +27,7 @@ class PartnerPayroll(models.Model):
                                                 related='partner_id.partner_status_especific', readonly=True)
 
     date_registration = fields.Datetime(string='Fecha de registro')
-    date_burn_partner = fields.Datetime(string='Fecha de alta')
+    date_burn_partner = fields.Datetime(string='Fecha de afiliacion')
     total_contribution = fields.Float(string='Total aportado')
     advanced_payments = fields.Float(string='Pagos adelantados', compute="compute_advanced_payments")
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',
@@ -41,11 +41,14 @@ class PartnerPayroll(models.Model):
     advance_regulation_cup = fields.Integer(string='Taza de regulación adelantado',
                                             compute="compute_count_pay_contributions")
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
+    tree_updated_partner = fields.Boolean(string='Actualizado', related='updated_partner')
     outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_outstanding_payments")
 
-    voluntary_contribution_certificate_total = fields.Float(string='Certificado voluntario total', compute="compute_voluntary_contribution_certificate_total")
-    mandatory_contribution_certificate_total = fields.Float(string='Certificado obligatorio total', compute="compute_mandatory_contribution_certificate_total")
-    performance_management_ids = fields.One2many('performance.management', 'performance_management_id', string='Rendimientos')
+    voluntary_contribution_certificate_total = fields.Float(string='Ingreso total', compute="compute_voluntary_contribution_certificate_total", store=True)
+    mandatory_contribution_certificate_total = fields.Float(string='Aporte voluntario total', compute="compute_mandatory_contribution_certificate_total", store=True)
+    contribution_total = fields.Float(string='Aporte total', compute="compute_contribution_total", store=True)
+    performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
+
     @api.model
     def create(self, vals):
         name = self.env['ir.sequence'].next_by_code('partner.payroll')
@@ -180,10 +183,57 @@ class PartnerPayroll(models.Model):
 
     def compute_outstanding_payments(self):
         for record in self:
-            record.outstanding_payments = len(record.payroll_payments_ids.filtered(lambda x: x.state == 'draft'))
+            make_register = record.calculate_month_difference()
+            record.outstanding_payments = make_register - int(len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.drawback == False)))
+
 
     def _create(self, data_list):
         a = 1
         return super(PartnerPayroll, self)._create(data_list)
+
+    def calculate_month_difference(self):
+        for record in self:
+            if record.date_burn_partner:
+                diff = relativedelta(datetime.now(), record.date_burn_partner)
+                diff_months = diff.years * 12 + diff.months
+        return diff_months
+    def select_init_partner_payroll(self):
+        for record in self:
+            if record.partner_status == 'active' and record.state == 'draft':
+                if record.date_burn_partner == False:
+                    record.date_burn_partner = datetime.now()
+                else:
+                    record.state = 'process'
+                # make_register = record.calculate_month_difference()
+                # date = record.date_burn_partner
+                # for i in range(make_register):
+                #     record.payroll_payments_ids = [(0, 0, {'payment_date': date,
+                #                                            'income': 0,
+                #                                            'state': 'draft',
+                #                                            })]
+                #     date = date + relativedelta(months=1)
+    def compute_contribution_total(self):
+        for record in self:
+            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total
+
+
+    def init_partner_payroll_interest(self):
+        # wizard = self.env['set.interes'].create({'partner_payroll_id': self.id})
+        context = {
+            'default_partner_payroll_id': self.id,
+        }
+        return {
+            'name': 'Establecer interes de aportes',
+            'type': 'ir.actions.act_window',
+            'res_model': 'set.interes',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'context': context,
+            'target': 'new',
+        }
+
+
+
+
 
 

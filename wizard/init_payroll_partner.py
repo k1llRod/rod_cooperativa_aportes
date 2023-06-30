@@ -24,7 +24,6 @@ class InitPayrollPartner(models.TransientModel):
         # Puedes agregar aquí la lógica que deseas ejecutar al confirmar el wizard
         # Por ejemplo, crear un registro en otro modelo con los valores del wizard
 
-        # Código de ejemplo:
         partner_payroll = self.env['partner.payroll'].browse(self.partner_payroll_id)
         partner_payroll.capital_base = self.capital_base
         partner_payroll.state = 'process'
