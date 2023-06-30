@@ -128,7 +128,7 @@
             </field>
         </record>
         <!-- Vista de la tabla de aportes -->
-        <record model="ir.actions.server" id="action_payments_reports">
+        <record model="ir.actions.server" id="rod_cooperativa_aportes.action_payments_reports">
             <field name="name">Reporte de pagos</field>
             <field name="model_id" ref="rod_cooperativa_aportes.model_payroll_payments"/>
             <field name="type">ir.actions.server</field>
