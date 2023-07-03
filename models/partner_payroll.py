@@ -196,6 +196,8 @@ class PartnerPayroll(models.Model):
             if record.date_burn_partner:
                 diff = relativedelta(datetime.now(), record.date_burn_partner)
                 diff_months = diff.years * 12 + diff.months
+            else:
+                diff_months = 0
         return diff_months
     def select_init_partner_payroll(self):
         for record in self:
