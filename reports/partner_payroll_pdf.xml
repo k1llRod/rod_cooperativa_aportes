@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_partner_payroll">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="line_number" t-value="0"/>
+                    <div class="page">
+                        <xpath expr="//main/div[@class='header']" position="replace">
+                            <div class="header">
+                                <table border="1" style="width:100%;">
+                                    <tr>
+                                        <td style="width:60%;text-align:center;">COOPERATIVA DE AHORRO Y CREDITO DE
+                                            VINCULO LABORAL
+                                        </td>
+                                        <td style="width:20%;"></td>
+                                        <td style="width:20%;">Paginas: 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">COA - 4 DE DICIEMBRE R.L.</td>
+                                        <td style="width:20px;"></td>
+                                        <td>Fecha: 04-07-2023</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">LA PAZ - BOLIVIA</td>
+                                        <td style="width:20px;"></td>
+                                        <td>Usuario: iarias</td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h3>
+                                    <center>EXTRACTO DE APORTES</center>
+                                </h3>
+                                <br/>
+                                <table border="1" style="width:100%;">
+                                    <tr>
+                                        <td><strong>ASOCIADO:</strong></td>
+                                        <td>MEJIA SOLIZ</td>
+                                        <td><strong>OF.SERV.PASIVO</strong></td>
+                                        <td>CATEGORIA "A"</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CEDULA IDENTIDAD:</strong></td>
+                                        <td>6565465</td>
+                                        <td><strong>CELULAR:</strong></td>
+                                        <td>754656</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AÑO DE EGRESO:</strong></td>
+                                        <td>2000</td>
+                                        <td><strong>AÑO DE JUBILACION</strong></td>
+                                        <td>2022</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FECHA DE VINCULACION:</strong></td>
+                                        <td>2-4-2023</td>
+                                        <td><strong>FECHA DE NACIMIENTO:</strong></td>
+                                        <td>8-8-2023</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div class="body">
+                                <center>
+                                    <h1>APORTES</h1>
+                                </center>
+                                <table class="table table-sm o_main_table"
+                                       style="width:100%; border-collapse: collapse; border: 1px solid gray; font-family:Arial;">
+                                    <thead>
+                                        <tr style="font-size:14px;">
+                                            <th style="border: 1px solid gray;">COUTA</th>
+                                            <th style="border: 1px solid gray;">FECHA</th>
+                                            <th style="border: 1px solid gray;">DEPOSITO</th>
+                                            <th style="border: 1px solid gray; width:85px; padding:5px;">CAPITAL DE INICIO</th>
+                                            <th style="border: 1px solid gray;">INSCRIPCION</th>
+                                            <th style="border: 1px solid gray; width:80px;">TASA DE REGUL.</th>
+                                            <th style="border: 1px solid gray; width:110px">CERT. APORT. VOLUNTARIO</th>
+                                            <th style="border: 1px solid gray; width:80px;">TOTAL MENSUAL</th>
+                                            <th style="border: 1px solid gray; width:50px;">TOTAL APORTES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.payroll_payments_ids" t-as="p">
+                                            <t t-set="line_number" t-value="line_number + 1"/>
+                                            <tr style="text-align:center; border: 1px solid gray; padding: 5px; font-size:12px;">
+                                                <td style="border: 1px solid gray;">
+                                                    <t t-esc="line_number"/>
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+                                                    <span t-field="p.period_register"></span>
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+                                                    <span t-field="p.income"/>
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+                                                    <span t-field="p.miscellaneous_income"/>
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+                                                    <span t-field="p.regulation_cup"/>
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+                                                    <span t-field="p.mandatory_contribution_certificate"/>
+                                                </td>
+                                                <td style="border: 1px solid gray;">
+                                                    <span t-field="p.voluntary_contribution_certificate"/>
+                                                </td>
+                                                <td style="border: 1px solid gray; font-size:12px;">
+                                                    <span t-field="p.state"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </xpath>
+                        <div class="footer">
+                            <table style="width: 100%;">
+                                <col width="50"/>
+                                <col width="50"/>
+                                <tr>
+                                    <td class="text-left" style="vertical-align: bottom;">
+                                        www.t-s.bo
+                                    </td>
+                                    <td class="text-right" style="vertical-align: bottom;">
+                                        <div>
+                                            Page
+                                            <span class="page"/>
+                                            /
+                                            <span class="topage"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+
+        </template>
+    </data>
+</odoo>

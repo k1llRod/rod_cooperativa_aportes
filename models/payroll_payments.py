@@ -11,23 +11,31 @@ class PayrollPayments(models.Model):
     _description = 'Pagos individuales de planilla'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Nombre')
+    name = fields.Char(string='ID aporte')
     partner_payroll_id = fields.Many2one('partner.payroll', string='Planilla de socio')
-    partner_name = fields.Char(String='Nombre del socio', related='partner_payroll_id.partner_id.name')
-    income = fields.Float(string='Ingresos', required=True, tracking=True)
-    mandatory_contribution_certificate = fields.Float(string='Cert. Apor.', default=0.0)
-    voluntary_contribution_certificate = fields.Float(string='Total mensual',
+    partner_name = fields.Char(String='Nombre del socio', compute='_get_partner_name', store=True)
+    partner_code_contact = fields.Char(string='Codigo de socio', compute="_get_partner_name", store=True)
+    income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
+    mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)
+    voluntary_contribution_certificate = fields.Float(string='CERT. APOR. VOL.',
                                                       compute="compute_voluntary_contribution_certificate", store=True)
-    regulation_cup = fields.Float(string='Tasa Regulación')
-    miscellaneous_income = fields.Float(string='Inscripcion', default=lambda self: float(
+    regulation_cup = fields.Float(string='TASA REGULACION')
+    miscellaneous_income = fields.Float(string='INSCRIPCION', default=lambda self: float(
         self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income')))
     payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
-        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa')], default='draft', tracking=True)
+        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa')],
+        default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
     drawback = fields.Boolean(string='Reintegro')
+
+    @api.depends('partner_payroll_id')
+    def _get_partner_name(self):
+        for record in self:
+            record.partner_name = record.partner_payroll_id.partner_id.name
+            record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
 
     @api.depends('payment_date')
     def compute_period_register(self):
@@ -65,11 +73,13 @@ class PayrollPayments(models.Model):
     def confirm_payroll(self):
         for record in self:
             if record.state == 'draft':
+                if record.partner_payroll_id.date_burn_partner == False:
+                    record.partner_payroll_id.date_burn_partner = record.payment_date
                 if record.income < 0:
                     raise ValidationError('El ingreso no puede ser menor o igual a cero')
                 verify = record.partner_payroll_id.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and (
-                                x.period_register == record.period_register))
+                            x.period_register == record.period_register))
                 if len(verify) > 0 and record.drawback == False:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
                 record.state = 'transfer'
@@ -83,15 +93,16 @@ class PayrollPayments(models.Model):
 
     @api.onchange('income', 'payment_date')
     def onchange_income(self):
-        verify = len(self.partner_payroll_id.payroll_payments_ids.filtered(lambda x:x.miscellaneous_income == 10))
-        if verify >= 1:
-            self.miscellaneous_income = 0
-        else:
+        verify_miscellaneous_income = self.partner_payroll_id.miscellaneous_income
+        if verify_miscellaneous_income > 0:
             self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
                 'rod_cooperativa_aportes.miscellaneous_income')
-
-        verify_certify = len(self.partner_payroll_id.payroll_payments_ids.search(
-            [('mandatory_contribution_certificate', '>', '0'), ('state', '!=', 'draft')]))
+        else:
+            self.miscellaneous_income = 0
+        # verify_certify = len(self.partner_payroll_id.payroll_payments_ids.search(
+        #     [('mandatory_contribution_certificate', '>', '0'), ('state', '!=', 'draft')]))
+        verify_certify = len(self.partner_payroll_id.payroll_payments_ids.filtered(
+            lambda x: x.mandatory_contribution_certificate > 0 and x.state != 'draft'))
         if verify_certify == 0:
             self.mandatory_contribution_certificate = 100
             return
@@ -122,6 +133,7 @@ class PayrollPayments(models.Model):
                 if len(verify) > 0:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
                 record.state = 'ministry_defense'
+
     # def write(self, vals):
     #     a = 1
     #     res = super(PayrollPayments, self).write(vals)
@@ -138,6 +150,7 @@ class PayrollPayments(models.Model):
         if certificate:
             report = self.env.ref('certificate.report_certificate')
             return report.report_action(certificate)
+
     # def drawback(self):
     #     for record in self:
     #         if record.state == 'draft':
@@ -150,16 +163,15 @@ class PayrollPayments(models.Model):
     #             else:
     #                 raise ValidationError('El reintegro no tiene un periodo para completar el pago')
 
-
     def _payments_reports(self):
-        view_id = self.env.ref('rod_cooperativa_aportes.payroll_payments_reports_tree_id').id
+        view_id = self.env.ref('rod_cooperativa_aportes.payroll_payments_tree_id').id
+        search_id = self.env.ref('rod_cooperativa_aportes.view_payroll_payments_filter').id
         return {
             'name': 'Detalle de aportes',
             'res_model': 'payroll.payments',
             'type': 'ir.actions.act_window',
             'view_id': view_id,
             'view_mode': 'tree',
+            'search_view_id': search_id,
             'domain': [],
         }
-
-

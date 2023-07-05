@@ -12,7 +12,7 @@
                         <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
                                 class="oe_highlight"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                />
+                        />
                     </header>
                     <field name="name"/>
                     <field name="partner_id"/>
@@ -44,24 +44,25 @@
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','!=','passive_reserve_a')]}"/>
-<!--                        <button name="wizard_pay_contribution" string="Registrar pago" type="object"-->
-<!--                                class="oe_close_button"-->
-<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
-<!--                                attrs="{'invisible': [('state', '!=', 'process'),('partner_status_especific','!=','passive_reserve_a')]}" />-->
+                        <!--                        <button name="wizard_pay_contribution" string="Registrar pago" type="object"-->
+                        <!--                                class="oe_close_button"-->
+                        <!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
+                        <!--                                attrs="{'invisible': [('state', '!=', 'process'),('partner_status_especific','!=','passive_reserve_a')]}" />-->
                         <button name="print_report_total" string="Imprimir planilla total" type="object"
-                                class="oe_highlight" />
-                         <button name="return_draft" string="Borrador" type="object"
+                                class="oe_highlight"/>
+                        <button name="return_draft" string="Borrador" type="object"
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                attrs="{'invisible': [('state', '!=', 'process')]}" />
+                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
                         <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
                                 class="oe_highlight"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                />
+                        />
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
-                        <div class="alert alert-warning text-center o_form_header" role="alert" attrs="{'invisible': [('outstanding_payments','=',0)]}">
+                        <div class="alert alert-warning text-center o_form_header" role="alert"
+                             attrs="{'invisible': [('outstanding_payments','=',0)]}">
                             <a class="close" data-dismiss="alert" href="#">x</a>
                             <div>
                                 <strong>Planilla de aportes</strong>
@@ -83,27 +84,47 @@
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
                                 <field name="contribution_total"/>
-<!--                                <field name="capital_base" readonly="1"/>-->
-<!--                                <field name="capital_total"/>-->
-<!--                                <field name="interest_total"/>-->
-<!--                                <field name="total_contribution"/>-->
+                                <!--                                <field name="capital_base" readonly="1"/>-->
+                                <!--                                <field name="capital_total"/>-->
+                                <!--                                <field name="interest_total"/>-->
+                                <!--                                <field name="total_contribution"/>-->
                             </group>
                             <group>
                                 <field name="date_burn_partner"/>
                                 <field name="date_registration" readonly="1"/>
                                 <field name="advanced_payments"/>
                                 <field name="miscellaneous_income" string="Costo afiliación pendiente" readonly="1"/>
-                                <field name="count_pay_contributions" />
+                                <field name="count_pay_contributions"/>
                                 <field name="updated_partner"/>
                             </group>
                         </group>
-                         <notebook>
+                        <notebook>
                             <page string="Depositos">
-                                <field name="payroll_payments_ids" clickable="True" editable="top"/>
+                                <field name="payroll_payments_ids" editable="top">
+                                    <tree editable="top">
+                                        <field name="name" readonly="1"/>
+                                        <field name="period_register"/>
+                                        <field name="income"/>
+                                        <field name="miscellaneous_income"/>
+                                        <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               optional="hide"/>
+                                        <field name="mandatory_contribution_certificate"
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                                        <field name="voluntary_contribution_certificate"
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                                        <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               optional="show"/>
+                                        <field name="state" decoration-info="state == 'draft'"
+                                               decoration-success="state == 'progress'"
+                                               widget="badge"/>
+                                        <button name="open_one2many_line" type="object" class="oe_highlight"
+                                                icon="fa-eye"/>
+                                    </tree>
+                                </field>
                             </page>
-                             <page string="Interes">
-                                 <field name="performance_management_ids" clickable="True" editable="top"/>
-                             </page>
+                            <page string="Interes">
+                                <field name="performance_management_ids" editable="top"/>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

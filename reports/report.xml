@@ -13,13 +13,24 @@
         <!-- Otros campos del formato de papel según tus necesidades -->
     </record>
     <record id="action_report_pdf_payroll_payment" model="ir.actions.report">
-        <field name="name">Payroll payment</field>
+        <field name="name">Certificado voluntario</field>
         <field name="model">payroll.payments</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">rod_cooperativa_aportes.report_payroll_payment</field>
         <field name="report_file">rod_cooperativa_aportes.report.report_payroll_payment</field>
         <field name="binding_model_id" ref="model_payroll_payments"/>
         <field name="paperformat_id" ref="rod_cooperativa_aportes.paperformat_certificate" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_pdf_partner_payroll" model="ir.actions.report">
+        <field name="name">Planilla de aportes</field>
+        <field name="model">partner.payroll</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">rod_cooperativa_aportes.report_partner_payroll</field>
+        <field name="report_file">rod_cooperativa_aportes.report.report_partner_payroll</field>
+        <field name="binding_model_id" ref="model_partner_payroll"/>
+<!--        <field name="paperformat_id" ref="rod_cooperativa_aportes.paperformat_certificate" />-->
         <field name="binding_type">report</field>
     </record>
 

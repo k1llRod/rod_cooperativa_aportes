@@ -10,7 +10,7 @@
                     <field name="name" readonly="1"/>
                     <field name="partner_payroll_id" invisible="1"/>
                     <field name="period_register" />
-                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                     <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
@@ -107,26 +107,28 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <record model="ir.ui.view" id="payroll_payments_reports_tree_id">
-            <field name="name">payroll.payments.reports.tree</field>
-            <field name="model">payroll.payments</field>
-            <field name="arch" type="xml">
-                <tree editable="bottom">
-                    <field name="name" readonly="1"/>
-                    <field name="partner_payroll_id" optional="show"/>
-                    <field name="partner_name" string="Socio" optional="hide"/>
-                    <field name="period_register" />
-                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
-                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
-                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
-                    <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
-                    <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
-                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
-                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
-                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
-                </tree>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="payroll_payments_reports_tree_id">-->
+<!--            <field name="name">payroll.payments.reports.tree</field>-->
+<!--            <field name="model">payroll.payments</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <tree editable="bottom">-->
+<!--                    <field name="name" readonly="1"/>-->
+<!--                    <field name="partner_payroll_id" optional="show"/>-->
+<!--                    <field name="partner_name" string="Socio" optional="hide"/>-->
+<!--                    <field name="period_register" />-->
+<!--                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
+<!--                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>-->
+<!--                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>-->
+<!--                    <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
+<!--                    <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
+<!--                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>-->
+<!--                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>-->
+<!--                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>-->
+<!--                </tree>-->
+<!--            </field>-->
+<!--        </record>-->
+
+
         <!-- Vista de la tabla de aportes -->
         <record model="ir.actions.server" id="rod_cooperativa_aportes.action_payments_reports">
             <field name="name">Reporte de pagos</field>
@@ -135,6 +137,64 @@
             <field name="state">code</field>
             <field name="code">
                 action = model._payments_reports()
+            </field>
+        </record>
+        <record id="view_payroll_payments_tree_inherit" model="ir.ui.view">
+            <field name="name">payroll.payments.tree.inherit</field>
+            <field name="model">payroll.payments</field>
+            <field name="inherit_id" ref="rod_cooperativa_aportes.payroll_payments_tree_id"/> <!-- Referencia a la vista original -->
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="replace">
+                    <tree>
+                        <field name="name" readonly="1" optional="show"/>
+                        <field name="partner_payroll_id" optional="hide"/>
+                        <field name="partner_name" string="Socio" optional="show"/>
+                        <field name="partner_code_contact" string="Codigo socio"/>
+                        <field name="period_register"/>
+                        <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                               optional="hide"/>
+                        <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
+                        <field name="mandatory_contribution_certificate"
+                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="voluntary_contribution_certificate"
+                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
+                        <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
+                               widget="badge"/>
+                        <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
+                    </tree>
+                    <search string="Buscar">
+                        <filter name="search_name" string="Buscar por nombre" domain="[('partner_name','=','')]"/>
+                    </search>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="view_payroll_payments_filter" model="ir.ui.view">
+            <field name="name">payroll.payments.select</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <search string="Search payroll">
+                    <field name="name"
+                        filter_domain="['|', ('display_name', 'ilike', self)]"/>
+                    <field name="partner_code_contact"/>
+<!--                    <field name="email" filter_domain="[('email', 'ilike', self)]"/>-->
+<!--                    <field name="phone" filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>-->
+<!--                    <field name="category_id" string="Tag" filter_domain="[('category_id', 'child_of', self)]"/>-->
+<!--                    <field name="user_id"/>-->
+<!--                    <separator/>-->
+<!--                    <filter string="Individuals" name="type_person" domain="[('is_company', '=', False)]"/>-->
+<!--                    <filter string="Companies" name="type_company" domain="[('is_company', '=', True)]"/>-->
+<!--                    <separator/>-->
+<!--                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>-->
+<!--                    <separator/>-->
+<!--                    <group expand="0" name="group_by" string="Group By">-->
+<!--                        <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}" />-->
+<!--                        <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>-->
+<!--                        <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>-->
+<!--                    </group>-->
+                </search>
             </field>
         </record>
 

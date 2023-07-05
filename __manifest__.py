@@ -43,6 +43,7 @@
         'wizard/set_interest.xml',
         'data/month_data.xml',
         'reports/payroll_payment_pdf.xml',
+        'reports/partner_payroll_pdf.xml',
         'reports/report.xml',
 
     ],

@@ -98,7 +98,7 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.partner_status = record.partner_id.status
 
-    @api.depends('payroll_payments_ids')
+    # @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
         miscellaneous_income = float(
             self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income'))
@@ -134,7 +134,11 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_count_pay_contributions(self):
         for record in self:
+            miscellaneous_income = float(
+                self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income'))
             record.count_pay_contributions = int(len(record.payroll_payments_ids.filtered(lambda x:x.state == 'ministry_defense')))
+            verify_miscellaneous_income = record.payroll_payments_ids.filtered(lambda x:x.miscellaneous_income == 10 and x.state != 'draft').miscellaneous_income if record.payroll_payments_ids else 0
+            record.miscellaneous_income = miscellaneous_income - verify_miscellaneous_income
             # if int(len(record.payroll_payments_ids)) > 0:
             #     # record.advance_regulation_cup = record.payroll_payments_ids.search([]).mapped('regulation_cup')
             #     record.advance_regulation_cup = float(self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
@@ -185,11 +189,6 @@ class PartnerPayroll(models.Model):
         for record in self:
             make_register = record.calculate_month_difference()
             record.outstanding_payments = make_register - int(len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.drawback == False)))
-
-
-    def _create(self, data_list):
-        a = 1
-        return super(PartnerPayroll, self)._create(data_list)
 
     def calculate_month_difference(self):
         for record in self:
