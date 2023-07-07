@@ -48,8 +48,8 @@
                         <!--                                class="oe_close_button"-->
                         <!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
                         <!--                                attrs="{'invisible': [('state', '!=', 'process'),('partner_status_especific','!=','passive_reserve_a')]}" />-->
-                        <button name="print_report_total" string="Imprimir planilla total" type="object"
-                                class="oe_highlight"/>
+<!--                        <button name="print_report_total" string="Imprimir planilla total" type="object"-->
+<!--                                class="oe_highlight"/>-->
                         <button name="return_draft" string="Borrador" type="object"
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"

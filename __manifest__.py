@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','contacts','mail', 'rod_cooperativa','web_notify','web_responsive'],
+    'depends': ['base','contacts','mail', 'rod_cooperativa','web_notify','web_responsive','web'],
 
     # always loaded
     'data': [
@@ -42,9 +42,10 @@
         'wizard/alert_message.xml',
         'wizard/set_interest.xml',
         'data/month_data.xml',
+        'reports/report.xml',
         'reports/payroll_payment_pdf.xml',
         'reports/partner_payroll_pdf.xml',
-        'reports/report.xml',
+
 
     ],
 }

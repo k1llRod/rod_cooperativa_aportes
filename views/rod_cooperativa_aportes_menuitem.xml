@@ -17,6 +17,16 @@
                 name="Archivador"
                 parent="rod_cooperativa_aportes.menu_root"
                 sequence="2"
+                />
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_load_massive"
+                name="Carga masiva de depositos"
+                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_archivador"
+                sequence="1"
+                action="rod_cooperativa_aportes.action_nominal_relationship_mindef_contributions"/>
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_historical_interest"
+                name="Rendimiento"
+                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_archivador"
+                sequence="2"
                 action="rod_cooperativa_aportes.action_nominal_relationship_mindef_contributions"/>
 
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"

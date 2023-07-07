@@ -26,7 +26,7 @@
     <record id="action_report_pdf_partner_payroll" model="ir.actions.report">
         <field name="name">Planilla de aportes</field>
         <field name="model">partner.payroll</field>
-        <field name="report_type">qweb-html</field>
+        <field name="report_type">qweb-pdf</field>
         <field name="report_name">rod_cooperativa_aportes.report_partner_payroll</field>
         <field name="report_file">rod_cooperativa_aportes.report.report_partner_payroll</field>
         <field name="binding_model_id" ref="model_partner_payroll"/>
