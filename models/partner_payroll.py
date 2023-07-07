@@ -37,7 +37,7 @@ class PartnerPayroll(models.Model):
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute="compute_miscellaneous_income", store=True)
     total = fields.Float(string='Total', store=True)
-    count_pay_contributions = fields.Integer(string='Cantidad de pagos', compute="compute_count_pay_contributions")
+    count_pay_contributions = fields.Integer(string='Cantidad de pagos realizados', compute="compute_count_pay_contributions")
     advance_regulation_cup = fields.Integer(string='Taza de regulación adelantado',
                                             compute="compute_count_pay_contributions")
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
@@ -134,14 +134,7 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_count_pay_contributions(self):
         for record in self:
-            miscellaneous_income = float(
-                self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income'))
-            record.count_pay_contributions = int(len(record.payroll_payments_ids.filtered(lambda x:x.state == 'ministry_defense')))
-            verify_miscellaneous_income = record.payroll_payments_ids.filtered(lambda x:x.miscellaneous_income == 10 and x.state != 'draft').miscellaneous_income if record.payroll_payments_ids else 0
-            record.miscellaneous_income = miscellaneous_income - verify_miscellaneous_income
-            # if int(len(record.payroll_payments_ids)) > 0:
-            #     # record.advance_regulation_cup = record.payroll_payments_ids.search([]).mapped('regulation_cup')
-            #     record.advance_regulation_cup = float(self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
+            record.count_pay_contributions = len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft'))
 
     def return_draft(self):
         if self.state == 'process' and self.count_pay_contributions == 0:
@@ -224,20 +217,31 @@ class PartnerPayroll(models.Model):
 
     def init_partner_payroll_interest(self):
         # wizard = self.env['set.interes'].create({'partner_payroll_id': self.id})
-        context = {
-            'default_partner_payroll_id': self.id,
-        }
+        for record in self:
+            context = {
+                'default_partner_payroll_id': record.id,
+            }
+            return {
+                'name': 'Establecer interes de aportes',
+                'type': 'ir.actions.act_window',
+                'res_model': 'set.interes',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'context': context,
+                'target': 'new',
+            }
+
+    def assign_performance(self):
+        performance_index_log = self.env['performance_index.log'].search([('state','=','validate')])
         return {
             'name': 'Establecer interes de aportes',
             'type': 'ir.actions.act_window',
-            'res_model': 'set.interes',
+            'res_model': 'set.management',
             'view_mode': 'form',
             'view_type': 'form',
-            'context': context,
+            # 'context': context,
             'target': 'new',
         }
-
-
 
 
 

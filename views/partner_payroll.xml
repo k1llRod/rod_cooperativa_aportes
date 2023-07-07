@@ -9,7 +9,7 @@
                 <tree create="0">
                     <header>
                         <button name="import_payroll" string="Conciliar" class="oe_highlight" type="object"/>
-                        <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
+                        <button name="assign_performance" string="Asignar rendimiento" type="object"
                                 class="oe_highlight"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                         />

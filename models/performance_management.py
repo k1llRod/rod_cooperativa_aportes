@@ -7,7 +7,7 @@ class PerformanceManagement(models.Model):
     _description = 'Gestión de rendimientos de aportes'
     # _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Gestion')
+    name = fields.Char(string='Gestion', compute='compute_management', store=True)
     index = fields.Float(string='Índice', digits=(16,4))
     management_date = fields.Date(string='Fecha de registro')
     management = fields.Char(string='Gestión')
@@ -15,9 +15,10 @@ class PerformanceManagement(models.Model):
     yield_amount = fields.Float(string='Monto de rendimiento')
     partner_payroll_id = fields.Many2one('partner.payroll', string='Rendimientos')
 
-    def create(self, data_list):
-        a = 1
-        res = super(PerformanceManagement, self).create(data_list)
-        return res
-
-
+    @api.depends('management_date')
+    def compute_management(self):
+        for record in self:
+            if record.management_date != False:
+                record.name = record.management_date.strftime('%Y')
+            else:
+                record.name = 'Sin fecha'

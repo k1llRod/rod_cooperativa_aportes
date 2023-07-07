@@ -7,3 +7,4 @@ from . import res_partner
 from . import nominal_relationship_mindef_contributions
 from . import month
 from . import performance_management
+from . import performance_index_log

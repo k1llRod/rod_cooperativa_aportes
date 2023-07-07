@@ -27,7 +27,7 @@
                 name="Rendimiento"
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_archivador"
                 sequence="2"
-                action="rod_cooperativa_aportes.action_nominal_relationship_mindef_contributions"/>
+                action="rod_cooperativa_aportes.action_performance_index_log"/>
 
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
                 name="Reportes"
