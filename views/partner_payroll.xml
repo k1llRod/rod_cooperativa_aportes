@@ -14,7 +14,7 @@
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                         />
                     </header>
-                    <field name="name"/>
+                    <field name="name" optional="hide"/>
                     <field name="partner_id"/>
                     <field name="partner_status"/>
                     <field name="partner_status_especific" optional="hide"/>
@@ -84,30 +84,26 @@
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
                                 <field name="contribution_total"/>
-                                <!--                                <field name="capital_base" readonly="1"/>-->
-                                <!--                                <field name="capital_total"/>-->
-                                <!--                                <field name="interest_total"/>-->
-                                <!--                                <field name="total_contribution"/>-->
                             </group>
                             <group>
                                 <field name="date_burn_partner"/>
                                 <field name="date_registration" readonly="1"/>
                                 <field name="advanced_payments"/>
-                                <field name="miscellaneous_income" string="Costo afiliación pendiente" readonly="1"/>
+                                <field name="miscellaneous_income" string="Costo afiliación pendiente"/>
                                 <field name="count_pay_contributions"/>
                                 <field name="updated_partner"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Depositos">
-                                <field name="payroll_payments_ids" editable="top">
+                                <field name="payroll_payments_ids">
                                     <tree editable="top">
-                                        <field name="name" readonly="1"/>
+                                        <field name="name" readonly="1" optional="hide"/>
                                         <field name="period_register"/>
-                                        <field name="income"/>
+                                        <field name="income" sum="Total"/>
                                         <field name="miscellaneous_income"/>
                                         <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"
-                                               optional="hide"/>
+                                               optional="hide" sum="Total"/>
                                         <field name="mandatory_contribution_certificate"
                                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                                         <field name="voluntary_contribution_certificate"

@@ -7,7 +7,7 @@
             <field name="model">payroll.payments</field>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="name" readonly="1"/>
+                    <field name="name" readonly="1" optional="hide"/>
                     <field name="partner_payroll_id" invisible="1"/>
                     <field name="period_register" />
                     <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
@@ -73,7 +73,7 @@
                                 <field name="partner_payroll_id" invisible="1"/>
                                 <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="miscellaneous_income" readonly="1"/>
-                                <field name="regulation_cup" readonly="1"/>
+                                <field name="regulation_cup" />
                                 <field name="mandatory_contribution_certificate" />
                                 <field name="voluntary_contribution_certificate"/>
                                 <field name="payment_date"/>
@@ -81,8 +81,8 @@
                             </group>
                             <group>
                                 <field name="drawback" attrs="{'readonly': [('state','!=','draft')] }"/>
-                                <field name="capital"/>
-                                <field name="interest"/>
+                                <field name="capital" invisible="1"/>
+                                <field name="interest" invisible="1"/>
                             </group>
                         </group>
                     </sheet>

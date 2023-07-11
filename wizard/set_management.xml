@@ -18,7 +18,7 @@
                             </group>
                         </group>
                         <footer>
-                            <button name="action_asignement_management" string="Registrar" type="object" class="oe_highlight"/>
+                            <button name="action_asignement_management" string="Procesar" type="object" class="oe_highlight"/>
                             <button string="Cancel" class="oe_link" special="cancel"/>
                         </footer>
                     </sheet>

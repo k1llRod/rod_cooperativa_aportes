@@ -20,8 +20,7 @@ class PayrollPayments(models.Model):
     voluntary_contribution_certificate = fields.Float(string='CERT. APOR. VOL.',
                                                       compute="compute_voluntary_contribution_certificate", store=True)
     regulation_cup = fields.Float(string='TASA REGULACION')
-    miscellaneous_income = fields.Float(string='INSCRIPCION', default=lambda self: float(
-        self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income')))
+    miscellaneous_income = fields.Float(string='INSCRIPCION')
     payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
@@ -73,16 +72,18 @@ class PayrollPayments(models.Model):
     def confirm_payroll(self):
         for record in self:
             if record.state == 'draft':
-                if record.partner_payroll_id.date_burn_partner == False:
-                    record.partner_payroll_id.date_burn_partner = record.payment_date
                 if record.income < 0:
                     raise ValidationError('El ingreso no puede ser menor o igual a cero')
+                if record.partner_payroll_id.date_burn_partner == False:
+                    record.partner_payroll_id.date_burn_partner = record.payment_date
+                    record.partner_payroll_id.state = 'process'
                 verify = record.partner_payroll_id.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and (
                             x.period_register == record.period_register))
                 if len(verify) > 0 and record.drawback == False:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
-                record.state = 'transfer'
+                record.write({'state':'transfer'})
+                record.partner_payroll_id.compute_count_pay_contributions()
 
     def return_draft(self):
         self.state = 'draft'
@@ -94,13 +95,11 @@ class PayrollPayments(models.Model):
     @api.onchange('income', 'payment_date')
     def onchange_income(self):
         verify_miscellaneous_income = self.partner_payroll_id.miscellaneous_income
-        if verify_miscellaneous_income > 0:
+        if verify_miscellaneous_income == 0:
+            self.miscellaneous_income = 0
+        else:
             self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
                 'rod_cooperativa_aportes.miscellaneous_income')
-        else:
-            self.miscellaneous_income = 0
-        # verify_certify = len(self.partner_payroll_id.payroll_payments_ids.search(
-        #     [('mandatory_contribution_certificate', '>', '0'), ('state', '!=', 'draft')]))
         verify_certify = len(self.partner_payroll_id.payroll_payments_ids.filtered(
             lambda x: x.mandatory_contribution_certificate > 0 and x.state != 'draft'))
         if verify_certify == 0:
@@ -128,11 +127,15 @@ class PayrollPayments(models.Model):
             if record.state == 'draft':
                 if record.income < 0:
                     raise ValidationError('El ingreso no puede ser menor o igual a cero')
+                if record.partner_payroll_id.date_burn_partner == False:
+                    record.partner_payroll_id.date_burn_partner = record.payment_date
+                    record.partner_payroll_id.state = 'process'
                 verify = record.partner_payroll_id.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'ministry_defense' and x.period_register == record.period_register))
                 if len(verify) > 0:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
-                record.state = 'ministry_defense'
+                record.write({'state':'ministry_defense'})
+                record.partner_payroll_id.compute_count_pay_contributions()
 
     # def write(self, vals):
     #     a = 1
