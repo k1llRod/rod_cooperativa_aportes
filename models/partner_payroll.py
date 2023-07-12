@@ -49,7 +49,7 @@ class PartnerPayroll(models.Model):
                                                             compute='compute_count_pay_contributions', store=True)
     mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
                                                             compute='compute_count_pay_contributions', store=True)
-    contribution_total = fields.Float(string='Aporte total', compute='compute_contribution_total', store=True)
+    contribution_total = fields.Float(string='Aporte total',  store=True)
     performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
 
     @api.depends('payroll_payments_ids')
@@ -185,8 +185,8 @@ class PartnerPayroll(models.Model):
             else:
                 make_register = 0
             # make_register = record.calculate_month_difference()
-            record.outstanding_payments = abs(make_register - int(
-                len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.drawback == False))))
+            record.outstanding_payments = make_register - int(
+                len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.drawback == False)))
 
     def calculate_month_difference(self):
         for record in self:

@@ -15,11 +15,13 @@ class PayrollPayments(models.Model):
     partner_payroll_id = fields.Many2one('partner.payroll', string='Planilla de socio')
     partner_name = fields.Char(String='Nombre del socio', compute='_get_partner_name', store=True)
     partner_code_contact = fields.Char(string='Codigo de socio', compute="_get_partner_name", store=True)
+    partner_status_especific = fields.Char(string='Situación de socio', compute="_get_partner_name", store=True)
     income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
     mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)
     voluntary_contribution_certificate = fields.Float(string='CERT. APOR. VOL.',
                                                       compute="compute_voluntary_contribution_certificate", store=True)
     regulation_cup = fields.Float(string='TASA REGULACION')
+    payment_post_mortem = fields.Float(string='PAGO POST MORTEM')
     miscellaneous_income = fields.Float(string='INSCRIPCION')
     payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
@@ -35,7 +37,7 @@ class PayrollPayments(models.Model):
         for record in self:
             record.partner_name = record.partner_payroll_id.partner_id.name
             record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
-
+            record.partner_status_especific = record.partner_payroll_id.partner_status_especific
     @api.depends('payment_date')
     def compute_period_register(self):
         for record in self:

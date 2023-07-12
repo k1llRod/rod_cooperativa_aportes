@@ -67,8 +67,11 @@
                             <div>
                                 <strong>Planilla de aportes</strong>
                             </div>
-                            <div>Pagos pendientes
+                            <div attrs="{'invisible': [('outstanding_payments','&lt;','0')]}">Pagos pendientes
                                 <field name="outstanding_payments" required="0" readonly="1"/>
+                            </div>
+                            <div attrs="{'invisible': [('outstanding_payments','>','0')]}">Pagos adelantados
+                                <field name="outstanding_payments" required="0" readonly="1" />
                             </div>
                         </div>
                         <div class="oe_title">
@@ -83,12 +86,12 @@
                                 <field name="partner_status_especific" readonly="1"/>
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
-                                <field name="contribution_total"/>
+                                <field name="contribution_total" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             </group>
                             <group>
-                                <field name="date_burn_partner"/>
+                                <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="date_registration" readonly="1"/>
-                                <field name="advanced_payments"/>
+                                <field name="advanced_payments" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="miscellaneous_income" string="Costo afiliación pendiente"/>
                                 <field name="count_pay_contributions"/>
                                 <field name="updated_partner"/>
@@ -99,15 +102,18 @@
                                 <field name="payroll_payments_ids">
                                     <tree editable="top">
                                         <field name="name" readonly="1" optional="hide"/>
+                                        <field name="partner_status_especific" invisible="1"/>
                                         <field name="period_register"/>
-                                        <field name="income" sum="Total"/>
-                                        <field name="miscellaneous_income"/>
+                                        <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                                        <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                         <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"
                                                optional="hide" sum="Total"/>
                                         <field name="mandatory_contribution_certificate"
                                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                                         <field name="voluntary_contribution_certificate"
                                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+<!--                                        <field name="payment_post_mortem" attrs="{'column_invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>-->
+                                        <field name="payment_post_mortem" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show" sum="Total"/>
                                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"
                                                optional="show"/>
                                         <field name="state" decoration-info="state == 'draft'"
