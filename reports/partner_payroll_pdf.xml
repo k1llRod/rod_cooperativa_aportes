@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="inh_external_layout_striped" inherit_id="web.external_layout_striped">
+            <xpath expr="//div[1]" position="replace">
+                <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style" >
+                    <div class="o_background_header">
+                        <table style="width:100%;font-size:14px;">
+                            <tr>
+                                <td style="width:500px;text-align:center;center;">COOPERATIVA DE
+                                    AHORRO Y CREDITO DE
+                                    VINCULO LABORAL
+                                </td>
+                                <td style="width:160px"></td>
+                                <td>Paginas: 1</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;center;">COA - 4 DE DICIEMBRE R.L.
+                                </td>
+                                <td></td>
+                                <td>Fecha: 04-07-2023</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">LA PAZ - BOLIVIA</td>
+                                <td></td>
+                                <td>Usuario: iarias</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div>
+                        <br/>
+                        <br/>
+                        <h3>
+                            <center>EXTRACTO DE APORTES</center>
+                        </h3>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//div[hasclass('text-center')]" position="replace">
+                <center>
+                    Page:
+                    <span class="page"/>
+                    /
+                    <span class="topage"/>
+                </center>
+            </xpath>
+        </template>
+        <template id="rod_cooperativa_aportes.report_partner_payroll">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="line_number" t-value="0"/>
+                    <t t-if="not o" t-set="o" t-value="doc"/>
+                    <t t-if="not company">
+                        <!-- Multicompany -->
+                        <t t-if="company_id">
+                            <t t-set="company" t-value="company_id"/>
+                        </t>
+                        <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                            <t t-set="company" t-value="o.company_id.sudo()"/>
+                        </t>
+                        <t t-else="else">
+                            <t t-set="company" t-value="res_company"/>
+                        </t>
+                    </t>
+                    <t t-call="web.external_layout_striped">
+                        <div class="page" t-att-style="'background-image: url(/rod_cooperativa_aportes/static/src/img/background_cooperativa.png);background-repeat:repeat-y; height:850px; background-position-x:center;'" >
+                            <div class="body">
+                                <table style="width:100%; font-family:Arial;">
+                                    <tr>
+                                        <td>
+                                            <strong>ASOCIADO:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="o.partner_id"/>
+                                        </td>
+                                        <td>
+                                            <strong>OF.SERV.PASIVO</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="o.partner_status_especific"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>CEDULA IDENTIDAD:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="o.partner_id.vat"/>
+                                        </td>
+                                        <td>
+                                            <strong>CELULAR:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="o.partner_id.mobile"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>AÑO DE EGRESO:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="o.partner_id.graduation_year"></span>
+                                        </td>
+                                        <td>
+                                            <strong>AÑO DE JUBILACION</strong>
+                                        </td>
+                                        <td>2022</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>FECHA DE VINCULACION:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="o.date_burn_partner"/>
+                                        </td>
+                                        <td>
+                                            <strong>FECHA DE NACIMIENTO:</strong>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table class="table text-center align-middle">
+                                    <thead>
+                                        <tr style="font-size:14px;" >
+                                            <th class="align-middle">CUOTA</th>
+                                            <th style="width:50px;" class="align-middle">FECHA</th>
+                                            <th class="align-middle">DEPOSITO</th>
+                                            <th style="width:85px; padding:5px;" class="align-middle">CAPITAL DE
+                                                INICIO
+                                            </th>
+                                            <th class="align-middle">INSCRIPCION</th>
+                                            <th style="width:80px;" class="align-middle">TASA DE REGUL.</th>
+                                            <th style="width:110px" class="align-middle">CERT. APORT.
+                                                VOLUNTARIO
+                                            </th>
+                                            <th style=" width:80px;" class="align-middle">TOTAL MENSUAL</th>
+                                            <th style=" width:50px;" class="align-middle">TOTAL APORTES</th>
+                                            <th style=" width:40px;" class="align-middle">TIPO PAGO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-set="acumulador" t-value="0"/>
+                                        <t t-foreach="o.payroll_payments_ids" t-as="p">
+                                            <t t-set="line_number" t-value="line_number + 1"/>
+                                            <tr>
+                                                <td class="align-middle">
+                                                    <t t-esc="line_number"/>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.period_register"></span>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.income"/>
+                                                </td>
+                                                <td class="align-middle">
+
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.miscellaneous_income"/>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.regulation_cup"/>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.mandatory_contribution_certificate"/>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.voluntary_contribution_certificate"/>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-esc="acumulador + p.voluntary_contribution_certificate"/>
+                                                    <t t-set="acumulador"
+                                                       t-value="acumulador + p.voluntary_contribution_certificate"/>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-field="p.state"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                    <tfoot style="border-top: 1px solid black">
+                                        <tr>
+                                            <td colspan="2">Total aportes:</td>
+<!--                                            <td></td>-->
+                                            <td>
+                                                <span t-esc="len(o.payroll_payments_ids)"/>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Total:</td>
+                                            <td>
+                                                <span t-esc="sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate'))"/>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Total Cert. Aport:</td>
+<!--                                            <td></td>-->
+                                            <td>
+                                                <span t-esc="len(o.payroll_payments_ids)"/>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

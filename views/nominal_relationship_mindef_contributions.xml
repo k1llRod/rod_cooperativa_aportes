@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo nominal relationship mindef contributions -->
+
+        <record model="ir.ui.view" id="nominal_relationship_mindef_contributions_tree_id">
+            <field name="name">nominal.relationship.mindef.contributions.tree</field>
+            <field name="model">nominal.relationship.mindef.contributions</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <header>
+                        <button name="homologate_data_mindef" string="Homologar" type="object" class="oe_highlight"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="organism"/>
+                    <field name="eit_item"/>
+                    <field name="ci"/>
+                    <field name="degree"/>
+                    <field name="mension"/>
+                    <field name="name_complete"/>
+                    <field name="amount_bs"/>
+                    <field name="amount_usd"/>
+                    <field name="date_register" optional="hide"/>
+                    <field name="date_process" optional="hide"/>
+                    <field name="period_process"/>
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario nominal.relationship.mindef.contributions  -->
+
+        <record model="ir.ui.view" id="nominal_relationship_mindef_contributions_form_id">
+            <field name="name">nominal.relationship.mindef.contributions.form</field>
+            <field name="model">nominal.relationship.mindef.contributions</field>
+            <field name="arch" type="xml">
+                <form string="Archivador" class="oe_left oe_edit_only oe_form_required">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="organism"/>
+                                <field name="eit_item"/>
+                                <field name="ci"/>
+                                <field name="degree"/>
+                                <field name="mension"/>
+                                <field name="name_complete"/>
+                                <field name="amount_bs"/>
+                                <field name="amount_usd"/>
+                                <field name="date_register"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar nominal.relationship.mindef.contributions -->
+
+        <record id="action_nominal_relationship_mindef_contributions" model="ir.actions.act_window">
+            <field name="name">Archivador</field>
+            <field name="res_model">nominal.relationship.mindef.contributions</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

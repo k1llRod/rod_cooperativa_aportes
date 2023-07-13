@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.module.category" id="module_rod_cooperativa_aportes">
+        <field name="name">Cooperativa Aportes</field>
+        <field name="description">Rol de usuarios para Cooperativa Aportes</field>
+        <field name="sequence">45</field>
+    </record>
+    <record id="group_rod_cooperativa_aportes_user" model="res.groups">
+        <field name="name">Usuario</field>
+        <field name="category_id" ref="module_rod_cooperativa_aportes"/>
+    </record>
+    <record id="group_rod_cooperativa_aportes_operator" model="res.groups">
+        <field name="name">Operador</field>
+        <field name="category_id" ref="module_rod_cooperativa_aportes"/>
+        <field name="implied_ids" eval="[(4, ref('rod_cooperativa_aportes.group_rod_cooperativa_aportes_user'))]"/>
+    </record>
+    <record id="group_rod_cooperativa_aportes_administrator" model="res.groups">
+        <field name="name">Administrador</field>
+        <field name="category_id" ref="module_rod_cooperativa_aportes"/>
+        <field name="implied_ids"
+               eval="[(4, ref('rod_cooperativa_aportes.group_rod_cooperativa_aportes_user')),(4, ref('rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator'))]"/>
+    </record>
+</odoo>

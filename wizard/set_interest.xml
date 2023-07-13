@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="wizard_set_interest_id" model="ir.ui.view">
+            <field name="name">set.interes.form</field>
+            <field name="model">set.interes</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_payroll_id" readonly="1"/>
+                                <field name="contributions_total"/>
+                                <field name="date_field_select"/>
+                                <field name="name"/>
+                                <field name="index"/>
+                                <field name="yield_amount"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="action_asignement_interest" string="Registrar" type="object" class="oe_highlight"/>
+                            <button string="Cancel" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
