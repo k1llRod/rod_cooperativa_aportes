@@ -180,6 +180,7 @@
             <field name="model">payroll.payments</field>
             <field name="arch" type="xml">
                 <search string="Search payroll">
+                    <field name="partner_name" string="Nombre del socio"/>
                     <field name="name"
                         filter_domain="['|', ('display_name', 'ilike', self)]"/>
                     <field name="partner_code_contact"/>
