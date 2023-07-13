@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_cooperativa_aportes" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.cooperativa.aportes</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="95"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Point of sale" string="Cooperativa de ahorro y credito de vinculo laboral" >
+                    <h2>Valores para tabla de aportes</h2>
+                    <div class="row mt16 o_settings_container" name="taxes_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box"
+                            id="default_sales_tax_setting"
+                            title="Valores para parametrizar aportes.">
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Taza de regulación" for="regulation_cup"/>
+                                    <div class="text-muted">
+                                        Establecer taza de regulación.
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="regulation_cup" colspan="4" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Certificado de aporte obligatorio" for="mandatory_contribution_certificate"/>
+                                    <div class="text-muted">
+                                        Establecer Certificado de aporte obligatorio.
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="mandatory_contribution_certificate" colspan="4" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Ingresos diversos" for="miscellaneous_income"/>
+                                    <div class="text-muted">
+                                        Establecer divesos ingresos.
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="miscellaneous_income" colspan="4" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Meses cobro de certificados" for="month_ids"/>
+                                    <div class="text-muted">
+
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="month_ids" widget="many2many_tags"/>
+<!--                                        <field name="month_ids" colspan="4" nolabel="1"/>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Capital base minimo" for="capital_minimum"/>
+                                    <div class="text-muted">
+
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="capital_minimum" colspan="4" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="rod_cooperativa_aportes.action_cooperativa_aportes_configuration" model="ir.actions.act_window">
+        <field name="name">Ajustes de la cooperativa aportes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+
+</odoo>

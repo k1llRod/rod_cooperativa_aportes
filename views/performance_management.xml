@@ -1,0 +1,60 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo performance.management -->
+
+        <record model="ir.ui.view" id="performance_management_tree_id">
+            <field name="name">performance.management.tree</field>
+            <field name="model">performance.management</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="management_date"/>
+                    <field name="index"/>
+                    <field name="contributions_total"/>
+                    <field name="yield_amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario performance.management  -->
+
+        <record model="ir.ui.view" id="performance_management_form_id">
+            <field name="name">performance.management.form</field>
+            <field name="model">performance.management</field>
+            <field name="arch" type="xml">
+                <form string="Registro de rendimiento">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Gestion"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="index"/>
+                                <field name="management_date"/>
+                                <field name="management" invisible="1"/>
+                                <field name="yield_amount"/>
+                            </group>
+
+                        </group>
+                    </sheet>
+<!--                        <div class="oe_chatter">-->
+<!--                            <field name="message_follower_ids" groups="base.group_user"/>-->
+<!--                            <field name="activity_ids"/>-->
+<!--                            <field name="message_ids"/>-->
+<!--                        </div>-->
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar performance.management -->
+
+        <record id="action_performance_management" model="ir.actions.act_window">
+            <field name="name">Rendimiento de aportes</field>
+            <field name="res_model">performance.management</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

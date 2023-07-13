@@ -1,0 +1,207 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo payroll payments -->
+
+        <record model="ir.ui.view" id="payroll_payments_tree_id">
+            <field name="name">payroll.payments.tree</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" readonly="1" optional="hide"/>
+                    <field name="partner_payroll_id" invisible="1"/>
+                    <field name="period_register" />
+                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="payment_post_mortem" />
+                    <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
+                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario payroll payments -->
+
+        <record model="ir.ui.view" id="payroll_payments_form_id">
+            <field name="name">payroll.payments.form</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
+                    <header>
+                        <button name="confirm_payroll" string="Por transferencia bancaria" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+                        <button name="ministry_defense" string="Ministerio de defensa" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+<!--                        <button name="drawback" string="Reintegro" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible': [('state', '!=', 'draft')]}"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>-->
+<!--                        <button name="generate_certificate_report" string="Imprimir certificado de pago" type="object"-->
+<!--                                class="oe_close_button"-->
+<!--                                />-->
+                        <button name="return_draft" string="Borrador" type="object"
+                                class="oe_close_button"
+                                />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+<!--                        <div class="oe_button_box" name="button_box">-->
+<!--                            <button name="button_value_dolar" class="oe_stat_button" type="object" icon="fa-usd">-->
+<!--                                <div class="o_field_widget o_stat_info">-->
+<!--                                    <span class="o_stat_value">-->
+<!--                                        <field string=" " name="value_dolar" widget="statinfo"/>-->
+<!--                                    </span>-->
+<!--                                    <span class="o_stat_text">-->
+<!--                                        Dolar-->
+<!--                                    </span>-->
+<!--                                </div>-->
+<!--                            </button>-->
+<!--                        </div>-->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_payroll_id" invisible="1"/>
+                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="miscellaneous_income" readonly="1"/>
+                                <field name="regulation_cup" />
+                                <field name="mandatory_contribution_certificate" />
+                                <field name="voluntary_contribution_certificate"/>
+                                <field name="payment_post_mortem" />
+                                <field name="payment_date"/>
+                                <field name="period_register"/>
+                            </group>
+                            <group>
+                                <field name="drawback" attrs="{'readonly': [('state','!=','draft')] }"/>
+                                <field name="capital" invisible="1"/>
+                                <field name="interest" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+
+                        <field name="message_follower_ids" groups="base.group_user"/>
+
+                        <field name="activity_ids"/>
+
+                        <field name="message_ids"/>
+
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar payroll payments -->
+
+        <record id="action_payroll_payments" model="ir.actions.act_window">
+            <field name="name">Aportes</field>
+            <field name="res_model">payroll.payments</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--        <record model="ir.ui.view" id="payroll_payments_reports_tree_id">-->
+<!--            <field name="name">payroll.payments.reports.tree</field>-->
+<!--            <field name="model">payroll.payments</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <tree editable="bottom">-->
+<!--                    <field name="name" readonly="1"/>-->
+<!--                    <field name="partner_payroll_id" optional="show"/>-->
+<!--                    <field name="partner_name" string="Socio" optional="hide"/>-->
+<!--                    <field name="period_register" />-->
+<!--                    <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
+<!--                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>-->
+<!--                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>-->
+<!--                    <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
+<!--                    <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
+<!--                    <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>-->
+<!--                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>-->
+<!--                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>-->
+<!--                </tree>-->
+<!--            </field>-->
+<!--        </record>-->
+
+
+        <!-- Vista de la tabla de aportes -->
+        <record model="ir.actions.server" id="rod_cooperativa_aportes.action_payments_reports">
+            <field name="name">Reporte de pagos</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_payroll_payments"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = model._payments_reports()
+            </field>
+        </record>
+        <record id="view_payroll_payments_tree_inherit" model="ir.ui.view">
+            <field name="name">payroll.payments.tree.inherit</field>
+            <field name="model">payroll.payments</field>
+            <field name="inherit_id" ref="rod_cooperativa_aportes.payroll_payments_tree_id"/> <!-- Referencia a la vista original -->
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="replace">
+                    <tree>
+                        <field name="name" readonly="1" optional="show"/>
+                        <field name="partner_status_especific" invisible="1"/>
+                        <field name="partner_payroll_id" optional="hide"/>
+                        <field name="partner_name" string="Socio" optional="show"/>
+                        <field name="partner_code_contact" string="Codigo socio"/>
+                        <field name="period_register"/>
+                        <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                               optional="hide"/>
+                        <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
+                        <field name="mandatory_contribution_certificate"
+                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="payment_post_mortem" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="voluntary_contribution_certificate"
+                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
+                        <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
+                               widget="badge"/>
+                        <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
+                    </tree>
+                    <search string="Buscar">
+                        <filter name="search_name" string="Buscar por nombre" domain="[('partner_name','=','')]"/>
+                    </search>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="view_payroll_payments_filter" model="ir.ui.view">
+            <field name="name">payroll.payments.select</field>
+            <field name="model">payroll.payments</field>
+            <field name="arch" type="xml">
+                <search string="Search payroll">
+                    <field name="partner_name" string="Nombre del socio"/>
+                    <field name="name"
+                        filter_domain="['|', ('display_name', 'ilike', self)]"/>
+                    <field name="partner_code_contact"/>
+<!--                    <field name="email" filter_domain="[('email', 'ilike', self)]"/>-->
+<!--                    <field name="phone" filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>-->
+<!--                    <field name="category_id" string="Tag" filter_domain="[('category_id', 'child_of', self)]"/>-->
+<!--                    <field name="user_id"/>-->
+<!--                    <separator/>-->
+<!--                    <filter string="Individuals" name="type_person" domain="[('is_company', '=', False)]"/>-->
+<!--                    <filter string="Companies" name="type_company" domain="[('is_company', '=', True)]"/>-->
+<!--                    <separator/>-->
+<!--                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>-->
+<!--                    <separator/>-->
+<!--                    <group expand="0" name="group_by" string="Group By">-->
+<!--                        <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}" />-->
+<!--                        <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>-->
+<!--                        <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>-->
+<!--                    </group>-->
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

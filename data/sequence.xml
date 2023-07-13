@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_partner_payroll" model="ir.sequence">
+            <field name="name">Secuencia planilla socio</field>
+            <field name="code">partner.payroll</field>
+            <field name="prefix">COAAPOR</field>
+            <field name="padding">4</field>
+        </record>
+        <record id="seq_payroll_payments" model="ir.sequence">
+            <field name="name">Secuencia pagos de socio</field>
+            <field name="code">payroll.payments</field>
+            <field name="prefix">BOLCOAA</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

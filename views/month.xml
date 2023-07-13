@@ -1,0 +1,37 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="month_form_id" model="ir.ui.view">
+            <field name="name">month.form</field>
+            <field name="model">month</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <group>
+                        <field name="name"/>
+                        <field name="date_field"/>
+                        <field name="month" readonly="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="month_tree_id">
+            <field name="name">month.tree</field>
+            <field name="model">month</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="date_field"/>
+                    <field name="month"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_month" model="ir.actions.act_window">
+            <field name="name">Meses</field>
+            <field name="res_model">month</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

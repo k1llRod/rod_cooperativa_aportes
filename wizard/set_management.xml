@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="wizard_set_management_id" model="ir.ui.view">
+            <field name="name">set.management.form</field>
+            <field name="model">set.management</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="set_management_id"/>
+                                <field name="name" readonly="1"/>
+                                <field name="index"/>
+                                <field name="count_partner"/>
+                                <field name="count_partner_cat_b"/>
+                                <field name="date_field_select"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="action_asignement_management" string="Procesar" type="object" class="oe_highlight"/>
+                            <button string="Cancel" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="month" id="month_data_1">
+            <field name="date_field">2023-01-02</field>
+        </record>
+        <record model="month" id="month_data_2">
+            <field name="date_field">2023-02-02</field>
+        </record>
+<!--        <record model="month" id="month_data_3">-->
+<!--            <field name="date_field">2023-03-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_4">-->
+<!--            <field name="date_field">2023-04-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_5">-->
+<!--            <field name="date_field">2023-05-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_6">-->
+<!--            <field name="date_field">2023-06-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_7">-->
+<!--            <field name="date_field">2023-07-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_8">-->
+<!--            <field name="date_field">2023-08-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_9">-->
+<!--            <field name="date_field">2023-09-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_10">-->
+<!--            <field name="date_field">2023-10-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_11">-->
+<!--            <field name="date_field">2023-11-02</field>-->
+<!--        </record>-->
+<!--        <record model="month" id="month_data_12">-->
+<!--            <field name="date_field">2023-12-02</field>-->
+<!--        </record>-->
+    </data>
+</odoo>
