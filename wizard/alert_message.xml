@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="alert_message_form_view">
+            <field name="name">alert.message.form</field>
+            <field name="model">alert.message</field>
+            <field name="arch" type="xml">
+                <form string="Alert Wizard" >
+                    <sheet>
+                        <div>
+                            <field name="message" readonly="1"/>
+                        </div>
+                        <footer>
+                            <button string="Cerrar" class="btn-secondary" special="cancel"/>
+<!--                            <button string="Confirmar" class="btn-primary" name="confirm" type="object"/>-->
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="alert_message_action">
+            <field name="name">Alert message</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">alert.message</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="alert_message_form_view" />
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,158 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo partner payroll -->
+
+        <record model="ir.ui.view" id="partner_payroll_tree_id">
+            <field name="name">partner.payroll.tree</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <header>
+                        <button name="import_payroll" string="Conciliar" class="oe_highlight" type="object"/>
+                        <button name="assign_performance" string="Asignar rendimiento" type="object"
+                                class="oe_highlight"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                        />
+                    </header>
+                    <field name="name" optional="hide"/>
+                    <field name="partner_id"/>
+                    <field name="partner_status"/>
+                    <field name="partner_status_especific" optional="hide"/>
+                    <field name="date_registration"/>
+                    <field name="date_burn_partner" optional="hide"/>
+                    <field name="advanced_payments" optional="hide"/>
+                    <field name="count_pay_contributions" optional="hide"/>
+                    <field name="outstanding_payments"/>
+                    <field name="voluntary_contribution_certificate_total"/>
+                    <field name="mandatory_contribution_certificate_total"/>
+                    <field name="contribution_total"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
+                           widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario loan.application  -->
+
+        <record model="ir.ui.view" id="partner_payroll_form_id">
+            <field name="name">partner.payroll.form</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
+                    <header>
+                        <button name="init_payroll_partner_wizard" string="Establecer capital inicial" type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','!=','passive_reserve_a')]}"/>
+                        <!--                        <button name="wizard_pay_contribution" string="Registrar pago" type="object"-->
+                        <!--                                class="oe_close_button"-->
+                        <!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
+                        <!--                                attrs="{'invisible': [('state', '!=', 'process'),('partner_status_especific','!=','passive_reserve_a')]}" />-->
+<!--                        <button name="print_report_total" string="Imprimir planilla total" type="object"-->
+<!--                                class="oe_highlight"/>-->
+                        <button name="return_draft" string="Borrador" type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
+                        <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
+                                class="oe_highlight"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                        />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="alert alert-warning text-center o_form_header" role="alert"
+                             attrs="{'invisible': [('outstanding_payments','=',0)]}">
+                            <a class="close" data-dismiss="alert" href="#">x</a>
+                            <div>
+                                <strong>Planilla de aportes</strong>
+                            </div>
+                            <div attrs="{'invisible': [('outstanding_payments','&lt;','0')]}">Pagos pendientes
+                                <field name="outstanding_payments" required="0" readonly="1"/>
+                            </div>
+                            <div attrs="{'invisible': [('outstanding_payments','>','0')]}">Pagos adelantados
+                                <field name="outstanding_payments" required="0" readonly="1" />
+                            </div>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="partner_status" readonly="1"/>
+                                <field name="partner_status_especific" readonly="1"/>
+                                <field name="voluntary_contribution_certificate_total"/>
+                                <field name="mandatory_contribution_certificate_total"/>
+                                <field name="contribution_total" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </group>
+                            <group>
+                                <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="date_registration" readonly="1"/>
+                                <field name="advanced_payments" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="miscellaneous_income" string="Costo afiliación pendiente"/>
+                                <field name="count_pay_contributions"/>
+                                <field name="updated_partner"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Depositos">
+                                <field name="payroll_payments_ids">
+                                    <tree editable="top">
+                                        <field name="name" readonly="1" optional="hide"/>
+                                        <field name="partner_status_especific" invisible="1"/>
+                                        <field name="period_register"/>
+                                        <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                                        <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                        <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               optional="hide" sum="Total"/>
+                                        <field name="mandatory_contribution_certificate"
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                                        <field name="voluntary_contribution_certificate"
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+<!--                                        <field name="payment_post_mortem" attrs="{'column_invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>-->
+                                        <field name="payment_post_mortem" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show" sum="Total"/>
+                                        <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               optional="show"/>
+                                        <field name="state" decoration-info="state == 'draft'"
+                                               decoration-success="state == 'progress'"
+                                               widget="badge"/>
+                                        <button name="open_one2many_line" type="object" class="oe_highlight"
+                                                icon="fa-eye"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Interes">
+                                <field name="performance_management_ids" editable="top"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar loan.application -->
+
+        <record id="action_partner_payroll" model="ir.actions.act_window">
+            <field name="name">Aportes</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_init_partner_payroll" model="ir.actions.server">
+            <field name="name">Activar socio</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="binding_model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="state">code</field>
+            <field name="code">action = records.select_init_partner_payroll()</field>
+        </record>
+
+    </data>
+</odoo>

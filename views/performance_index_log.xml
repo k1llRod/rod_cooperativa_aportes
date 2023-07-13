@@ -1,0 +1,67 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo performance.management -->
+
+        <record model="ir.ui.view" id="performance_index_log_tree_id">
+            <field name="name">performance.index.log.tree</field>
+            <field name="model">performance_index.log</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="management_date"/>
+                    <field name="index"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario performance.management  -->
+
+        <record model="ir.ui.view" id="performance_index_log_form_id">
+            <field name="name">performance.index.log.form</field>
+            <field name="model">performance_index.log</field>
+            <field name="arch" type="xml">
+                <form string="Registro de rendimiento">
+                    <header>
+                        <button name="validate_management_index" string="Validar índice de rendimiento" type="object"
+                                class="oe_highlight"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"
+                        />
+                        <button name="draft_management_index" string="Borrador" type="object"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"
+                        />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Gestion"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="index"/>
+                                <field name="management_date"/>
+                            </group>
+
+                        </group>
+                    </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" groups="base.group_user"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar performance.management -->
+
+        <record id="action_performance_index_log" model="ir.actions.act_window">
+            <field name="name">Rendimiento de aportes</field>
+            <field name="res_model">performance_index.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>
