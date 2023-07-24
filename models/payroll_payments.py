@@ -17,27 +17,33 @@ class PayrollPayments(models.Model):
     partner_code_contact = fields.Char(string='Codigo de socio', compute="_get_partner_name", store=True)
     partner_status_especific = fields.Char(string='Situación de socio', compute="_get_partner_name", store=True)
     income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
+    income_passive = fields.Float(string='DESC. PASIVO', required=True, tracking=True)
     mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)
     voluntary_contribution_certificate = fields.Float(string='CERT. APOR. VOL.',
                                                       compute="compute_voluntary_contribution_certificate", store=True)
-    regulation_cup = fields.Float(string='TASA REGULACION')
+    regulation_cup = fields.Float(string='TASA REGULACION', default=lambda self: float(
+        self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup')))
     payment_post_mortem = fields.Float(string='PAGO POST MORTEM')
     miscellaneous_income = fields.Float(string='INSCRIPCION')
     payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
-        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa')],
+        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'), ('contribution_interest', 'Aporte y rendimiento COAA')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
     drawback = fields.Boolean(string='Reintegro')
-
+    switch_draf = fields.Boolean(string='Switch draft', default=False)
+    historical_contribution_coaa = fields.Integer(string='Aporte historico COAA')
+    historical_interest_coaa = fields.Integer(string='Rendimiento historico COAA')
+    glosa_contribution_interest = fields.Text(string='Glosa de aporte')
     @api.depends('partner_payroll_id')
     def _get_partner_name(self):
         for record in self:
             record.partner_name = record.partner_payroll_id.partner_id.name
             record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
             record.partner_status_especific = record.partner_payroll_id.partner_status_especific
+
     @api.depends('payment_date')
     def compute_period_register(self):
         for record in self:
@@ -66,10 +72,14 @@ class PayrollPayments(models.Model):
             'target': 'current',
         }
 
-    @api.depends('income', 'mandatory_contribution_certificate', 'miscellaneous_income', 'regulation_cup')
+    @api.depends('income', 'income_passive', 'mandatory_contribution_certificate', 'miscellaneous_income',
+                 'regulation_cup')
     def compute_voluntary_contribution_certificate(self):
         for record in self:
-            record.voluntary_contribution_certificate = record.income - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
+            if record.partner_payroll_id.partner_status == 'active':
+                record.voluntary_contribution_certificate = record.income - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
+            else:
+                record.voluntary_contribution_certificate = record.income_passive - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
 
     def confirm_payroll(self):
         for record in self:
@@ -84,17 +94,24 @@ class PayrollPayments(models.Model):
                             x.period_register == record.period_register))
                 if len(verify) > 0 and record.drawback == False:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
-                record.write({'state':'transfer'})
+                if record.partner_payroll_id.advance_mandatory_certificate > 0 and record.switch_draf == False:
+                    record.partner_payroll_id.advance_mandatory_certificate = record.partner_payroll_id.advance_mandatory_certificate - record.mandatory_contribution_certificate
+                    if record.partner_payroll_id.advanced_payments > 0:
+                        record.partner_payroll_id.advanced_payments = record.partner_payroll_id.advanced_payments - record.regulation_cup
+                else:
+                    record.switch_draf = False
+                record.write({'state': 'transfer'})
                 record.partner_payroll_id.compute_count_pay_contributions()
 
     def return_draft(self):
         self.state = 'draft'
+        self.switch_draf = True
 
     def extract_numbers(self, text):
         numbers = re.findall(r'\d+', text)
         return [int(number) for number in numbers]
 
-    @api.onchange('income', 'payment_date')
+    @api.onchange('income', 'onchange', 'payment_date')
     def onchange_income(self):
         verify_miscellaneous_income = self.partner_payroll_id.miscellaneous_income
         if verify_miscellaneous_income == 0:
@@ -136,7 +153,13 @@ class PayrollPayments(models.Model):
                     lambda x: (x.state == 'ministry_defense' and x.period_register == record.period_register))
                 if len(verify) > 0:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
-                record.write({'state':'ministry_defense'})
+                if record.partner_payroll_id.advance_mandatory_certificate > 0 and record.switch_draf == False:
+                    record.partner_payroll_id.advance_mandatory_certificate = record.partner_payroll_id.advance_mandatory_certificate - record.mandatory_contribution_certificate
+                    if record.partner_payroll_id.advanced_payments > 0:
+                        record.partner_payroll_id.advanced_payments = record.partner_payroll_id.advanced_payments - record.regulation_cup
+                else:
+                    record.switch_draf = False
+                record.write({'state': 'ministry_defense'})
                 record.partner_payroll_id.compute_count_pay_contributions()
 
     # def write(self, vals):
@@ -180,3 +203,7 @@ class PayrollPayments(models.Model):
             'search_view_id': search_id,
             'domain': [],
         }
+
+    def contribution_interest(self):
+        for record in self:
+            record.state = 'contribution_interest'

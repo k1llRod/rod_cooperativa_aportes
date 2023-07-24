@@ -12,7 +12,9 @@
                                 <field name="date_field_select"/>
                                 <field name="month"/>
                                 <field name="year"/>
+                                <field name="reconciled_records"/>
                                 <field name="reconcile_records"/>
+                                <field name="correct_registry"/>
                             </group>
                             <group>
                                 <field name="drawback"/>

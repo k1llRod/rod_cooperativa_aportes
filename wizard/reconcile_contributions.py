@@ -13,6 +13,8 @@ class ReconcileContributions(models.TransientModel):
     reconcile_records = fields.Integer(string="Registros para conciliar", readonly=True)
     drawback = fields.Boolean(string="Reintegro", default=False)
     months = fields.Many2many('month', string="Meses")
+    correct_registry = fields.Integer(string="Corregir registros", readonly=True)
+    reconciled_records = fields.Integer(string="Registros conciliados", readonly=True)
 
     @api.depends('date_field_select')
     def compute_date_format(self):
@@ -26,6 +28,11 @@ class ReconcileContributions(models.TransientModel):
                 period = record.month + '/' + record.year
                 record.reconcile_records = len(self.env['nominal.relationship.mindef.contributions'].search(
                     [('period_process', '=', period), ('state', '=', 'draft')]))
+                record.correct_registry = len(self.env['nominal.relationship.mindef.contributions'].search(
+                    [('period_process', '=', period), ('state', '=', 'no_reconciled')]))
+                record.reconciled_records = len(self.env['nominal.relationship.mindef.contributions'].search(
+                    [('period_process', '=', period), ('state', '=', 'reconciled')]))
+
 
     def action_reconcile(self):
         # Acción para conciliar los pagos de aportes
@@ -54,7 +61,7 @@ class ReconcileContributions(models.TransientModel):
                     val = {'partner_payroll_id': partner.id,
                            'payment_date': self.date_field_select,
                            'income': search_partner.amount_bs,
-                           'state': 'ministry_defense','drawback':self.drawback}
+                           'state': 'ministry_defense', 'drawback': self.drawback}
                     mo = self.env['payroll.payments'].create(val)
                     # mo.onchange_income()
                     mo.onchange_drawback()
@@ -88,8 +95,7 @@ class ReconcileContributions(models.TransientModel):
             'context': context,
         }
 
-        # raise UserError(_('Se han conciliado %s registros de %s') % (len(filing_cabinet_ids)-no_reconciled, len(filing_cabinet_ids)))
-
-    # @api.depends('date_field_select')
-    # def compute_reconcile_records(self):
-    #     self.reconcile_records =
+    def compute_reconcile_records(self):
+        for record in self:
+            record.correct_registry = len(record.env['nominal.relationship.mindef.contributions'].search(
+                [('period_process', '=', record.month + '/' + record.year), ('state', '=', 'reconc')]))

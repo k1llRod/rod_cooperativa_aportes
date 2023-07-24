@@ -29,13 +29,15 @@ class PartnerPayroll(models.Model):
     date_registration = fields.Datetime(string='Fecha de registro')
     date_burn_partner = fields.Datetime(string='Fecha de afiliacion')
     total_contribution = fields.Float(string='Total aportado')
-    advanced_payments = fields.Float(string='Pagos adelantados')
+    advanced_payments = fields.Float(string='Tasa regulacion Adelantado')
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',
                                            tracking=True)
     # capital_base = fields.Float(string='Capital base', store=True, tracking=True)
     # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
+
+    advance_mandatory_certificate = fields.Float(string='Cert. Aport. Oblig. Adelantado')
     total = fields.Float(string='Total', store=True)
     count_pay_contributions = fields.Integer(string='Cantidad de pagos realizados',
                                              compute="compute_count_pay_contributions")
@@ -50,6 +52,7 @@ class PartnerPayroll(models.Model):
     mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
                                                             compute='compute_count_pay_contributions', store=True)
     contribution_total = fields.Float(string='Aporte total',  store=True)
+    performance_management_total = fields.Float(string='Rendimiento total', compute='compute_performance_management_total')
     performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
 
     @api.depends('payroll_payments_ids')
@@ -232,3 +235,14 @@ class PartnerPayroll(models.Model):
             # 'context': context,
             'target': 'new',
         }
+    def resume_process(self):
+        for record in self:
+            if record.date_burn_partner != False:
+                record.state = 'process'
+
+    @api.depends('performance_management_ids')
+    def compute_performance_management_total(self):
+        for record in self:
+            record.performance_management_total = sum(record.performance_management_ids.mapped('yield_amount'))
+
+
