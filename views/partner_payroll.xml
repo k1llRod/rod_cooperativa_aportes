@@ -100,6 +100,10 @@
                                 <field name="advanced_payments" />
                                 <field name="advance_mandatory_certificate" widget="integer"/>
                                 <field name="miscellaneous_income" string="Costo afiliación pendiente"/>
+                                <field name="mandatory_contribution_pending" position="attrs">
+                                    <attribute name="string">Gestión: <xpath expr="//field[@name='mandatory_contribution_pending']/@string"/></attribute>
+                                </field>
+
                                 <field name="count_pay_contributions"/>
                                 <field name="updated_partner" invisible="1"/>
                             </group>

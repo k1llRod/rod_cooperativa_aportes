@@ -44,7 +44,7 @@
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
                         <button name="contribution_interest" string="Aporte y rendimiento COAA" type="object"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','=','passive_reserve_b')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
                         <!--                        <button name="drawback" string="Reintegro" type="object"-->
                         <!--                                class="oe_highlight"-->
@@ -67,10 +67,12 @@
                         </div>
                         <group>
                             <group>
+                                <field name="partner_status" invisible="1"/>
+                                <field name="partner_status_especific" invisible="1"/>
                                 <field name="partner_payroll_id" invisible="1"/>
-                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                <field name="income_passive"/>
-                                <field name="miscellaneous_income" readonly="1"/>
+                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('partner_status', '!=', 'active')]}"/>
+                                <field name="income_passive" attrs="{'invisible': [('partner_status', '!=', 'passive')], 'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="miscellaneous_income" />
                                 <field name="regulation_cup"/>
                                 <field name="mandatory_contribution_certificate"/>
                                 <field name="voluntary_contribution_certificate"/>
@@ -80,7 +82,7 @@
                             </group>
                             <group>
                                 <field name="drawback" attrs="{'readonly': [('state','!=','draft')], 'invisible': [('state','=','contribution_interest')] }" />
-                                <field name="switch_draf" invisible="1"/>
+                                <field name="switch_draf" />
                                 <field name="historical_contribution_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
                                 <field name="historical_interest_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
                                 <field name="glosa_contribution_interest" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>

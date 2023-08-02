@@ -16,6 +16,7 @@ class PayrollPayments(models.Model):
     partner_name = fields.Char(String='Nombre del socio', compute='_get_partner_name', store=True)
     partner_code_contact = fields.Char(string='Codigo de socio', compute="_get_partner_name", store=True)
     partner_status_especific = fields.Char(string='Situación de socio', compute="_get_partner_name", store=True)
+    partner_status = fields.Char(string='Situación de socio', compute="_get_partner_name", store=True)
     income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
     income_passive = fields.Float(string='DESC. PASIVO', required=True, tracking=True)
     mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)
@@ -33,7 +34,7 @@ class PayrollPayments(models.Model):
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
     drawback = fields.Boolean(string='Reintegro')
-    switch_draf = fields.Boolean(string='Switch draft', default=False)
+    switch_draf = fields.Boolean(string='Switch draft')
     historical_contribution_coaa = fields.Integer(string='Aporte historico COAA')
     historical_interest_coaa = fields.Integer(string='Rendimiento historico COAA')
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
@@ -43,6 +44,7 @@ class PayrollPayments(models.Model):
             record.partner_name = record.partner_payroll_id.partner_id.name
             record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
             record.partner_status_especific = record.partner_payroll_id.partner_status_especific
+            record.partner_status = record.partner_payroll_id.partner_status
 
     @api.depends('payment_date')
     def compute_period_register(self):
@@ -98,14 +100,14 @@ class PayrollPayments(models.Model):
                     record.partner_payroll_id.advance_mandatory_certificate = record.partner_payroll_id.advance_mandatory_certificate - record.mandatory_contribution_certificate
                     if record.partner_payroll_id.advanced_payments > 0:
                         record.partner_payroll_id.advanced_payments = record.partner_payroll_id.advanced_payments - record.regulation_cup
-                else:
-                    record.switch_draf = False
+                # else:
+                #     record.switch_draf = False
                 record.write({'state': 'transfer'})
                 record.partner_payroll_id.compute_count_pay_contributions()
 
     def return_draft(self):
         self.state = 'draft'
-        self.switch_draf = True
+        self.switch_draf = False
 
     def extract_numbers(self, text):
         numbers = re.findall(r'\d+', text)
@@ -206,4 +208,9 @@ class PayrollPayments(models.Model):
 
     def contribution_interest(self):
         for record in self:
+            if record.partner_payroll_id.date_burn_partner == False:
+                record.partner_payroll_id.date_burn_partner = record.payment_date
+                record.partner_payroll_id.state = 'process'
             record.state = 'contribution_interest'
+            record.switch_draf = True
+

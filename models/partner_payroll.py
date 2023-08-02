@@ -2,6 +2,7 @@ from odoo import models, fields, api, _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
+import re
 
 
 class PartnerPayroll(models.Model):
@@ -18,7 +19,7 @@ class PartnerPayroll(models.Model):
                                        ('active_reserve', 'Reserva activa'),
                                        ('passive_reserve_a', 'Reserva pasivo "A"'),
                                        ('passive_reserve_b', 'Reserva pasivo "B"')],
-                                      string='Situación de socio', related='partner_id.partner_status', readonly=True)
+                                      string='Situación general', related='partner_id.partner_status', readonly=True)
     partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
                                                  ('passive_reserve_a', 'Reserva pasivo "A"'),
@@ -36,7 +37,7 @@ class PartnerPayroll(models.Model):
     # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
-
+    mandatory_contribution_pending = fields.Integer(string='Aportes obligatorios pendientes', compute='compute_miscellaneous_income')
     advance_mandatory_certificate = fields.Float(string='Cert. Aport. Oblig. Adelantado')
     total = fields.Float(string='Total', store=True)
     count_pay_contributions = fields.Integer(string='Cantidad de pagos realizados',
@@ -57,7 +58,8 @@ class PartnerPayroll(models.Model):
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
-        self.miscellaneous_income = 10
+        self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
+                    'rod_cooperativa_aportes.miscellaneous_income')
         for record in self:
             verify = len(record.payroll_payments_ids.filtered(
                 lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.miscellaneous_income > 0))
@@ -66,7 +68,18 @@ class PartnerPayroll(models.Model):
                     'rod_cooperativa_aportes.miscellaneous_income')
             else:
                 record.miscellaneous_income = 0
-
+            # count_mandatory_contribution = len(record.payroll_payments_ids.filtered())
+            periods = self.env['ir.config_parameter'].sudo().get_param(
+                    'rod_cooperativa_aportes.month_ids')
+            mandatory_contribution = float(record.env['ir.config_parameter'].sudo().get_param(
+                    'rod_cooperativa_aportes.mandatory_contribution_certificate'))
+            year_now = datetime.now().year
+            filter_periods = re.findall(r'\d+', periods)
+            count_periods = len(filter_periods)
+            count_mandatory_contributions = count_periods * mandatory_contribution
+            verificate_payments = record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.payment_date.year == year_now)
+            sum_verificate_payments = sum(verificate_payments.mapped('mandatory_contribution_certificate'))
+            record.mandatory_contribution_pending = count_mandatory_contributions - sum_verificate_payments
     @api.model
     def create(self, vals):
         name = self.env['ir.sequence'].next_by_code('partner.payroll')

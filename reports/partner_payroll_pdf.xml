@@ -68,6 +68,10 @@
                             <div class="body">
                                 <table style="width:100%; font-family:Arial;">
                                     <tr>
+                                        <td><strong>CODIGO:</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
                                         <td>
                                             <strong>ASOCIADO:</strong>
                                         </td>
@@ -75,13 +79,15 @@
                                             <span t-field="o.partner_id"/>
                                         </td>
                                         <td>
-                                            <strong>OF.SERV.PASIVO</strong>
+                                            <strong>SITUACION</strong>
                                         </td>
                                         <td>
                                             <span t-field="o.partner_status_especific"/>
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td><strong>GRADO:</strong></td>
+                                        <td></td>
                                         <td>
                                             <strong>CEDULA IDENTIDAD:</strong>
                                         </td>
@@ -102,10 +108,12 @@
                                         <td>
                                             <span t-esc="o.partner_id.graduation_year"></span>
                                         </td>
-                                        <td>
-                                            <strong>AÑO DE JUBILACION</strong>
-                                        </td>
-                                        <td>2022</td>
+                                        <t t-if="o.partner_status == 'active'">
+                                            <td>
+                                                <strong>AÑO DE JUBILACION</strong>
+                                                <td>2022</td>
+                                            </td>
+                                        </t>
                                     </tr>
                                     <tr>
                                         <td>
@@ -127,9 +135,12 @@
                                             <th class="align-middle">CUOTA</th>
                                             <th style="width:50px;" class="align-middle">FECHA</th>
                                             <th class="align-middle">DEPOSITO</th>
-                                            <th style="width:85px; padding:5px;" class="align-middle">CAPITAL DE
-                                                INICIO
-                                            </th>
+                                            <t t-if="o.partner_status_especific != 'passive_reserve_b'">
+                                                <th style="width:85px; padding:5px;" class="align-middle">CAPITAL DE
+                                                    INICIO
+                                                </th>
+                                            </t>
+
                                             <th class="align-middle">INSCRIPCION</th>
                                             <th style="width:80px;" class="align-middle">TASA DE REGUL.</th>
                                             <th style="width:110px" class="align-middle">CERT. APORT.
@@ -149,14 +160,22 @@
                                                     <t t-esc="line_number"/>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <span t-field="p.period_register"></span>
+                                                    <span t-field="p.payment_date"></span>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <span t-field="p.income"/>
+                                                    <t t-if="p.income">
+                                                        <t t-esc="p.income"/>
+                                                    </t>
+                                                    <t t-if="p.income_passive">
+                                                        <t t-esc="p.income_passive"/>
+                                                    </t>
+<!--                                                    <span t-field="p.income"/>-->
                                                 </td>
-                                                <td class="align-middle">
+                                                <t t-if="p.partner_status_especific != 'passive_reserve_b'">
+                                                    <td class="align-middle">
 
-                                                </td>
+                                                    </td>
+                                                </t>
                                                 <td class="align-middle">
                                                     <span t-field="p.miscellaneous_income"/>
                                                 </td>
@@ -167,12 +186,12 @@
                                                     <span t-field="p.mandatory_contribution_certificate"/>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <span t-field="p.voluntary_contribution_certificate"/>
+                                                    <span t-esc="p.voluntary_contribution_certificate + p.mandatory_contribution_certificate"/>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <span t-esc="acumulador + p.voluntary_contribution_certificate"/>
+                                                    <span t-esc="acumulador + p.voluntary_contribution_certificate + p.mandatory_contribution_certificate"/>
                                                     <t t-set="acumulador"
-                                                       t-value="acumulador + p.voluntary_contribution_certificate"/>
+                                                       t-value="acumulador + p.voluntary_contribution_certificate + p.mandatory_contribution_certificate"/>
                                                 </td>
                                                 <td class="align-middle">
                                                     <span t-field="p.state"/>
@@ -182,6 +201,29 @@
                                     </tbody>
                                     <tfoot style="border-top: 1px solid black">
                                         <tr>
+                                            <td colspan="2"></td>
+                                            <td>
+                                                <t t-if="p.income">
+                                                    <span t-esc="sum(o.payroll_payments_ids.mapped('income'))"/>
+                                                </t>
+                                                <t t-if="p.income_passive">
+                                                    <span t-esc="sum(o.payroll_payments_ids.mapped('income_passive'))"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span t-esc="sum(o.payroll_payments_ids.mapped('miscellaneous_income'))"/>
+                                            </td>
+                                             <td>
+                                                <span t-esc="sum(o.payroll_payments_ids.mapped('regulation_cup'))"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="sum(o.payroll_payments_ids.mapped('mandatory_contribution_certificate'))"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')) + sum(o.payroll_payments_ids.mapped('mandatory_contribution_certificate'))"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="2">Total aportes:</td>
 <!--                                            <td></td>-->
                                             <td>
@@ -190,18 +232,18 @@
                                             <td></td>
                                             <td></td>
                                             <td></td>
-                                            <td>Total:</td>
+                                            <td></td>
                                             <td>
-                                                <span t-esc="sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate'))"/>
+<!--                                                <span t-esc="sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate'))"/>-->
                                             </td>
                                             <td></td>
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="2">Total Cert. Aport:</td>
+                                            <td colspan="2"></td>
 <!--                                            <td></td>-->
                                             <td>
-                                                <span t-esc="len(o.payroll_payments_ids)"/>
+<!--                                                <span t-esc="len(o.payroll_payments_ids)"/>-->
                                             </td>
                                             <td></td>
                                             <td></td>
