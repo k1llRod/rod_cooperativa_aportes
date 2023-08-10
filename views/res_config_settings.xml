@@ -69,6 +69,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Aporte situacion pasiva" for="contribution_passive"/>
+                                    <div class="content-group mt16">
+                                        <field name="contribution_passive" colspan="4" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>

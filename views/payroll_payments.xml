@@ -20,6 +20,7 @@
                     <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}"
                            sum="Total"/>
                     <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="advanced_automata"/>
                     <field name="state" decoration-danger="state == 'draft'" decoration-success="state == 'progress'"
                            widget="badge"/>
                     <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
@@ -165,6 +166,7 @@
                         <field name="voluntary_contribution_certificate"
                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
+                        <field name="register_advanced_payments_ids" optional="hide" readonly="1"/>
                         <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
                                widget="badge"/>
                         <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>

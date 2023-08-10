@@ -12,6 +12,7 @@ class ResConfigSettings(models.TransientModel):
     certified_period = fields.Integer(string='Periodo certificado')
     capital_minimum = fields.Integer(string='Capital mínimo')
     month_ids = fields.Many2many('month', string='Meses')
+    contribution_passive = fields.Float(string='Aporte pasivo')
 
     @api.model
     def get_values(self):
@@ -22,13 +23,15 @@ class ResConfigSettings(models.TransientModel):
         certified_period=self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.certified_period')
         capital_minimum=self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.capital_minimum')
         month_ids=self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.month_ids')
+        contribution_passive = self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.contribution_passive')
         res.update(
             regulation_cup=regulation_cup,
             mandatory_contribution_certificate=mandatory_contribution_certificate,
             miscellaneous_income=miscellaneous_income,
             certified_period=certified_period,
             capital_minimum=capital_minimum,
-            month_ids=[(6, 0, literal_eval(month_ids))] if month_ids else [(6, 0, '')]
+            month_ids=[(6, 0, literal_eval(month_ids))] if month_ids else [(6, 0, '')],
+            contribution_passive=contribution_passive,
         )
         return res
 
@@ -41,6 +44,7 @@ class ResConfigSettings(models.TransientModel):
         self.env['ir.config_parameter'].sudo().set_param('rod_cooperativa_aportes.certified_period', self.certified_period)
         self.env['ir.config_parameter'].sudo().set_param('rod_cooperativa_aportes.capital_minimum', self.capital_minimum)
         self.env['ir.config_parameter'].sudo().set_param('rod_cooperativa_aportes.month_ids', self.month_ids.ids)
+        self.env['ir.config_parameter'].sudo().set_param('rod_cooperativa_aportes.contribution_passive',self.contribution_passive)
         return res
 
 

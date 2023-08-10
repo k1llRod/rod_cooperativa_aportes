@@ -62,6 +62,9 @@
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'draft'),('date_burn_partner','!=',False)]}"/>
+<!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
+<!--                                />-->
+
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -97,8 +100,8 @@
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="date_registration" readonly="1"/>
-                                <field name="advanced_payments" />
-                                <field name="advance_mandatory_certificate" widget="integer"/>
+<!--                                <field name="advanced_payments" />-->
+<!--                                <field name="advance_mandatory_certificate" widget="integer"/>-->
                                 <field name="miscellaneous_income" string="Costo afiliación pendiente"/>
                                 <field name="mandatory_contribution_pending" position="attrs">
                                     <attribute name="string">Gestión: <xpath expr="//field[@name='mandatory_contribution_pending']/@string"/></attribute>
@@ -135,6 +138,8 @@
                                         <!--                                               sum="Total"/>-->
                                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"
                                                optional="show"/>
+                                        <field name="register_advanced_payments_ids" optional="hide" readonly="1"/>
+                                        <field name="advanced_automata" optional="hide" readonly="1"/>
                                         <field name="state" decoration-info="state == 'contribution_interest'"
                                                decoration-success="state in ['transfer','ministry_defense']" decoration-warning="state == 'draft'"
                                                widget="badge"/>
@@ -145,6 +150,12 @@
                             </page>
                             <page string="Rendimiento">
                                 <field name="performance_management_ids" editable="top"/>
+                            </page>
+<!--                            <page string="Pagos fix">-->
+<!--                                <field name="payroll_payment_ids"/>-->
+<!--                            </page>-->
+                            <page string="Pagos adelantados">
+                                <field name="advanced_payments_ids"/>
                             </page>
                         </notebook>
                     </sheet>

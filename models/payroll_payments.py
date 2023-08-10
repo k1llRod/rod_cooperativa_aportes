@@ -38,6 +38,8 @@ class PayrollPayments(models.Model):
     historical_contribution_coaa = fields.Integer(string='Aporte historico COAA')
     historical_interest_coaa = fields.Integer(string='Rendimiento historico COAA')
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
+    advanced_automata = fields.Boolean(string='Adelanto automatico')
+    register_advanced_payments_ids = fields.Many2one('advance.payments')
     @api.depends('partner_payroll_id')
     def _get_partner_name(self):
         for record in self:

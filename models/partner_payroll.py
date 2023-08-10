@@ -41,7 +41,7 @@ class PartnerPayroll(models.Model):
     advance_mandatory_certificate = fields.Float(string='Cert. Aport. Oblig. Adelantado')
     total = fields.Float(string='Total', store=True)
     count_pay_contributions = fields.Integer(string='Cantidad de pagos realizados',
-                                             compute="compute_count_pay_contributions")
+                                             compute="compute_count_pay_contributions", store=True)
     advance_regulation_cup = fields.Integer(string='Taza de regulación adelantado',
                                             compute="compute_count_pay_contributions")
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
@@ -55,6 +55,11 @@ class PartnerPayroll(models.Model):
     contribution_total = fields.Float(string='Aporte total',  store=True)
     performance_management_total = fields.Float(string='Rendimiento total', compute='compute_performance_management_total')
     performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
+    # payroll_payment_ids = fields.One2many('payroll.payment', 'partner_payrolls_id', string='Pagos de planilla')
+    advanced_payments_ids = fields.One2many('advance.payments', 'advanced_partner_payroll_id', string='Pagos adelantados')
+    balance_advance_contribution_passive = fields.Float(string='Saldo aportes pasivos', compute='compute_balance_advance')
+    balance_advance_regulation_cup = fields.Float(string='Saldo taza de regulación', compute='compute_balance_advance')
+    balance_advance_mandatory_contribution = fields.Float(string='Saldo aportes obligatorios', compute='compute_balance_advance')
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
@@ -258,4 +263,21 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.performance_management_total = sum(record.performance_management_ids.mapped('yield_amount'))
 
+    def compute_balance_advance(self):
+        for record in self:
+            record.balance_advance = record.contribution_total - record.performance_management_total
+
+    # def payment_advance(self):
+    #     for record in self:
+    #         record.payroll_payment_ids.create({
+    #             'name': 'Pago de aportes',
+    #             'partner_payrolls_id': record.id,
+    #         })
+    #         record.payroll_payments_ids.create({
+    #             'income': 0,
+    #             'income_passive': 0,
+    #             'payment_date': datetime.now(),
+    #             'partner_payroll_id': record.id,
+    #
+    #         })
 

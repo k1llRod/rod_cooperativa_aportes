@@ -1,0 +1,69 @@
+                                      <odoo>
+    <data>
+        <!-- Vista Árbol de Modelo partner payroll -->
+
+        <record model="ir.ui.view" id="advance_payments_tree_id">
+            <field name="name">advance.payments.tree</field>
+            <field name="model">advance.payments</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="n_months"/>
+                    <field name="regulation_cup" sum="Total"/>
+                    <field name="mandatory_contribution" sum="Total"/>
+                    <field name="contribution_passive" sum="Total"/>
+                    <field name="miscellaneous_income" readonly="1" sum="Total"/>
+                    <field name="remaining_regulation_cup"/>
+                    <field name="remaining_mandatory_contribution"/>
+                    <field name="remaining_contribution_passive"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'process'"
+                           widget="badge"/>
+                    <button name="create_lines_payments" type="object" class="oe_highlight"
+                                                icon="fa-play"/>
+                    <button name="draft_lines_payments" type="object" class="oe_highlight"
+                                                icon="fa-stop"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario loan.application  -->
+
+        <record model="ir.ui.view" id="advance_payments_form_id">
+            <field name="name">advance.payments.form</field>
+            <field name="model">advance.payments</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="regulation_cup"/>
+                                <field name="mandatory_contribution"/>
+                                <field name="contribution_passive"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar loan.application -->
+
+        <record id="action_advance_payments" model="ir.actions.act_window">
+            <field name="name">Pagos adelantados</field>
+            <field name="res_model">advance.payments</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>
