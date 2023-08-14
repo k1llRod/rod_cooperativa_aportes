@@ -105,3 +105,6 @@ class AdvancePayments(models.Model):
                     month += 1
     def draft_lines_payments(self):
         self.state = 'draft'
+
+    def action_pdf_payment_note(self):
+        return self.env.ref('rod_cooperativa_aportes.action_report_pdf_payment_note').report_action(self)

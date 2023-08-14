@@ -49,7 +49,6 @@
         'reports/report.xml',
         'reports/payroll_payment_pdf.xml',
         'reports/partner_payroll_pdf.xml',
-
-
+        'reports/report_payment_note_template.xml',
     ],
 }

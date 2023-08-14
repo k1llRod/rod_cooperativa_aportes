@@ -18,6 +18,8 @@
                     <field name="remaining_contribution_passive"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'process'"
                            widget="badge"/>
+                    <button name="action_pdf_payment_note" type="object" class="oe_highlight"
+                                                icon="fa-print"/>
                     <button name="create_lines_payments" type="object" class="oe_highlight"
                                                 icon="fa-play"/>
                     <button name="draft_lines_payments" type="object" class="oe_highlight"
