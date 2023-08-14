@@ -48,7 +48,7 @@
                                         <tr>
                                             <td><strong>MONTO TOTAL:</strong></td>
                                             <td><t t-set="sum_total"
-                                               t-value="o.miscellaneous_income + o.regulation_cup + o.mandatory_contribution + o.contribution_passive"/>
+                                               t-value="round(o.miscellaneous_income + o.regulation_cup + o.mandatory_contribution + o.contribution_passive,2)"/>
                                             <t t-esc="sum_total"/></td>
                                         </tr>
                                         <tr>
@@ -103,7 +103,7 @@
                                                 <td>
                                                     <strong>
                                                         <t t-set="sum_total"
-                                                           t-value="o.miscellaneous_income + o.regulation_cup + o.mandatory_contribution + o.contribution_passive"/>
+                                                           t-value="round(o.miscellaneous_income + o.regulation_cup + o.mandatory_contribution + o.contribution_passive,2)"/>
                                                         <t t-esc="sum_total"/>
                                                     </strong>
                                                 </td>
