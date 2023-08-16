@@ -40,6 +40,7 @@ class PayrollPayments(models.Model):
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
     advanced_automata = fields.Boolean(string='Adelanto automatico')
     register_advanced_payments_ids = fields.Many2one('advance.payments')
+
     @api.depends('partner_payroll_id')
     def _get_partner_name(self):
         for record in self:
@@ -47,6 +48,7 @@ class PayrollPayments(models.Model):
             record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
             record.partner_status_especific = record.partner_payroll_id.partner_status_especific
             record.partner_status = record.partner_payroll_id.partner_status
+
 
     @api.depends('payment_date')
     def compute_period_register(self):

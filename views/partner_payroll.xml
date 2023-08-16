@@ -94,7 +94,7 @@
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
                                 <field name="performance_management_total"/>
-                                <field name="contribution_total" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="contribution_total" readonly="1"/>
 
                             </group>
                             <group>
@@ -106,6 +106,7 @@
                                 <field name="mandatory_contribution_pending" position="attrs">
                                     <attribute name="string">Gestión: <xpath expr="//field[@name='mandatory_contribution_pending']/@string"/></attribute>
                                 </field>
+                                <field name="count_mandatory_contribution_certificate"/>
 
                                 <field name="count_pay_contributions"/>
                                 <field name="updated_partner" invisible="1"/>

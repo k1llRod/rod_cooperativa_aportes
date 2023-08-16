@@ -60,6 +60,7 @@ class PartnerPayroll(models.Model):
     balance_advance_contribution_passive = fields.Float(string='Saldo aportes pasivos', compute='compute_balance_advance')
     balance_advance_regulation_cup = fields.Float(string='Saldo taza de regulación', compute='compute_balance_advance')
     balance_advance_mandatory_contribution = fields.Float(string='Saldo aportes obligatorios', compute='compute_balance_advance')
+    count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios', compute='compute_contributions')
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
@@ -99,6 +100,7 @@ class PartnerPayroll(models.Model):
                 record.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'transfer' or x.state == 'ministry_defense')).mapped(
                     'mandatory_contribution_certificate'))
+            record.count_mandatory_contribution_certificate = len(record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
 
     def init_payroll_partner_wizard(self):
         # Acción para abrir el wizard
@@ -132,7 +134,6 @@ class PartnerPayroll(models.Model):
     def compute_partner_status(self):
         for record in self:
             record.partner_status = record.partner_id.status
-
     def wizard_pay_contribution(self):
         # Acción para abrir el wizard
         # Puedes personalizar esta función según tus necesidades

@@ -11,12 +11,15 @@
                         <field name="state" widget="statusbar"/>
                         <button name="init_partner" string="Iniciar aportes" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'verificate'),('contributions_count','>','0')]}"/>
+                        <button name="init_loan" string="Iniciar prestamo" type="object"
+                                attrs="{'invisible': ['|',('state', '!=', 'verificate'),('contributions_count','>','0')]}"/>
                         <button name="approve_verification" string="Verificar" type="object"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="approve_partner" string="Aprobar socio" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
                         <button name="return_form" string="Solicitud rechazada" type="object"
                                 attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
+
                     </header>
                 </xpath>
 <!--                <xpath expr="//header" position="inside">-->
@@ -34,6 +37,14 @@
                                 <field name="contributions_count"/>
                             </span>
                             <span class="o_stat_text">Aportes</span>
+                        </div>
+                    </button>
+                    <button type="object" icon="fa-user" class="oe_stat_button" name="action_view_loans">
+                        <div class="o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="loan_count"/>
+                            </span>
+                            <span class="o_stat_text">Préstamos</span>
                         </div>
                     </button>
                 </xpath>
