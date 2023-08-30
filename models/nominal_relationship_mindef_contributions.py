@@ -7,6 +7,21 @@ class NominalRelationshipMindefContributions(models.Model):
     _description = 'Relacion nominal aportes mindef'
 
     name = fields.Char(string='N')
+    management = fields.Char(string='Gestion')
+    month = fields.Char(string='Mes')
+    supporting_document = fields.Char(string='Documento respaldo')
+    eit_codorg = fields.Char(string='eit_codorg')
+    eit_codrep = fields.Char(string='eit_codrep')
+    distribution = fields.Char(string='Reparticion')
+    group = fields.Char(string='Grupo')
+    group_description = fields.Char(string='Descripcion del grupo')
+    identification = fields.Char(string='Identificador')
+    creditor = fields.Char(string='Acreedor')
+    code_concept = fields.Char(string='Codigo concepto')
+    code_creditor = fields.Char(string='Codigo acreedor')
+    bank_account = fields.Char(string='Cuenta bancaria')
+    personal_code = fields.Char(string='Codigo personal')
+
     organism = fields.Char(string='Organismo')
     eit_item = fields.Char(string='Item EIT')
     ci = fields.Char(string='CI')

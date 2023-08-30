@@ -46,7 +46,7 @@ class PayrollPayments(models.Model):
         for record in self:
             record.partner_name = record.partner_payroll_id.partner_id.name
             record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
-            record.partner_status_especific = record.partner_payroll_id.partner_status_especific
+            # record.partner_status_especific = record.partner_payroll_id.partner_status_especific
             record.partner_status = record.partner_payroll_id.partner_status
 
 
@@ -157,7 +157,7 @@ class PayrollPayments(models.Model):
                     record.partner_payroll_id.state = 'process'
                 verify = record.partner_payroll_id.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'ministry_defense' and x.period_register == record.period_register))
-                if len(verify) > 0:
+                if len(verify) > 0 and record.drawback == False:
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
                 if record.partner_payroll_id.advance_mandatory_certificate > 0 and record.switch_draf == False:
                     record.partner_payroll_id.advance_mandatory_certificate = record.partner_payroll_id.advance_mandatory_certificate - record.mandatory_contribution_certificate
@@ -177,6 +177,7 @@ class PayrollPayments(models.Model):
     def onchange_drawback(self):
         for record in self:
             record.mandatory_contribution_certificate = 0
+            record.regulation_cup = 0
             record.onchange_income()
 
     def generate_certificate_report(self):
@@ -218,3 +219,6 @@ class PayrollPayments(models.Model):
             record.state = 'contribution_interest'
             record.switch_draf = True
 
+    def draft_massive(self):
+        for record in self:
+            record.state = 'draft'

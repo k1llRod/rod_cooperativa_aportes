@@ -1,59 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <template id="inh_external_layout_striped" inherit_id="web.external_layout_striped">
-            <xpath expr="//div[1]" position="replace">
-                <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
-                    <div class="o_background_header">
-                        <table style="width:100%;font-size:14px;">
-                            <tr>
-                                <td style="width:500px;text-align:center;center;">COOPERATIVA DE
-                                    AHORRO Y CREDITO DE
-                                    VINCULO LABORAL
-                                </td>
-                                <td style="width:160px"></td>
-                                <td>Paginas:
-                                    <span class="topage"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align:center;center;">COA - 4 DE DICIEMBRE R.L.
-                                </td>
-                                <td></td>
-                                <td>Fecha:
-                                    <!--                                    <t t-set="now" t-value="context.get('tz').localize(fields.Datetime.now())" />-->
-                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align:center;">LA PAZ - BOLIVIA</td>
-                                <td></td>
-                                <td>Usuario:
-                                    <span t-esc="user.name"/>
-                                </td>
-                            </tr>
-                        </table>
-
-                    </div>
-                    <div>
-                        <br/>
-                        <br/>
-                        <h3>
-                            <center>EXTRACTO DE APORTES</center>
-                        </h3>
-                    </div>
-                </div>
-            </xpath>
-            <xpath expr="//div[hasclass('text-center')]" position="replace">
-                <center>
-                    Page:
-                    <span class="page"/>
-                    /
-                    <span class="topage"/>
-                </center>
-            </xpath>
-        </template>
-        <template id="rod_cooperativa_aportes.report_partner_payroll">
+        <template id="rod_cooperativa_aportes.report_partner_payroll_partner">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
                     <t t-set="line_number" t-value="0"/>
@@ -157,7 +105,7 @@
                                         <tr style="font-size:12px;">
                                             <th class="align-middle">N</th>
                                             <th class="align-middle">FECHA</th>
-                                            <th class="align-middle">DEPOSITO</th>
+<!--                                            <th class="align-middle">DEPOSITO</th>-->
                                             <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                 <th style="width:85px; padding:5px;" class="align-middle">CAPITAL DE
                                                     INICIO
@@ -171,7 +119,7 @@
                                             </th>
                                             <th style=" width:80px;" class="align-middle">CERT. APORT. VOLUNTARIO</th>
                                             <th style=" width:50px;" class="align-middle">TOTAL APORTES</th>
-                                            <th style=" width:40px;" class="align-middle">TIPO PAGO</th>
+<!--                                            <th style=" width:40px;" class="align-middle">TIPO PAGO</th>-->
                                         </tr>
                                     </thead>
                                     <tbody style="font-size:12px;">
@@ -187,15 +135,15 @@
                                                         <t t-esc="p.payment_date.strftime('%d-%m-%Y')"/>
                                                         <!--                                                    <span t-field="p.payment_date.strftime('%Y-%m-%d')"></span>-->
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <t t-if="p.income">
-                                                            <t t-esc="p.income"/>
-                                                        </t>
-                                                        <t t-if="p.income_passive">
-                                                            <t t-esc="p.income_passive"/>
-                                                        </t>
-                                                        <!--                                                    <span t-field="p.income"/>-->
-                                                    </td>
+<!--                                                    <td class="align-middle">-->
+<!--                                                        <t t-if="p.income">-->
+<!--                                                            <t t-esc="p.income"/>-->
+<!--                                                        </t>-->
+<!--                                                        <t t-if="p.income_passive">-->
+<!--                                                            <t t-esc="p.income_passive"/>-->
+<!--                                                        </t>-->
+<!--                                                        &lt;!&ndash;                                                    <span t-field="p.income"/>&ndash;&gt;-->
+<!--                                                    </td>-->
                                                     <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                         <td>0</td>
                                                     </t>
@@ -216,15 +164,15 @@
                                                         <t t-set="acumulador"
                                                            t-value="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <t t-if="p.state == 'transfer'">
-                                                            <span>Transferencia</span>
-                                                        </t>
-                                                        <t t-elif="p.state == 'ministry_defense'">
-                                                            <span>Ministerio</span>
-                                                        </t>
+<!--                                                    <td class="align-middle">-->
+<!--                                                        <t t-if="p.state == 'transfer'">-->
+<!--                                                            <span>Transferencia</span>-->
+<!--                                                        </t>-->
+<!--                                                        <t t-elif="p.state == 'ministry_defense'">-->
+<!--                                                            <span>Ministerio</span>-->
+<!--                                                        </t>-->
 
-                                                    </td>
+<!--                                                    </td>-->
                                                 </tr>
                                             </t>
                                         </t>
@@ -232,14 +180,14 @@
                                     <tfoot style="font-size:12px;border-top: 1px solid black;">
                                         <tr>
                                             <td colspan="2"></td>
-                                            <td>
-                                                <t t-if="p.income">
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>
-                                                </t>
-                                                <t t-if="p.income_passive">
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('income_passive')),2)"/>
-                                                </t>
-                                            </td>
+<!--                                            <td>-->
+<!--                                                <t t-if="p.income">-->
+<!--                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="p.income_passive">-->
+<!--                                                    <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('income_passive')),2)"/>-->
+<!--                                                </t>-->
+<!--                                            </td>-->
                                             <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                 <td>0</td>
                                             </t>
@@ -262,48 +210,7 @@
                                     </tfoot>
 
                                 </table>
-                                <table>
-                                    <tr>
-                                        <td style="margin-left:30px;">
-                                            <strong>Total aportes obligatorios:</strong>
-                                        </td>
-                                        <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')),2)"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>Total aportes voluntarios:</strong>
-                                        </td>
-                                        <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')), 2)"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>Total tasa de regulación:</strong>
-                                        </td>
-                                        <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>Total capital inicio:</strong>
-                                        </td>
-                                        <td>
-                                            <span>0</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>Total:</strong>
-                                        </td>
-                                        <td style="border-top:1px solid black;">
-                                            <span t-esc="o.contribution_total"/>
-                                        </td>
-                                    </tr>
-                                </table>
+
                             </div>
                         </div>
                     </t>

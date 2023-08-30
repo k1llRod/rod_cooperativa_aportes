@@ -37,7 +37,8 @@ class PartnerPayroll(models.Model):
     # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
-    mandatory_contribution_pending = fields.Integer(string='Aportes obligatorios pendientes', compute='compute_miscellaneous_income')
+    mandatory_contribution_pending = fields.Integer(string='Aportes obligatorios pendientes',
+                                                    compute='compute_miscellaneous_income')
     advance_mandatory_certificate = fields.Float(string='Cert. Aport. Oblig. Adelantado')
     total = fields.Float(string='Total', store=True)
     count_pay_contributions = fields.Integer(string='Cantidad de pagos realizados',
@@ -52,20 +53,25 @@ class PartnerPayroll(models.Model):
                                                             compute='compute_count_pay_contributions', store=True)
     mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
                                                             compute='compute_count_pay_contributions', store=True)
-    contribution_total = fields.Float(string='Aporte total',  store=True)
-    performance_management_total = fields.Float(string='Rendimiento total', compute='compute_performance_management_total')
+    contribution_total = fields.Float(string='Aporte total', store=True)
+    performance_management_total = fields.Float(string='Rendimiento total',
+                                                compute='compute_performance_management_total')
     performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
     # payroll_payment_ids = fields.One2many('payroll.payment', 'partner_payrolls_id', string='Pagos de planilla')
-    advanced_payments_ids = fields.One2many('advance.payments', 'advanced_partner_payroll_id', string='Pagos adelantados')
-    balance_advance_contribution_passive = fields.Float(string='Saldo aportes pasivos', compute='compute_balance_advance')
+    advanced_payments_ids = fields.One2many('advance.payments', 'advanced_partner_payroll_id',
+                                            string='Pagos adelantados')
+    balance_advance_contribution_passive = fields.Float(string='Saldo aportes pasivos',
+                                                        compute='compute_balance_advance')
     balance_advance_regulation_cup = fields.Float(string='Saldo taza de regulación', compute='compute_balance_advance')
-    balance_advance_mandatory_contribution = fields.Float(string='Saldo aportes obligatorios', compute='compute_balance_advance')
-    count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios', compute='compute_contributions')
+    balance_advance_mandatory_contribution = fields.Float(string='Saldo aportes obligatorios',
+                                                          compute='compute_balance_advance')
+    count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
+                                                              compute='compute_contributions')
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
         self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
-                    'rod_cooperativa_aportes.miscellaneous_income')
+            'rod_cooperativa_aportes.miscellaneous_income')
         for record in self:
             verify = len(record.payroll_payments_ids.filtered(
                 lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.miscellaneous_income > 0))
@@ -76,16 +82,18 @@ class PartnerPayroll(models.Model):
                 record.miscellaneous_income = 0
             # count_mandatory_contribution = len(record.payroll_payments_ids.filtered())
             periods = self.env['ir.config_parameter'].sudo().get_param(
-                    'rod_cooperativa_aportes.month_ids')
+                'rod_cooperativa_aportes.month_ids')
             mandatory_contribution = float(record.env['ir.config_parameter'].sudo().get_param(
-                    'rod_cooperativa_aportes.mandatory_contribution_certificate'))
+                'rod_cooperativa_aportes.mandatory_contribution_certificate'))
             year_now = datetime.now().year
             filter_periods = re.findall(r'\d+', periods)
             count_periods = len(filter_periods)
             count_mandatory_contributions = count_periods * mandatory_contribution
-            verificate_payments = record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.payment_date.year == year_now)
+            verificate_payments = record.payroll_payments_ids.filtered(
+                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.payment_date.year == year_now)
             sum_verificate_payments = sum(verificate_payments.mapped('mandatory_contribution_certificate'))
             record.mandatory_contribution_pending = count_mandatory_contributions - sum_verificate_payments
+
     @api.model
     def create(self, vals):
         name = self.env['ir.sequence'].next_by_code('partner.payroll')
@@ -96,11 +104,11 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_contributions(self):
         for record in self:
-            record.voluntary_contribution_certificate_total = sum(
-                record.payroll_payments_ids.filtered(
-                    lambda x: (x.state == 'transfer' or x.state == 'ministry_defense')).mapped(
-                    'mandatory_contribution_certificate'))
-            record.count_mandatory_contribution_certificate = len(record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
+            record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
+                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense')).mapped(
+                'voluntary_contribution_certificate'))
+            record.count_mandatory_contribution_certificate = len(
+                record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
 
     def init_payroll_partner_wizard(self):
         # Acción para abrir el wizard
@@ -134,6 +142,7 @@ class PartnerPayroll(models.Model):
     def compute_partner_status(self):
         for record in self:
             record.partner_status = record.partner_id.status
+
     def wizard_pay_contribution(self):
         # Acción para abrir el wizard
         # Puedes personalizar esta función según tus necesidades
@@ -254,6 +263,7 @@ class PartnerPayroll(models.Model):
             # 'context': context,
             'target': 'new',
         }
+
     def resume_process(self):
         for record in self:
             if record.date_burn_partner != False:
@@ -281,4 +291,3 @@ class PartnerPayroll(models.Model):
     #             'partner_payroll_id': record.id,
     #
     #         })
-

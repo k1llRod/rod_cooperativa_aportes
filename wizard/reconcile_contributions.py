@@ -40,7 +40,6 @@ class ReconcileContributions(models.TransientModel):
             self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.miscellaneous_income'))
         mandatory_contribution_certificate = self.env['ir.config_parameter'].sudo().get_param(
             'rod_cooperativa_aportes.mandatory_contribution_certificate')
-
         period = self.month + '/' + self.year
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].search(
             [('period_process', '=', period), ('state', '=', 'draft')])
@@ -53,24 +52,27 @@ class ReconcileContributions(models.TransientModel):
             search_partner = filing_cabinet_ids.filtered(lambda x: x.eit_item == partner.partner_id.code_contact)
             if search_partner:
                 if len(partner.payroll_payments_ids) == 0:
-                    partner.payroll_payments_ids = [
-                        (0, 0, {'payment_date': self.date_field_select, 'income': search_partner.amount_bs,
-                                'state': 'ministry_defense', 'income': search_partner.amount_bs,
-                                'mandatory_contribution_certificate': mandatory_contribution_certificate})]
+                    val = {'partner_payroll_id': partner.id,
+                           'payment_date': self.date_field_select,
+                           'income': search_partner.amount_bs,
+                           'income_passive': 0,
+                           'drawback': self.drawback}
                 else:
                     val = {'partner_payroll_id': partner.id,
                            'payment_date': self.date_field_select,
                            'income': search_partner.amount_bs,
-                           'state': 'ministry_defense', 'drawback': self.drawback}
-                    mo = self.env['payroll.payments'].create(val)
-                    # mo.onchange_income()
-                    mo.onchange_drawback()
-                    if self.drawback == True:
-                        list = ''
-                        for rec in self.months:
-                            list = rec.name + ',' + list
-                        partner.message_post(body="Reintegro: " + list)
-                        mo.message_post(body="Reintegro: " + list)
+                           'income_passive': 0,
+                           'drawback': self.drawback}
+                mo = self.env['payroll.payments'].create(val)
+                mo.onchange_drawback()
+                mo.ministry_defense()
+                # mo.onchange_income()
+                if self.drawback == True:
+                    list = ''
+                    for rec in self.months:
+                        list = rec.name + ',' + list
+                    partner.message_post(body="Reintegro: " + list)
+                    mo.message_post(body="Reintegro: " + list)
 
                 search_partner.date_process = self.date_field_select
                 search_partner.state = 'reconciled'

@@ -91,3 +91,12 @@ class ResPartner(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    def init_massive_payment(self):
+        partners_off = self.env['partner.payroll'].search([])
+        domain = []
+        for partner in partners_off:
+            domain.append(partner.partner_id.id)
+        partners_init = self.filtered(lambda x:x.id not in domain)
+        for rec in partners_init:
+            rec.init_partner()

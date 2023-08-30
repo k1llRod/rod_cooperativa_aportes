@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="rod_layout">
+            <div class="header">
+                <div class="row">
+                    <div class="o_background_header">
+                        <table style="width:100%;font-size:14px;">
+                            <tr>
+                                <td style="width:500px;text-align:center;center;">COOPERATIVA DE
+                                    AHORRO Y CREDITO DE
+                                    VINCULO LABORAL
+                                </td>
+                                <td style="width:160px"></td>
+                                <td>Paginas:
+                                    <span class="topage"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;center;">COA - 4 DE DICIEMBRE R.L.
+                                </td>
+                                <td></td>
+                                <td>Fecha:
+                                    <!--                                    <t t-set="now" t-value="context.get('tz').localize(fields.Datetime.now())" />-->
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">LA PAZ - BOLIVIA</td>
+                                <td></td>
+                                <td>Usuario:
+                                    <span t-esc="user.name"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <div><center><h2>FILIACION PERSONAL DEL ASOCIADO(A)</h2></center></div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="article o_report_standard">
+                <t t-out="0"/>
+            </div>
+            <div class="footer o_standard_footer">
+                <center>
+                    Page:
+                    <span class="page"/>
+                    /
+                    <span class="topage"/>
+                </center>
+            </div>
+        </template>
+
+        <template id="report_res_partner">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="rod_cooperativa_aportes.rod_layout">
+                        <div class="page"
+                             t-att-style="'background-image: url(/rod_cooperativa_aportes/static/src/img/background_cooperativa.png);background-repeat:repeat-y; height:850px; background-position-x:center;'"
+                             style="border:1px solid black;">
+                            <div class="body">
+                                <style>
+                                    .negrita{
+                                    font-weight: bold;
+                                    }
+                                    .table_negrita td{
+                                    font-weight: bold;
+                                    }
+                                </style>
+                                <table class="table table-bordered"
+                                       style="width:100%; font-family:Arial;font-size:13px;">
+                                    <tr>
+                                        <td class="negrita" style="width:200px;">CODIGO BOLETA DE PAGO</td>
+                                        <td style="width:220px;">
+                                            <span t-field="o.code_contact"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td colspan="2"><img t-att-src="o.image_1920"/></td>
+<!--                                        <td></td>-->
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">GRADO:</td>
+                                        <td>
+                                            <span t-field="o.category_partner_id"/>
+                                        </td>
+                                        <td class="negrita" style="width:190px;">ARMA ORIGEN:</td>
+                                        <td>
+                                            <span t-field="o.weapon"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">ESPECIALIDAD:</td>
+                                        <td>
+                                            <span t-field="o.specialty"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">NOMBRES(S):</td>
+                                        <td>
+                                            <span t-field="o.name_contact"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">AP. PATERNO:</td>
+                                        <td>
+                                            <span t-field="o.paternal_surname"/>
+                                        </td>
+                                        <td class="negrita">AP. MATERNO</td>
+                                        <td>
+                                            <span t-field="o.maternal_surname"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">LUGAR DE NACIMIENTO:</td>
+                                        <td>
+                                            <span t-field="o.state_id"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">FECHA DE NACIMIENTO:</td>
+                                        <td>
+                                            <span t-field="o.date_birthday"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">GRUPO SANGUINEO:</td>
+                                        <td>
+                                            <span t-field="o.type_blood"/>
+                                        </td>
+                                        <td class="negrita">ALERGIAS:</td>
+                                        <td>
+                                            <span t-field="o.allergies"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">AÑO DE EGRESO</td>
+                                        <td>
+                                            <span t-field="o.graduation_year"/>
+                                        </td>
+                                        <td class="negrita">NRO. C.I.</td>
+                                        <td>
+                                            <span t-field="o.vat"/>
+                                        </td>
+                                        <td class="negrita" style="width:50px;">EXT</td>
+                                        <td>
+                                            <span t-field="o.zip"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">CARNET MILITAR No.:</td>
+                                        <td>
+                                            <span t-field="o.ci_military"/>
+                                        </td>
+                                        <td class="negrita">CARNET COSSMIL No.:</td>
+                                        <td>
+                                            <span t-field="o.ci_cossmil"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">CORREO ELECTRONICO:</td>
+                                        <td>
+                                            <span t-field="o.email"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">ESTADO CIVIL:</td>
+                                        <td>
+                                            <span t-field="o.marital_status"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">DIRECCION:</td>
+                                        <td>
+                                            <span t-field="o.street"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="negrita">CELULAR</td>
+                                        <td>
+                                            <span t-field="o.mobile"/>
+                                        </td>
+                                        <td class="negrita">TELEFONO DOM.</td>
+                                        <td>
+                                            <span t-field="o.phone"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <center>
+                                    <h3>NOMBRE DE LA ESPOSA(O) E HIJOS</h3>
+                                </center>
+                                <br/>
+                                <table class="table table-bordered"
+                                       style="width:100%; font-family:Arial;font-size:13px;">
+                                    <thead>
+                                        <th>NOMBRES Y APELLIDOS</th>
+                                        <th>PARENTESCO</th>
+                                        <th>FECHA NAC.</th>
+                                        <th>Nro. Celular</th>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.family_id" t-as="p">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="p.name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="p.kinship"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="p.date_of_birth"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="p.nro_celular"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

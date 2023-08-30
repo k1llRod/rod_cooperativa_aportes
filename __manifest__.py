@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','contacts','mail', 'rod_cooperativa','web_notify','web_responsive','web'],
+    'depends': ['base','account','contacts','mail', 'rod_cooperativa','web_notify','web_responsive','web'],
 
     # always loaded
     'data': [
@@ -50,5 +50,7 @@
         'reports/payroll_payment_pdf.xml',
         'reports/partner_payroll_pdf.xml',
         'reports/report_payment_note_template.xml',
+        'reports/partner_payroll_partner_pdf.xml',
+        'reports/report_res_partner_pdf.xml',
     ],
 }

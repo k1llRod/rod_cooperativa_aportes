@@ -61,5 +61,12 @@
                 </xpath>
             </field>
         </record>
+        <record id="action_init_massive_payment" model="ir.actions.server">
+            <field name="name">Iniciar Aportes</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="binding_model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = records.init_massive_payment()</field>
+        </record>
     </data>
 </odoo>

@@ -10,8 +10,22 @@
                     <header>
                         <button name="homologate_data_mindef" string="Homologar" type="object" class="oe_highlight"/>
                     </header>
-                    <field name="name"/>
+                    <field name="name" optional="hide"/>
+                    <field name="management"/>
+                    <field name="month"/>
+                    <field name="supporting_document"/>
+                    <field name="eit_codorg"/>
                     <field name="organism"/>
+                    <field name="eit_codrep"/>
+                    <field name="distribution"/>
+                    <field name="group"/>
+                    <field name="group_description"/>
+                    <field name="identification"/>
+                    <field name="creditor"/>
+                    <field name="code_concept"/>
+                    <field name="code_creditor"/>
+                    <field name="bank_account"/>
+                    <field name="personal_code"/>
                     <field name="eit_item"/>
                     <field name="ci"/>
                     <field name="degree"/>
