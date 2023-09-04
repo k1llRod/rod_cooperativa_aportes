@@ -93,6 +93,7 @@
                                 <field name="partner_status_especific" readonly="1"/>
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
+                                <field name="literal_total_voluntary_contribution"/>
                                 <field name="performance_management_total"/>
                                 <field name="contribution_total" readonly="1"/>
 

@@ -52,5 +52,6 @@
         'reports/report_payment_note_template.xml',
         'reports/partner_payroll_partner_pdf.xml',
         'reports/report_res_partner_pdf.xml',
+        'reports/certificate_voluntary.xml',
     ],
 }

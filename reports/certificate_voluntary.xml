@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="internal_layout_header" inherit_id="web.internal_layout">
+            <xpath expr="//div[1]" position="replace">
+                <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
+                    <div class="o_background_header">
+                        <div class="content_header" style="width:100%;">
+                            <ul style="list-style:none;text-align:center;margin:0;padding:0;">
+                                <li>
+                                    COOPERATIVA DE
+                                    AHORRO Y CREDITO DE
+                                    VINCULO LABORAL
+                                </li>
+                                <li>
+                                    COA - 4 DE DICIEMBRE R.L.
+                                </li>
+                                <li>
+                                    Personería Jurídica No. 102/2022 de fecha
+                                    28/04/2022
+                                </li>
+                                <li>
+                                    Registro No. 02.02.1142
+                                </li>
+                                <li>
+                                    <img t-att-src="'/rod_cooperativa_aportes/static/src/img/cooperativa_fondo.png'"
+                                         style="width:100px;height:100px;margin-top:10px;margin-bottom:10px;"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <template id="report_voluntary_certificate">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.internal_layout">
+                        <div class="page"
+                             t-att-style="'background-image: url(/rod_cooperativa_aportes/static/src/img/cooa_transparencia.png);background-repeat:repeat-y;background-position-x:center;'">
+                            <div class="content"
+                                 style="font-family: 'Times New Roman', Times,serif;padding-top:50px;margin-top:50px;">
+                                <p style="font-size:20px;margin-top:40px;font-style:italic;padding-right:10px;font-weight:bold;text-align:right;">
+                                    CERT. APOR. COA-4 DE DICIEMBRE No.: <span style="color:red;" t-field="o.name" />
+                                </p>
+
+                                <p class="text-justify"
+                                   style="font-size:24px;margin-top:40px;font-style:italic;padding-right:10px;">
+                                    La Cooperativa de Ahorro y Crédito de Vínculo Laboral “COA-4 DE DICIEMBRE” R.L.
+                                    Sector
+                                    Servicios, Clase
+                                    Ahorro y Crédito, Ubicado en la Av. Ecuador, Edificio Miguel Ángel Mezzanine Of. 9,
+                                    Zona
+                                    Sopocachi del
+                                    Departamento de La Paz con Personería Jurídica <strong>Nro. 102/2022</strong> de
+                                    fecha
+                                    28 de
+                                    abril de 2022, Constituido
+                                    en fecha 12 de Noviembre de 2021, extiende el presente:
+                                </p>
+                                <br/>
+                                <center>
+                                    <h2>
+                                        <strong>CERTIFICADO DE APORTACIÓN</strong>
+                                    </h2>
+                                </center>
+                                <br/>
+                                <br/>
+                                <div class="text-justify" style="font-size:24px;font-style:italic;">
+                                    <ul style="list-style:none;padding:0;margin:0;">
+                                        <li>A favor del asociado (a): <strong><span t-field="o.partner_id.name"> </span></strong>,con
+                                            Cedula
+                                            de
+                                            Identidad No.
+                                            <strong><span t-field="o.partner_id.vat"></span></strong>
+                                        </li>
+                                        <li>Ha suscrito el valor nominal de
+                                            <strong><span>Bs. <span t-field="o.mandatory_contribution_certificate_total" />.- (CIEN 00/100 BOLIVIANOS.)</span></strong>
+                                        </li>
+                                        <li>En cumplimiento a la Ley General de Cooperativas.</li>
+                                        <li>Lugar y fecha de Emisión: <strong>La Paz
+                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d de %B de %Y')"/></strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <br/>
+
+                                <div>
+                                    <table width="100%" style="margin-top:70px; font-family:Times; font-style:italic;">
+                                        <tr style="text-align:center;">
+                                            <td>
+                                                <ul style="list-style:none;">
+                                                    <li>Rolando Martin Vargas Iriarte</li>
+                                                    <li>
+                                                        <span style="font-weight:bold;">TESORERO</span>
+                                                    </li>
+                                                    <li>
+                                                        <span style="font-weight:bold;">CONSEJO DE ADMINISTRACIÓN</span>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul style="list-style:none;">
+                                                    <li>Elmer Antonio Yave Marín</li>
+                                                    <li style="font-weight:bold;">SECRETARIO GENERAL</li>
+                                                    <li style="font-weight:bold;">CONSEJO DE ADMINISTRACIÓN</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="height:70px;">
+
+                                            </td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+                                            <td colspan="2">
+                                                <ul style="list-style:none;">
+                                                    <li>Dante Saúl Navarro Rivera</li>
+                                                    <li style="font-weight:bold;">PRESIDENTE</li>
+                                                    <li style="font-weight:bold;">CONSEJO DE ADMINISTRACIÓN</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="footer" style="font-size:13px;margin-top:20px;padding-top:20px;">
+                            <p style="width:800px;font-family:'Times New Roman',Times,serif;margin:auto;">
+                                <strong>Nota.-</strong>Los certificados de Aportaciones no son documentos mercantiles,
+                                ni podran circular en el mercado
+                                , el aporte solo sera reintegrable por la Sociedad Cooperativa que los haya hecho.
+                            </p>
+
+                            <p style="border-top:2px solid black;width:700px;margin:auto;text-align:center;">
+                                <strong>E-mail: coaajto@gmail.com TEL/FAX: 2420530, CELULAR: 68212344</strong>
+                            </p>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -82,9 +82,10 @@ class ResPartner(models.Model):
     def init_loan(self):
         loan_application = self.env['loan.application'].create({'partner_id': self.id,
                                                                 'date_application': datetime.now(),
+                                                                'type_loan': 'regular',
                                                                 })
         return {
-            'name': 'Detalle del Registro',
+            'name': 'Detalle del prestamo',
             'type': 'ir.actions.act_window',
             'res_model': 'loan.application',
             'res_id': loan_application.id,

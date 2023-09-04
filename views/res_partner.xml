@@ -12,7 +12,7 @@
                         <button name="init_partner" string="Iniciar aportes" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'verificate'),('contributions_count','>','0')]}"/>
                         <button name="init_loan" string="Iniciar prestamo" type="object"
-                                attrs="{'invisible': ['|',('state', '!=', 'verificate'),('contributions_count','>','0')]}"/>
+                                attrs="{'invisible': ['|',('state', '!=', 'verificate'),('loan_count','>','0')]}"/>
                         <button name="approve_verification" string="Verificar" type="object"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="approve_partner" string="Aprobar socio" type="object"
@@ -68,5 +68,7 @@
             <field name="state">code</field>
             <field name="code">action = records.init_massive_payment()</field>
         </record>
+
+
     </data>
 </odoo>

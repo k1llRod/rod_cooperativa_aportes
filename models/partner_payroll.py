@@ -3,6 +3,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 import re
+import inflect
+from translate import Translator
 
 
 class PartnerPayroll(models.Model):
@@ -67,6 +69,7 @@ class PartnerPayroll(models.Model):
                                                           compute='compute_balance_advance')
     count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
                                                               compute='compute_contributions')
+    literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
@@ -277,6 +280,15 @@ class PartnerPayroll(models.Model):
     def compute_balance_advance(self):
         for record in self:
             record.balance_advance = record.contribution_total - record.performance_management_total
+
+    @api.depends('mandatory_contribution_certificate_total')
+    def compute_contributions_literal(self):
+        p = inflect.engine()
+        # translator = Translator(to_lang="es")
+        literal_english = p.number_to_words(int(self.mandatory_contribution_certificate_total))
+        # literal_spanish = translator.translate(literal_english)
+        self.literal_total_voluntary_contribution = literal_english.upper()
+
 
     # def payment_advance(self):
     #     for record in self:
