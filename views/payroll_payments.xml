@@ -155,10 +155,9 @@
                         <field name="partner_code_contact" string="Codigo socio"/>
                         <field name="period_register"/>
                         <field name="income"
-                               attrs="{'readonly': [('state', '!=', 'draft')],'column_invisible':[('parent.partner_status', '=', 'active')]}"
                                sum="Total"/>
                         <field name="income_passive"
-                               attrs="{'column_invisible': [('parent.partner_status', '=', 'passive')]}"/>
+                               sum="Total"/>
                         <field name="miscellaneous_income" optional="hide"/>
                         <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
                         <field name="mandatory_contribution_certificate"
