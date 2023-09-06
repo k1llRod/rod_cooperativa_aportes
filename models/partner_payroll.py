@@ -69,7 +69,7 @@ class PartnerPayroll(models.Model):
                                                           compute='compute_balance_advance')
     count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
                                                               compute='compute_contributions')
-    literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
+    # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
