@@ -33,6 +33,7 @@ class NominalRelationshipMindefContributions(models.Model):
     date_register = fields.Date(string='Fecha de registro', default=fields.Date.today())
     date_process = fields.Date(string='Fecha de proceso')
     period_process = fields.Char(string='Periodo de proceso')
+    drawback = fields.Boolean(string='Reintegro')
     state = fields.Selection([('draft', 'Borrador'), ('no_reconciled', 'No conciliado'), ('reconciled', 'Conciliado'),
                               ('observed', 'Observado')], string='Estado')
 

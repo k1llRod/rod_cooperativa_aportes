@@ -36,6 +36,7 @@
                     <field name="date_register" optional="hide"/>
                     <field name="date_process" optional="hide"/>
                     <field name="period_process"/>
+                    <field name="drawback" readonly="1"/>
                     <field name="state" />
                 </tree>
             </field>
