@@ -64,7 +64,7 @@ class ReconcileContributions(models.TransientModel):
                            'income_passive': 0,
                            'drawback': self.drawback}
                 mo = self.env['payroll.payments'].create(val)
-                mo.onchange_drawback()
+                if self.drawback == True: mo.onchange_drawback()
                 mo.ministry_defense()
                 # mo.onchange_income()
                 if self.drawback == True:
