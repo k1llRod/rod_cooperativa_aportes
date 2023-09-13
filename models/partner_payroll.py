@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 import re
 # import inflect
-from translate import Translator
+# from translate import Translator
 
 
 class PartnerPayroll(models.Model):
