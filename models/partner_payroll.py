@@ -35,7 +35,7 @@ class PartnerPayroll(models.Model):
     advanced_payments = fields.Float(string='Tasa regulacion Adelantado')
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',
                                            tracking=True)
-    # capital_base = fields.Float(string='Capital base', store=True, tracking=True)
+    capital_initial = fields.Float(string='Capital inicial', compute='compute_contributions')
     # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
@@ -112,6 +112,8 @@ class PartnerPayroll(models.Model):
                 'voluntary_contribution_certificate'))
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
+            record.capital_initial = sum(record.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest').mapped('voluntary_contribution_certificate'))
+
 
     def init_payroll_partner_wizard(self):
         # Acción para abrir el wizard
@@ -175,7 +177,7 @@ class PartnerPayroll(models.Model):
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
-            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total
+            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial
 
     def return_draft(self):
         if self.state == 'process' and self.count_pay_contributions == 0:

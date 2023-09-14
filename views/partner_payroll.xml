@@ -91,6 +91,7 @@
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_status" readonly="1"/>
                                 <field name="partner_status_especific" readonly="1"/>
+                                <field name="capital_initial" />
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
 <!--                                <field name="literal_total_voluntary_contribution"/>-->

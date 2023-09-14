@@ -35,8 +35,8 @@ class PayrollPayments(models.Model):
     interest = fields.Float(string='Interes')
     drawback = fields.Boolean(string='Reintegro')
     switch_draf = fields.Boolean(string='Switch draft')
-    historical_contribution_coaa = fields.Integer(string='Aporte historico COAA')
-    historical_interest_coaa = fields.Integer(string='Rendimiento historico COAA')
+    historical_contribution_coaa = fields.Float(string='Aporte historico COAA')
+    historical_interest_coaa = fields.Float(string='Rendimiento historico COAA')
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
     advanced_automata = fields.Boolean(string='Adelanto automatico')
     register_advanced_payments_ids = fields.Many2one('advance.payments')
@@ -79,11 +79,16 @@ class PayrollPayments(models.Model):
         }
 
     @api.depends('income', 'income_passive', 'mandatory_contribution_certificate', 'miscellaneous_income',
-                 'regulation_cup')
+                 'regulation_cup','historical_contribution_coaa','historical_interest_coaa')
     def compute_voluntary_contribution_certificate(self):
         for record in self:
             if record.partner_payroll_id.partner_status == 'active':
                 record.voluntary_contribution_certificate = record.income - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
+                if record.state == 'contribution_interest':
+                    record.regulation_cup = 0
+                    record.miscellaneous_income = 0
+                    record.mandatory_contribution_certificate = 0
+                    record.voluntary_contribution_certificate = record.historical_contribution_coaa + record.historical_interest_coaa
             else:
                 record.voluntary_contribution_certificate = record.income_passive - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
 
