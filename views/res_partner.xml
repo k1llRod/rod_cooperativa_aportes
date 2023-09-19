@@ -13,6 +13,8 @@
                                 attrs="{'invisible': ['|',('state', '!=', 'verificate'),('contributions_count','>','0')]}"/>
                         <button name="init_loan" string="Iniciar prestamo" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'verificate'),('loan_count','>','0')]}"/>
+                        <button name="init_loan_emergency" string="Iniciar prestamo de emergencia" type="object"
+                                />
                         <button name="approve_verification" string="Verificar" type="object"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="approve_partner" string="Aprobar socio" type="object"
