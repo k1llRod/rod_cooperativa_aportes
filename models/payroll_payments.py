@@ -13,10 +13,20 @@ class PayrollPayments(models.Model):
 
     name = fields.Char(string='ID aporte')
     partner_payroll_id = fields.Many2one('partner.payroll', string='Planilla de socio')
-    partner_name = fields.Char(String='Nombre del socio', compute='_get_partner_name', store=True)
-    partner_code_contact = fields.Char(string='Codigo de socio', compute="_get_partner_name", store=True)
-    partner_status_especific = fields.Char(string='Situación de socio', compute="_get_partner_name", store=True)
-    partner_status = fields.Char(string='Situación de socio', compute="_get_partner_name", store=True)
+    partner_name = fields.Char(String='Nombre del socio', related='partner_payroll_id.partner_id.name', store=True)
+    partner_code_contact = fields.Char(string='Codigo de socio', related='partner_payroll_id.partner_id.code_contact', store=True)
+    partner_status = fields.Selection([('active', 'Activo'),
+                                       ('active_reserve', 'Reserva activa'),
+                                       ('passive', 'Servicio pasivo'),
+                                       ('leave', 'Baja')], string="Situacion general",
+                                      related='partner_payroll_id.partner_id.partner_status', store=True)
+    partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
+                                                 ('letter_a', 'Letra "A" de disponibilidad'),
+                                                 ('passive_reserve_a', 'Reserva pasivo "A"'),
+                                                 ('passive_reserve_b', 'Reserva pasivo "B"'),
+                                                 ('leave', 'Baja')], string='Tipo de asociado',
+                                                related='partner_payroll_id.partner_id.partner_status_especific', store=True)
+
     income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
     income_passive = fields.Float(string='DESC. PASIVO', required=True, tracking=True)
     mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)
@@ -41,13 +51,13 @@ class PayrollPayments(models.Model):
     advanced_automata = fields.Boolean(string='Adelanto automatico')
     register_advanced_payments_ids = fields.Many2one('advance.payments')
 
-    @api.depends('partner_payroll_id')
-    def _get_partner_name(self):
-        for record in self:
-            record.partner_name = record.partner_payroll_id.partner_id.name
-            record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
-            # record.partner_status_especific = record.partner_payroll_id.partner_status_especific
-            record.partner_status = record.partner_payroll_id.partner_status
+    # @api.depends('partner_payroll_id')
+    # def _get_partner_name(self):
+    #     for record in self:
+    #         record.partner_name = record.partner_payroll_id.partner_id.name
+    #         record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
+    #         # record.partner_status_especific = record.partner_payroll_id.partner_status_especific
+    #         record.partner_status = record.partner_payroll_id.partner_status
 
 
     @api.depends('payment_date')

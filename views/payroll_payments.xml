@@ -9,6 +9,8 @@
                 <tree editable="bottom" decoration-bf="1">
                     <field name="name" readonly="1" optional="hide"/>
                     <field name="partner_payroll_id" invisible="1"/>
+                    <field name="partner_status"/>
+                    <field name="partner_status_especific"/>
                     <field name="period_register"/>
                     <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                     <field name="income_passive"/>
@@ -37,17 +39,17 @@
             <field name="arch" type="xml">
                 <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
                     <header>
-                        <button name="confirm_payroll" string="Por transferencia bancaria" type="object"
-                                class="oe_highlight"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+<!--                        <button name="confirm_payroll" string="Por transferencia bancaria" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible': [('state', '!=', 'draft')]}"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>-->
                         <button name="ministry_defense" string="Ministerio de defensa" type="object"
                                 class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
-                        <button name="contribution_interest" string="Aporte y rendimiento COAA" type="object"
-                                attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','=','passive_reserve_b')]}"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+<!--                        <button name="contribution_interest" string="Aporte y rendimiento COAA" type="object"-->
+<!--                                attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','=','passive_reserve_b')]}"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>-->
                         <!--                        <button name="drawback" string="Reintegro" type="object"-->
                         <!--                                class="oe_highlight"-->
                         <!--                                attrs="{'invisible': [('state', '!=', 'draft')]}"-->
@@ -69,11 +71,13 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_status" invisible="1"/>
-                                <field name="partner_status_especific" invisible="1"/>
-                                <field name="partner_payroll_id" invisible="1"/>
-                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('partner_status', '!=', 'active')]}"/>
-                                <field name="income_passive" attrs="{'invisible': [('partner_status', '!=', 'passive')], 'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="partner_payroll_id"/>
+                                <field name="partner_status"/>
+                                <field name="partner_status_especific"/>
+                                <field name="partner_name"/>
+                                <field name="partner_code_contact"/>
+<!--                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('partner_status', '!=', 'active')]}"/>-->
+<!--                                <field name="income_passive" attrs="{'invisible': [('partner_status', '!=', 'passive')], 'readonly': [('state', '!=', 'draft')]}"/>-->
                                 <field name="miscellaneous_income" />
                                 <field name="regulation_cup"/>
                                 <field name="mandatory_contribution_certificate"/>
@@ -149,10 +153,10 @@
                 <xpath expr="//tree" position="replace">
                     <tree>
                         <field name="name" readonly="1" optional="show"/>
-                        <field name="partner_status_especific" invisible="1"/>
                         <field name="partner_payroll_id" optional="hide"/>
                         <field name="partner_name" string="Socio" optional="show"/>
                         <field name="partner_code_contact" string="Codigo socio"/>
+                        <field name="partner_status_especific" />
                         <field name="period_register"/>
                         <field name="income"
                                sum="Total"/>

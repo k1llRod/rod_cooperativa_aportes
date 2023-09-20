@@ -16,15 +16,19 @@
                     </header>
                     <field name="name" optional="hide"/>
                     <field name="partner_id"/>
+                    <field name="code_contact"/>
+                    <field name="vat"/>
                     <field name="partner_status"/>
-                    <field name="partner_status_especific" optional="hide"/>
-                    <field name="date_registration"/>
+                    <field name="capital_initial"/>
+                    <field name="partner_status_especific"/>
+                    <field name="date_registration" optional="hide"/>
                     <field name="date_burn_partner" optional="hide"/>
                     <field name="advanced_payments" optional="hide"/>
                     <field name="count_pay_contributions" optional="hide"/>
-                    <field name="outstanding_payments"/>
-                    <field name="voluntary_contribution_certificate_total"/>
-                    <field name="mandatory_contribution_certificate_total"/>
+                    <field name="outstanding_payments" optional="hide"/>
+                    <field name="voluntary_contribution_certificate_total" optional="hide"/>
+                    <field name="mandatory_contribution_certificate_total" optional="hide"/>
+                    <field name="performance_management_total"/>
                     <field name="contribution_total"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
                            widget="badge"/>
@@ -62,8 +66,8 @@
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'draft'),('date_burn_partner','!=',False)]}"/>
-<!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
-<!--                                />-->
+                        <!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
+                        <!--                                />-->
                         <button name="validate_partner_passive" string="Validar asociado" type="object"/>
 
                         <field name="state" widget="statusbar"/>
@@ -92,10 +96,10 @@
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_status" readonly="1"/>
                                 <field name="partner_status_especific" readonly="1"/>
-                                <field name="capital_initial" />
+                                <field name="capital_initial"/>
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
-<!--                                <field name="literal_total_voluntary_contribution"/>-->
+                                <!--                                <field name="literal_total_voluntary_contribution"/>-->
                                 <field name="performance_management_total"/>
                                 <field name="contribution_total" readonly="1"/>
 
@@ -103,11 +107,13 @@
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="date_registration" readonly="1"/>
-<!--                                <field name="advanced_payments" />-->
-<!--                                <field name="advance_mandatory_certificate" widget="integer"/>-->
+                                <!--                                <field name="advanced_payments" />-->
+                                <!--                                <field name="advance_mandatory_certificate" widget="integer"/>-->
                                 <field name="miscellaneous_income" string="Costo afiliación pendiente"/>
                                 <field name="mandatory_contribution_pending" position="attrs">
-                                    <attribute name="string">Gestión: <xpath expr="//field[@name='mandatory_contribution_pending']/@string"/></attribute>
+                                    <attribute name="string">Gestión:
+                                        <xpath expr="//field[@name='mandatory_contribution_pending']/@string"/>
+                                    </attribute>
                                 </field>
                                 <field name="count_mandatory_contribution_certificate"/>
 
@@ -120,7 +126,7 @@
                                 <field name="payroll_payments_ids">
                                     <tree editable="bottom">
                                         <field name="name" readonly="1" optional="hide"/>
-                                        <field name="partner_status_especific" invisible="1"/>
+<!--                                        <field name="partner_status_especific" invisible="1"/>-->
                                         <field name="period_register"/>
                                         <field name="income"
                                                attrs="{'readonly': [('state', '!=', 'draft')], 'column_invisible':[('parent.partner_status', '!=', 'active')]}"
@@ -145,7 +151,8 @@
                                         <field name="register_advanced_payments_ids" optional="hide" readonly="1"/>
                                         <field name="advanced_automata" optional="hide" readonly="1"/>
                                         <field name="state" decoration-info="state == 'contribution_interest'"
-                                               decoration-success="state in ['transfer','ministry_defense']" decoration-warning="state == 'draft'"
+                                               decoration-success="state in ['transfer','ministry_defense']"
+                                               decoration-warning="state == 'draft'"
                                                widget="badge"/>
                                         <button name="open_one2many_line" type="object" class="oe_highlight"
                                                 icon="fa-eye"/>
@@ -155,9 +162,9 @@
                             <page string="Rendimiento">
                                 <field name="performance_management_ids" editable="top"/>
                             </page>
-<!--                            <page string="Pagos fix">-->
-<!--                                <field name="payroll_payment_ids"/>-->
-<!--                            </page>-->
+                            <!--                            <page string="Pagos fix">-->
+                            <!--                                <field name="payroll_payment_ids"/>-->
+                            <!--                            </page>-->
                             <page string="Pagos adelantados">
                                 <field name="advanced_payments_ids"/>
                             </page>
@@ -169,6 +176,27 @@
                         <field name="message_ids"/>
                     </div>
                 </form>
+            </field>
+        </record>
+        <record id="partner_payroll_view_search_cooperativa" model="ir.ui.view">
+            <field name="name">partner_payroll.view.search.cooperativa</field>
+            <field name="model">partner.payroll</field>
+            <!--            <field name="inherit_id" ref="base.view_res_partner_filter"/>-->
+            <field name="arch" type="xml">
+                <search string="Buscar asociados">
+                    <field name="code_contact"/>
+                    <field name="vat" string="C.I."/>
+                    <field name="partner_id"/>
+<!--                    <filter name="quantity_capital_initial"-->
+<!--                            string="Capital inicial"-->
+<!--                            domain="[('capital_initial', '!=', 0)]"/>-->
+                    <group expand="0" string="Group By">
+                        <filter string="Tipo de asociado"
+                                name="group_partner_status"
+                                context="{'group_by': 'partner_status_especific'}"/>
+
+                    </group>
+                </search>
             </field>
         </record>
 

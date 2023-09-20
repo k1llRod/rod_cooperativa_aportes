@@ -17,25 +17,26 @@ class PartnerPayroll(models.Model):
                              default='draft')
     partner_id = fields.Many2one('res.partner', string='Socio')
 
-    partner_status = fields.Selection([('activate', 'Servicio activo'),
+    partner_status = fields.Selection([('active', 'Activo'),
                                        ('active_reserve', 'Reserva activa'),
-                                       ('passive_reserve_a', 'Reserva pasivo "A"'),
-                                       ('passive_reserve_b', 'Reserva pasivo "B"')],
-                                      string='Situación general', related='partner_id.partner_status', readonly=True)
+                                       ('passive', 'Servicio pasivo'),
+                                       ('leave', 'Baja')], string="Situacion general",
+                                      related='partner_id.partner_status', store=True)
     partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
                                                  ('passive_reserve_a', 'Reserva pasivo "A"'),
                                                  ('passive_reserve_b', 'Reserva pasivo "B"'),
-                                                 ('leave', 'Baja')], string='Situación de socio',
-                                                related='partner_id.partner_status_especific', readonly=True)
-
+                                                 ('leave', 'Baja')], string='Tipo de asociado',
+                                                related='partner_id.partner_status_especific', store=True)
+    code_contact = fields.Char(string='Código de asociado', related='partner_id.code_contact', store=True)
+    vat = fields.Char(string='CI', related='partner_id.vat')
     date_registration = fields.Datetime(string='Fecha de registro')
     date_burn_partner = fields.Datetime(string='Fecha de afiliacion')
     total_contribution = fields.Float(string='Total aportado')
     advanced_payments = fields.Float(string='Tasa regulacion Adelantado')
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',
                                            tracking=True)
-    capital_initial = fields.Float(string='Capital inicial', compute='compute_contributions')
+    capital_initial = fields.Float(string='Capital inicial', compute='compute_contributions', store=True)
     # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
