@@ -64,6 +64,7 @@
                                 attrs="{'invisible': [('state', '!=', 'draft'),('date_burn_partner','!=',False)]}"/>
 <!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
 <!--                                />-->
+                        <button name="validate_partner_passive" string="Validar asociado" type="object"/>
 
                         <field name="state" widget="statusbar"/>
                     </header>

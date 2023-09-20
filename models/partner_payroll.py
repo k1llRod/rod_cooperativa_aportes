@@ -241,6 +241,10 @@ class PartnerPayroll(models.Model):
                 else:
                     record.state = 'process'
 
+    def validate_partner_passive(self):
+        for record in self:
+            record.state = 'process'
+
     def init_partner_payroll_interest(self):
         # wizard = self.env['set.interes'].create({'partner_payroll_id': self.id})
         for record in self:

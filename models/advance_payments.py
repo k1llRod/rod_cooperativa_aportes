@@ -71,37 +71,42 @@ class AdvancePayments(models.Model):
             n_mand_records = int(count * (record.mandatory_contribution / float(
                 record.env['ir.config_parameter'].sudo().get_param(
                     'rod_cooperativa_aportes.mandatory_contribution_certificate'))))
-            if n_mand_records == n_reg_records:
-                record.state = 'process'
-                for n_reg_records in range(1, n_reg_records + 1):
-                    income_passive_data = income_passive + float(record.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
-                    if n_reg_records == 1:
-                        miscellaneous_income = float(record.env['ir.config_parameter'].sudo().get_param(
-                            'rod_cooperativa_aportes.miscellaneous_income'))
-                        income_passive_data = miscellaneous_income + income_passive_data
-                    else:
-                        miscellaneous_income = 0
+            # if n_mand_records == n_reg_records:
+            record.state = 'process'
+            for n_reg_records in range(1, n_reg_records + 1):
+                income_passive_data = income_passive + float(record.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
+                if n_reg_records == 1:
+                    miscellaneous_income = float(record.env['ir.config_parameter'].sudo().get_param(
+                        'rod_cooperativa_aportes.miscellaneous_income'))
+                    income_passive_data = miscellaneous_income + income_passive_data
+                else:
+                    miscellaneous_income = 0
 
-                    if n_reg_records in filter_periods:
-                        mandatory_contribution = float(record.env['ir.config_parameter'].sudo().get_param(
-                            'rod_cooperativa_aportes.mandatory_contribution_certificate'))
-                        income_passive_data = mandatory_contribution + income_passive_data
-                    else:
-                        mandatory_contribution = 0
-                    first_day_month = datetime(year, month, 1,8,00,00)
-                    record.advanced_partner_payroll_id.payroll_payments_ids.create({
-                        'income': 0,
-                        'income_passive': income_passive_data,
-                        'regulation_cup': record.env['ir.config_parameter'].sudo().get_param(
-                            'rod_cooperativa_aportes.regulation_cup'),
-                        'payment_date': first_day_month,
-                        'miscellaneous_income': miscellaneous_income,
-                        'mandatory_contribution_certificate': mandatory_contribution,
-                        'advanced_automata':True,
-                        'partner_payroll_id': record.advanced_partner_payroll_id.id,
-                        'register_advanced_payments_ids':record.id,
-                    })
+                if n_reg_records in filter_periods:
+                    mandatory_contribution = float(record.env['ir.config_parameter'].sudo().get_param(
+                        'rod_cooperativa_aportes.mandatory_contribution_certificate'))
+                    income_passive_data = mandatory_contribution + income_passive_data
+                else:
+                    mandatory_contribution = 0
+                first_day_month = datetime(year, month, 1,8,00,00)
+                create_passive_contribution = record.advanced_partner_payroll_id.payroll_payments_ids.create({
+                    'income': 0,
+                    'income_passive': income_passive_data,
+                    'regulation_cup': record.env['ir.config_parameter'].sudo().get_param(
+                        'rod_cooperativa_aportes.regulation_cup'),
+                    'payment_date': first_day_month,
+                    'miscellaneous_income': miscellaneous_income,
+                    'mandatory_contribution_certificate': mandatory_contribution,
+                    'advanced_automata':True,
+                    'partner_payroll_id': record.advanced_partner_payroll_id.id,
+                    'register_advanced_payments_ids':record.id,
+                })
+                # create_passive_contribution.onchange_income()
 
+                if month == 12:
+                    month = 1
+                    year += 1
+                else:
                     month += 1
     def draft_lines_payments(self):
         self.state = 'draft'
