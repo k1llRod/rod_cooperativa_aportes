@@ -190,6 +190,10 @@
 <!--                    <filter name="quantity_capital_initial"-->
 <!--                            string="Capital inicial"-->
 <!--                            domain="[('capital_initial', '!=', 0)]"/>-->
+                    <filter name="capital_initial_greater_zero"
+                            string="Capital inicial mayor que '0'"
+                            domain="[('capital_initial','>',0)]"/>
+
                     <group expand="0" string="Group By">
                         <filter string="Tipo de asociado"
                                 name="group_partner_status"
