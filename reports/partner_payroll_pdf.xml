@@ -176,8 +176,8 @@
                                     </thead>
                                     <tbody style="font-size:12px;">
                                         <tr t-set="acumulador" t-value="0"/>
-                                        <t t-foreach="o.payroll_payments_ids" t-as="p">
-                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense'">
+                                        <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['payment_date'])" t-as="p">
+                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
                                                     <td class="align-middle">
@@ -197,7 +197,11 @@
                                                         <!--                                                    <span t-field="p.income"/>-->
                                                     </td>
                                                     <t t-if="o.partner_status_especific != 'passive_reserve_b'">
-                                                        <td>0</td>
+                                                        <td>
+                                                            <t t-if="p.state == 'contribution_interest'">
+                                                                <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
+                                                            </t>
+                                                        </td>
                                                     </t>
                                                     <td class="align-middle">
                                                         <span t-field="p.miscellaneous_income"/>
@@ -223,7 +227,9 @@
                                                         <t t-elif="p.state == 'ministry_defense'">
                                                             <span>Ministerio</span>
                                                         </t>
-
+                                                        <t t-elif="p.state == 'contribution_interest'">
+                                                            <span>Aporte rendimiento COAA</span>
+                                                        </t>
                                                     </td>
                                                 </tr>
                                             </t>

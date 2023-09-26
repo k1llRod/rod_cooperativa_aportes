@@ -42,7 +42,7 @@
             <field name="name">partner.payroll.form</field>
             <field name="model">partner.payroll</field>
             <field name="arch" type="xml">
-                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required" create="0">
                     <header>
                         <button name="init_payroll_partner_wizard" string="Establecer capital inicial" type="object"
                                 class="oe_close_button"

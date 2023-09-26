@@ -4,7 +4,7 @@
       <!-- Top menu item -->
       <menuitem name="Aportes"
                 id="rod_cooperativa_aportes.menu_root"
-                sequence="100"
+                sequence="2"
                 web_icon="rod_cooperativa_aportes,static/description/coaa.png"/>
       <!-- menu categories -->
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes"

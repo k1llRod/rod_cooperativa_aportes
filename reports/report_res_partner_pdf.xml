@@ -78,8 +78,10 @@
                                         </td>
                                         <td></td>
                                         <td></td>
-                                        <td colspan="2"><img t-att-src="o.image_1920"/></td>
-<!--                                        <td></td>-->
+<!--                                        <td colspan="2">-->
+<!--                                            <img t-att-src="image_1920" style="max-width: 100px; max-height: 100px;"/>-->
+<!--                                        </td>-->
+                                        <td colspan="2"><img t-att-src="image_data_uri(o.image_1920)" style="max-width: 150px; max-height: 150px;"/></td>
                                     </tr>
                                     <tr>
                                         <td class="negrita">GRADO:</td>

@@ -30,9 +30,9 @@ class ResPartner(models.Model):
     loan_count = fields.Integer(string='Préstamos', compute='compute_contributions_count')
 
     def compute_contributions_count(self):
-        contributions = len(self.env['partner.payroll'].search([('partner_id', '=', self.id)]))
-        loans = len(self.env['loan.application'].search([('partner_id', '=', self.id)]))
         for record in self:
+            contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))
+            loans = len(record.env['loan.application'].search([('partner_id', '=', record.id)]))
             record.contributions_count = contributions
             record.loan_count = loans
 
