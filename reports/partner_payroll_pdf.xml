@@ -144,7 +144,7 @@
                                             <td>
                                                 <strong>AÑO DE JUBILACION</strong>
                                                 <td>
-                                                    <span t-field="o.partner_id.graduation_year"></span>
+                                                    <span t-field="o.partner_id.year_service"></span>
                                                 </td>
                                             </td>
                                         </t>
@@ -194,12 +194,18 @@
                                                         <t t-if="p.income_passive">
                                                             <t t-esc="p.income_passive"/>
                                                         </t>
+                                                        <t t-else="p.income and p.income_passive">
+                                                            0
+                                                        </t>
                                                         <!--                                                    <span t-field="p.income"/>-->
                                                     </td>
                                                     <t t-if="o.partner_status_especific != 'passive_reserve_b'">
-                                                        <td>
+                                                        <td class="align-middle">
                                                             <t t-if="p.state == 'contribution_interest'">
                                                                 <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
+                                                            </t>
+                                                            <t t-else="p.state == 'contribution_interest'">
+                                                                0
                                                             </t>
                                                         </td>
                                                     </t>

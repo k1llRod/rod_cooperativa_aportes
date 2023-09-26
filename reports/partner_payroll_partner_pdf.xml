@@ -90,9 +90,9 @@
                                         </td>
                                         <t t-if="o.partner_id.partner_status == 'passive'">
                                             <td>
-                                                <strong>AÑO DE JUBILACION</strong>
+                                                <strong>AÑOS DE SERVICIO</strong>
                                                 <td>
-                                                    <span t-field="o.partner_id.graduation_year"></span>
+                                                    <span t-field="o.partner_id.year_service"></span>
                                                 </td>
                                             </td>
                                         </t>
