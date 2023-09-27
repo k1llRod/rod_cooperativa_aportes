@@ -220,8 +220,8 @@ class PayrollPayments(models.Model):
             'name': 'Detalle de aportes',
             'res_model': 'payroll.payments',
             'type': 'ir.actions.act_window',
-            'view_id': view_id,
-            'view_mode': 'tree',
+            # 'view_id': view_id,
+            'view_mode': 'tree,form,pivot',
             'search_view_id': search_id,
             'domain': [],
         }

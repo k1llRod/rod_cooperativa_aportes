@@ -209,7 +209,7 @@
         <record id="action_partner_payroll" model="ir.actions.act_window">
             <field name="name">Aportes</field>
             <field name="res_model">partner.payroll</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
         </record>
 
         <record id="action_init_partner_payroll" model="ir.actions.server">
