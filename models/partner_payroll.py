@@ -50,7 +50,7 @@ class PartnerPayroll(models.Model):
                                             compute="compute_count_pay_contributions")
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
     tree_updated_partner = fields.Boolean(string='Actualizado', related='updated_partner')
-    outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_outstanding_payments")
+    outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_outstanding_payments", store=True)
 
     voluntary_contribution_certificate_total = fields.Float(string='Cert. Aport. Vol. Total',
                                                             compute='compute_count_pay_contributions', store=True)

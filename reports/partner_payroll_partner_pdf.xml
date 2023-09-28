@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <template id="inh_external_layout_striped" inherit_id="web.external_layout_striped">
+            <xpath expr="//div[1]" position="replace">
+                <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
+                    <div class="o_background_header">
+                        <table style="width:100%;font-size:14px;">
+                            <tr>
+                                <td style="width:500px;text-align:center;center;">COOPERATIVA DE
+                                    AHORRO Y CREDITO DE
+                                    VINCULO LABORAL
+                                </td>
+                                <td style="width:160px"></td>
+                                <td>Paginas:
+                                    <span class="topage"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;center;">COA - 4 DE DICIEMBRE R.L.
+                                </td>
+                                <td></td>
+                                <td>Fecha:
+                                    <!--                                    <t t-set="now" t-value="context.get('tz').localize(fields.Datetime.now())" />-->
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">LA PAZ - BOLIVIA</td>
+                                <td></td>
+                                <td>Usuario:
+                                    <span t-esc="user.name"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div>
+                        <br/>
+                        <br/>
+                        <h3>
+                            <center>EXTRACTO DE APORTES</center>
+                        </h3>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//div[hasclass('text-center')]" position="replace">
+                <center>
+                    Page:
+                    <span class="page"/>
+                    /
+                    <span class="topage"/>
+                </center>
+            </xpath>
+        </template>
         <template id="rod_cooperativa_aportes.report_partner_payroll_partner">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
@@ -90,7 +142,7 @@
                                         </td>
                                         <t t-if="o.partner_id.partner_status == 'passive'">
                                             <td>
-                                                <strong>AÑOS DE SERVICIO</strong>
+                                                <strong>AÑO DE JUBILACION</strong>
                                                 <td>
                                                     <span t-field="o.partner_id.year_service"></span>
                                                 </td>
@@ -119,13 +171,13 @@
                                             </th>
                                             <th style=" width:80px;" class="align-middle">CERT. APORT. VOLUNTARIO</th>
                                             <th style=" width:50px;" class="align-middle">TOTAL APORTES</th>
-<!--                                            <th style=" width:40px;" class="align-middle">TIPO PAGO</th>-->
+                                            <th style=" width:40px;" class="align-middle">TIPO PAGO</th>
                                         </tr>
                                     </thead>
                                     <tbody style="font-size:12px;">
                                         <tr t-set="acumulador" t-value="0"/>
-                                        <t t-foreach="o.payroll_payments_ids" t-as="p">
-                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense'">
+                                        <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['payment_date'])" t-as="p">
+                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
                                                     <td class="align-middle">
@@ -142,10 +194,20 @@
 <!--                                                        <t t-if="p.income_passive">-->
 <!--                                                            <t t-esc="p.income_passive"/>-->
 <!--                                                        </t>-->
+<!--                                                        <t t-else="p.income and p.income_passive">-->
+<!--                                                            0-->
+<!--                                                        </t>-->
 <!--                                                        &lt;!&ndash;                                                    <span t-field="p.income"/>&ndash;&gt;-->
 <!--                                                    </td>-->
                                                     <t t-if="o.partner_status_especific != 'passive_reserve_b'">
-                                                        <td>0</td>
+                                                        <td class="align-middle">
+                                                            <t t-if="p.state == 'contribution_interest'">
+                                                                <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
+                                                            </t>
+                                                            <t t-else="p.state == 'contribution_interest'">
+                                                                0
+                                                            </t>
+                                                        </td>
                                                     </t>
                                                     <td class="align-middle">
                                                         <span t-field="p.miscellaneous_income"/>
@@ -164,15 +226,17 @@
                                                         <t t-set="acumulador"
                                                            t-value="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
                                                     </td>
-<!--                                                    <td class="align-middle">-->
-<!--                                                        <t t-if="p.state == 'transfer'">-->
-<!--                                                            <span>Transferencia</span>-->
-<!--                                                        </t>-->
-<!--                                                        <t t-elif="p.state == 'ministry_defense'">-->
-<!--                                                            <span>Ministerio</span>-->
-<!--                                                        </t>-->
-
-<!--                                                    </td>-->
+                                                    <td class="align-middle">
+                                                        <t t-if="p.state == 'transfer'">
+                                                            <span>Transferencia</span>
+                                                        </t>
+                                                        <t t-elif="p.state == 'ministry_defense'">
+                                                            <span>Ministerio</span>
+                                                        </t>
+                                                        <t t-elif="p.state == 'contribution_interest'">
+                                                            <span>Aporte rendimiento COAA</span>
+                                                        </t>
+                                                    </td>
                                                 </tr>
                                             </t>
                                         </t>
@@ -180,6 +244,9 @@
                                     <tfoot style="font-size:12px;border-top: 1px solid black;">
                                         <tr>
                                             <td colspan="2"></td>
+                                            <td>
+                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest').mapped('voluntary_contribution_certificate')),2)"/>
+                                            </td>
 <!--                                            <td>-->
 <!--                                                <t t-if="p.income">-->
 <!--                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>-->
@@ -188,9 +255,7 @@
 <!--                                                    <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('income_passive')),2)"/>-->
 <!--                                                </t>-->
 <!--                                            </td>-->
-                                            <t t-if="o.partner_status_especific != 'passive_reserve_b'">
-                                                <td>0</td>
-                                            </t>
+
                                             <td>
                                                 <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('miscellaneous_income')),2)"/>
                                             </td>
