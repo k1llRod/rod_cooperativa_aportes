@@ -263,13 +263,18 @@
                                                 <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')),2)"/>
+                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense' or x.state=='contribution_interest').mapped('mandatory_contribution_certificate')),2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')), 2)"/>
+                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense' or x.state=='contribution_interest').mapped('voluntary_contribution_certificate')), 2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')) + sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')), 2)"/>
+                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer'
+                                                                                                        or x.state=='ministry_defense'
+                                                                                                        or x.state=='contribution_interest').mapped('voluntary_contribution_certificate'))
+                                                                                                        + sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest').mapped('voluntary_contribution_certificate'))
+                                                                                                        + sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer'
+                                                                                                        or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')), 2)"/>
                                             </td>
                                         </tr>
                                     </tfoot>
