@@ -68,8 +68,11 @@
                                     .table_negrita td{
                                     font-weight: bold;
                                     }
+                                    .table th, .table td{
+                                        border-top: none;
+                                    }
                                 </style>
-                                <table class="table table-bordered"
+                                <table class="table"
                                        style="width:100%; font-family:Arial;font-size:13px;">
                                     <tr>
                                         <td class="negrita" style="width:200px;">CODIGO BOLETA DE PAGO</td>

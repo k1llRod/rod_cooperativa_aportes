@@ -14,66 +14,76 @@
                             id="default_sales_tax_setting"
                             title="Valores para parametrizar aportes.">
                             <div class="o_setting_right_pane">
-                                <div>
+                                <div class="content-group mt16">
                                     <label string="Taza de regulación" for="regulation_cup"/>
                                     <div class="text-muted">
                                         Establecer taza de regulación.
                                     </div>
-                                    <div class="content-group mt16">
+                                    <div>
                                         <field name="regulation_cup" colspan="4" nolabel="1"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
                                 <div>
-                                    <label string="Certificado de aporte obligatorio" for="mandatory_contribution_certificate"/>
-                                    <div class="text-muted">
-                                        Establecer Certificado de aporte obligatorio.
-                                    </div>
                                     <div class="content-group mt16">
-                                        <field name="mandatory_contribution_certificate" colspan="4" nolabel="1"/>
+                                        <label string="Certificado de aporte obligatorio"
+                                               for="mandatory_contribution_certificate"/>
+                                        <div class="text-muted">
+                                            Establecer Certificado de aporte obligatorio.
+                                        </div>
+                                        <div>
+                                            <field name="mandatory_contribution_certificate" colspan="4" nolabel="1"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
                                 <div>
-                                    <label string="Ingresos diversos" for="miscellaneous_income"/>
-                                    <div class="text-muted">
-                                        Establecer divesos ingresos.
-                                    </div>
                                     <div class="content-group mt16">
-                                        <field name="miscellaneous_income" colspan="4" nolabel="1"/>
+                                        <label string="Ingresos diversos" for="miscellaneous_income"/>
+                                        <div class="text-muted">
+                                            Establecer divesos ingresos.
+                                        </div>
+                                        <div>
+                                            <field name="miscellaneous_income" colspan="4" nolabel="1"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
                                 <div>
-                                    <label string="Meses cobro de certificados" for="month_ids"/>
-                                    <div class="text-muted">
+                                    <div class="content-group mt16">
+                                        <label string="Meses cobro de certificados" for="month_ids"/>
+                                        <div class="text-muted">
 
-                                    </div>
-                                    <div class="content-group mt16">
-                                        <field name="month_ids" widget="many2many_tags"/>
+                                        </div>
+                                        <div>
+                                            <field name="month_ids" widget="many2many_tags"/>
+                                        </div>
 <!--                                        <field name="month_ids" colspan="4" nolabel="1"/>-->
                                     </div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
                                 <div>
-                                    <label string="Capital base minimo" for="capital_minimum"/>
-                                    <div class="text-muted">
-
-                                    </div>
                                     <div class="content-group mt16">
-                                        <field name="capital_minimum" colspan="4" nolabel="1"/>
+                                        <label string="Capital base minimo" for="capital_minimum"/>
+                                        <div class="text-muted">
+                                        </div>
+                                        <div>
+                                            <field name="capital_minimum" colspan="4" nolabel="1"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
                                 <div>
-                                    <label string="Aporte situacion pasiva" for="contribution_passive"/>
                                     <div class="content-group mt16">
-                                        <field name="contribution_passive" colspan="4" nolabel="1"/>
+                                         <label string="Aporte situacion pasiva" for="contribution_passive"/>
+                                        <div>
+                                            <field name="contribution_passive" colspan="4" nolabel="1"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

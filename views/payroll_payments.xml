@@ -26,7 +26,7 @@
                     <field name="drawback" optional="show"/>
                     <field name="state" decoration-danger="state == 'draft'" decoration-success="state == 'progress'"
                            widget="badge"/>
-                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
+                    <button name="0" type="object" class="oe_highlight" icon="fa-eye"/>
                 </tree>
             </field>
         </record>
@@ -177,6 +177,7 @@
                     </tree>
                     <search string="Buscar">
                         <filter name="search_name" string="Buscar por nombre" domain="[('partner_name','=','')]"/>
+
                     </search>
                 </xpath>
 
@@ -191,6 +192,13 @@
                     <field name="name"
                            filter_domain="['|', ('display_name', 'ilike', self)]"/>
                     <field name="partner_code_contact"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Por asociado"
+                                name="group_partner_status"
+                                context="{'group_by': 'partner_name'}"/>
+                    </group>
+
                     <!--                    <field name="email" filter_domain="[('email', 'ilike', self)]"/>-->
                     <!--                    <field name="phone" filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>-->
                     <!--                    <field name="category_id" string="Tag" filter_domain="[('category_id', 'child_of', self)]"/>-->
