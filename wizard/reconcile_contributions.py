@@ -45,6 +45,7 @@ class ReconcileContributions(models.TransientModel):
             [('period_process', '=', period), ('state', '=', 'draft')])
         partner_payroll_ids = self.env['partner.payroll'].search(
             ['|', ('state', '=', 'process'), ('partner_status', '=', 'active')])
+
         status_dinamic = 'ministry_defense'
         if self.drawback == True:
             status_dinamic = 'drawback'
@@ -64,6 +65,8 @@ class ReconcileContributions(models.TransientModel):
                            'income_passive': 0,
                            'drawback': self.drawback}
                 mo = self.env['payroll.payments'].create(val)
+                partner_id = self.env['res.partner'].search([('id', '=', partner.partner_id.id)])
+                partner_id.city = search_partner.distribution
                 if self.drawback == True: mo.onchange_drawback()
                 mo.ministry_defense()
                 mo.onchange_income()

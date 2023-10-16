@@ -24,7 +24,7 @@ class NominalRelationshipMindefContributions(models.Model):
 
     organism = fields.Char(string='Organismo')
     eit_item = fields.Char(string='Item EIT')
-    ci = fields.Char(string='CI')
+    ci = fields.Char(string='Cédula de identidad')
     degree = fields.Char(string='Grado')
     mension = fields.Char(string='Mension')
     name_complete = fields.Char(string='Nombre completo')
