@@ -60,7 +60,7 @@
                                         </td>
                                         <td><span t-esc="o.partner_id.graduation_year"></span></td>
                                         <td>
-                                            <strong>AÑO DE JUBILACION</strong>
+                                            <strong>AÑOS DE SERVICIO</strong>
                                         </td>
                                         <td>2022</td>
                                     </tr>
@@ -75,6 +75,8 @@
                                         <td></td>
                                     </tr>
                                 </table>
+                                <br/>
+
                                 <br/>
                                 <table style="width:100%; border-collapse: collapse; border: 1px solid gray; font-family:Arial;">
                                     <thead>

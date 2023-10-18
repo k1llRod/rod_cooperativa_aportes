@@ -3,6 +3,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 import re
+
+
 # import inflect
 # from translate import Translator
 
@@ -70,6 +72,7 @@ class PartnerPayroll(models.Model):
                                                           compute='compute_balance_advance')
     count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
                                                               compute='compute_contributions')
+
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     @api.depends('payroll_payments_ids')
@@ -113,8 +116,9 @@ class PartnerPayroll(models.Model):
                 'voluntary_contribution_certificate'))
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
-            record.capital_initial = sum(record.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest').mapped('voluntary_contribution_certificate'))
-
+            record.capital_initial = sum(
+                record.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest').mapped(
+                    'voluntary_contribution_certificate'))
 
     def init_payroll_partner_wizard(self):
         # Acción para abrir el wizard
@@ -194,7 +198,8 @@ class PartnerPayroll(models.Model):
                 diff = relativedelta(datetime.now(), record.date_burn_partner)
                 diff_months = diff.years * 12 + diff.months
             count_payments = len(
-                record.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense' or x.state == 'transfer'))
+                record.payroll_payments_ids.filtered(
+                    lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
                 self.env.user.notify_success(message='Planilla de aportes actualizado'.format(record.partner_id.name),
@@ -223,7 +228,8 @@ class PartnerPayroll(models.Model):
             else:
                 make_register = 0
             # make_register = record.calculate_month_difference()
-            record.outstanding_payments = make_register - int(len(record.payroll_payments_ids.filtered(lambda x:x.state != 'draft' and x.state != 'contribution_interest' and x.drawback == False)))
+            record.outstanding_payments = make_register - int(len(record.payroll_payments_ids.filtered(lambda
+                                                                                                           x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
 
     def calculate_month_difference(self):
         for record in self:
@@ -295,7 +301,6 @@ class PartnerPayroll(models.Model):
     #     literal_english = p.number_to_words(int(self.mandatory_contribution_certificate_total))
     #     # literal_spanish = translator.translate(literal_english)
     #     self.literal_total_voluntary_contribution = literal_english.upper()
-
 
     # def payment_advance(self):
     #     for record in self:

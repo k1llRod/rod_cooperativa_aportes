@@ -7,15 +7,15 @@
             <field name="model">advance.payments</field>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="name"/>
-                    <field name="n_months"/>
-                    <field name="regulation_cup" sum="Total"/>
-                    <field name="mandatory_contribution" sum="Total"/>
-                    <field name="contribution_passive" sum="Total"/>
-                    <field name="miscellaneous_income" readonly="1" sum="Total"/>
-                    <field name="remaining_regulation_cup"/>
-                    <field name="remaining_mandatory_contribution"/>
-                    <field name="remaining_contribution_passive"/>
+                    <field name="name" decoration-info="True"/>
+                    <field name="n_months" decoration-info="True"/>
+                    <field name="regulation_cup" sum="Total" decoration-info="True"/>
+                    <field name="mandatory_contribution" sum="Total" decoration-info="True"/>
+                    <field name="contribution_passive" sum="Total" decoration-info="True"/>
+                    <field name="miscellaneous_income" readonly="1" sum="Total" decoration-info="True"/>
+                    <field name="remaining_regulation_cup" decoration-success="True"/>
+                    <field name="remaining_mandatory_contribution" decoration-success="True"/>
+                    <field name="remaining_contribution_passive" decoration-success="True"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'process'"
                            widget="badge"/>
                     <button name="action_pdf_payment_note" type="object" class="oe_highlight"

@@ -142,7 +142,7 @@
                                         </td>
                                         <t t-if="o.partner_id.partner_status == 'passive'">
                                             <td>
-                                                <strong>AÑO DE JUBILACION</strong>
+                                                <strong>AÑOS DE SERVICIO</strong>
                                                 <td>
                                                     <span t-field="o.partner_id.year_service"></span>
                                                 </td>
@@ -274,6 +274,34 @@
                                     </tfoot>
 
                                 </table>
+                                <br/>
+                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">
+                                    <table class="table text-center align-middle" style="font-size: 15px;">
+                                        <thead>
+                                            <th></th>
+                                            <th>SALDO APORTE PASIVO</th>
+                                            <th>SALDO TAZA DE REGULACION</th>
+                                            <th>SALDO APORTE OBLIGATORIO</th>
+                                        </thead>
+                                        <t t-foreach="o.advanced_payments_ids" t-as="a">
+                                            <tr>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <span t-field="a.remaining_contribution_passive"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="a.remaining_regulation_cup"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="a.remaining_mandatory_contribution"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </t>
+
                                 <table>
                                     <tr>
                                         <td style="margin-left:30px;">
@@ -312,7 +340,7 @@
                                             <strong>Total:</strong>
                                         </td>
                                         <td style="border-top:1px solid black;">
-                                            <span t-esc="o.contribution_total"/>
+                                            <span t-esc="round(o.contribution_total,2)"/>
                                         </td>
                                     </tr>
                                 </table>
