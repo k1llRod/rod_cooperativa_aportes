@@ -294,6 +294,11 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.balance_advance = record.contribution_total - record.performance_management_total
 
+
+    def finalized_payroll(self):
+        for record in self:
+            record.state = 'finalized'
+
     # @api.depends('mandatory_contribution_certificate_total')
     # def compute_contributions_literal(self):
     #     p = inflect.engine()

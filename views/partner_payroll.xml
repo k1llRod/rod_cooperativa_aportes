@@ -66,13 +66,20 @@
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'draft'),('date_burn_partner','!=',False)]}"/>
+
+                        <button name="finalized_payroll" string="Liquidación" type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
+
                         <!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
                         <!--                                />-->
-                        <button name="validate_partner_passive" string="Validar asociado" type="object"/>
+<!--                        <button name="validate_partner_passive" string="Validar asociado" type="object"/>-->
 
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
+                        <widget name="web_ribbon" text="Liquidado" attrs="{'invisible': [('state','!=','finalized')]}"/>
                         <div class="alert alert-warning text-center o_form_header" role="alert"
                              attrs="{'invisible': [('outstanding_payments','=',0)]}">
                             <a class="close" data-dismiss="alert" href="#">x</a>
@@ -193,6 +200,17 @@
                     <filter name="capital_initial_greater_zero"
                             string="Capital inicial mayor que '0'"
                             domain="[('capital_initial','>',0)]"/>
+                    <separator />
+                    <filter name="partner_active_service"
+                            string="Asociados servicio activo"
+                            domain="[('partner_status_especific', '=', 'active_service')]"/>
+                    <filter name="partner_passive_reserve_a"
+                            string="Asociados Pasivo categoria 'A'"
+                            domain="[('partner_status_especific','=','passive_reserve_a')]"/>
+                    <filter name="partner_passive_reserve_b"
+                            string="Asociados Pasivo categoria 'B'"
+                            domain="[('partner_status_especific','=','passive_reserve_b')]"/>
+
 
                     <group expand="0" string="Group By">
                         <filter string="Tipo de asociado"

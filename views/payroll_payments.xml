@@ -54,9 +54,9 @@
                                 class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
-                        <!--                        <button name="generate_certificate_report" string="Imprimir certificado de pago" type="object"-->
-                        <!--                                class="oe_close_button"-->
-                        <!--                                />-->
+                        <button name="no_contribution" string="Sin aporte" type="object"
+                                attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','=','passive_reserve_b')]}"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
                         <button name="return_draft" string="Borrador" type="object"
                                 class="oe_close_button"
                                 attrs="{'invisible':[('state','=','draft')]}"

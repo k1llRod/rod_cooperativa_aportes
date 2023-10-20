@@ -6,6 +6,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="rod_cooperativa.res_partner_form_inh"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="before">
+                    <widget name="web_ribbon" text="Activo" attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                    <widget name="web_ribbon" text="Baja" bg_color="bg-danger" attrs="{'invisible': [('state', '!=', 'unsubscribe')]}"/>
+                </xpath>
                 <xpath expr="//sheet" position="before">
                     <header>
                         <field name="state" widget="statusbar"/>
@@ -21,18 +25,12 @@
                                 class="oe_highlight" attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
                         <button name="return_form" string="Solicitud rechazada" type="object"
                                 attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
-
-
+                        <button name="unsubscribe" string="Dar de baja" type="object"
+                                confirm="¿Está seguro que desea dar de baja al asociado?"
+                        />
                     </header>
+
                 </xpath>
-<!--                <xpath expr="//header" position="inside">-->
-<!--                    <field name="state" widget="statusbar" invisible="1"/>-->
-<!--                    <button name="init_partner" string="Iniciar aportes" type="object" />-->
-<!--                    <button name="approve_verification" string="Verificar" type="object" />-->
-<!--                </xpath>-->
-<!--                <xpath expr="//field[@name='partner']" position="after">-->
-<!--                    <field name="contributions_count"/>-->
-<!--                </xpath>-->
                 <xpath expr="//button[@name='action_view_guarantor']" position="after">
                     <button type="object" icon="fa-user" class="oe_stat_button" name="action_view_contributions">
                         <div class="o_stat_info">
@@ -50,6 +48,9 @@
                             <span class="o_stat_text">Préstamos</span>
                         </div>
                     </button>
+                </xpath>
+                <xpath expr="//field[@name='partner']" position="after">
+                    <field name="date_unsubscribe" attrs="{'invisible': [('state','!=','unsubscribe')]}"/>
                 </xpath>
             </field>
         </record>

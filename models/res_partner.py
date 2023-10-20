@@ -7,7 +7,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     state = fields.Selection([('draft', 'Borrador'), ('verificate', 'Verificación'), ('activate', 'Socio activo'),
-                              ('rejected', 'Rechazado')],
+                              ('rejected', 'Rechazado'), ('unsubscribe', 'Baja')],
                              string='Estado', default='draft', track_visibility='onchange')
 
     def init_partner(self):
@@ -28,6 +28,7 @@ class ResPartner(models.Model):
 
     contributions_count = fields.Integer(string='Aportes', compute='compute_contributions_count')
     loan_count = fields.Integer(string='Préstamos', compute='compute_contributions_count')
+    date_unsubscribe = fields.Date(string='Fecha de baja')
 
     def compute_contributions_count(self):
         for record in self:
@@ -101,3 +102,12 @@ class ResPartner(models.Model):
         partners_init = self.filtered(lambda x:x.id not in domain)
         for rec in partners_init:
             rec.init_partner()
+
+    def unsubscribe(self):
+        self.ensure_one()
+        verificate_contribution = self.env['partner.payroll'].search([('partner_id','=',self.id)])
+        if verificate_contribution.state != 'finalized':
+            raise ValidationError(_('No se puede dar de baja a un socio que tiene aportes registrados'))
+        self.date_unsubscribe = datetime.now()
+        self.state = 'unsubscribe'
+

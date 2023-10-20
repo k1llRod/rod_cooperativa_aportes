@@ -15,16 +15,22 @@
                                 <field name="reconciled_records"/>
                                 <field name="reconcile_records"/>
                                 <field name="correct_registry"/>
+
                             </group>
                             <group>
                                 <field name="drawback"/>
                                 <field name="months" widget="many2many_tags"
                                        attrs="{'invisible': [('drawback','!=',True)]}"/>
                             </group>
+                            <group string="Aportes faltantes">
+                                <field name="partner_status_especific"/>
+                                <field name="outstanding_payments"/>
+                            </group>
                         </group>
 
                         <footer>
                             <button name="action_reconcile" string="Conciliar" type="object" class="oe_highlight"/>
+                            <button name="action_reconcile" string="Validar faltantes" type="object" class="oe_highlight"/>
                             <button string="Cancel" class="oe_link" special="cancel"/>
                         </footer>
                     </sheet>

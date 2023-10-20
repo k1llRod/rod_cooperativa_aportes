@@ -15,6 +15,12 @@ class ReconcileContributions(models.TransientModel):
     months = fields.Many2many('month', string="Meses")
     correct_registry = fields.Integer(string="Corregir registros", readonly=True)
     reconciled_records = fields.Integer(string="Registros conciliados", readonly=True)
+    outstanding_payments = fields.Integer(string="Pagos pendientes", compute='onchange_partner_status_especific',readonly=True)
+    partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
+                                                 ('letter_a', 'Letra "A" de disponibilidad'),
+                                                 ('passive_reserve_a', 'Reserva pasivo "A"'),
+                                                 ('passive_reserve_b', 'Reserva pasivo "B"'),
+                                                 ('leave', 'Baja')], string='Tipo de asociado')
 
     @api.depends('date_field_select')
     def compute_date_format(self):
@@ -33,6 +39,15 @@ class ReconcileContributions(models.TransientModel):
                 record.reconciled_records = len(self.env['nominal.relationship.mindef.contributions'].search(
                     [('period_process', '=', period), ('state', '=', 'reconciled')]))
 
+    @api.depends('partner_status_especific')
+    def onchange_partner_status_especific(self):
+        if self.partner_status_especific:
+            self.outstanding_payments = len(self.env['partner.payroll'].search(
+                [('outstanding_payments', '>', '0'), ('state', '=', 'process'),
+                 ('partner_status_especific', '=', self.partner_status_especific)]))
+        else:
+            self.outstanding_payments = len(self.env['partner.payroll'].search(
+                [('outstanding_payments', '>', '0'), ('state', '=', 'process')]))
 
     def action_reconcile(self):
         # Acción para conciliar los pagos de aportes
@@ -44,7 +59,7 @@ class ReconcileContributions(models.TransientModel):
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].search(
             [('period_process', '=', period), ('state', '=', 'draft')])
         partner_payroll_ids = self.env['partner.payroll'].search(
-            ['|', ('state', '=', 'process'), ('partner_status', '=', 'active')])
+            ['|', ('state', '=', 'process'), ('partner_status_especific', '=', 'active_service')])
 
         status_dinamic = 'ministry_defense'
         if self.drawback == True:
@@ -80,6 +95,16 @@ class ReconcileContributions(models.TransientModel):
                 search_partner.date_process = self.date_field_select
                 search_partner.state = 'reconciled'
                 search_partner.period_process = self.month + '/' + self.year
+            else:
+                if len(partner.payroll_payments_ids) > 0 and partner.date_burn_partner != False:
+                    val = {'partner_payroll_id': partner.id,
+                           'payment_date': self.date_field_select,
+                           'income': search_partner.amount_bs,
+                           'income_passive': 0,
+                           'drawback': self.drawback}
+                    mo = self.env['payroll.payments'].create(val)
+                    mo.no_contribution()
+
 
         array_no_reconciled = filing_cabinet_ids.filtered(lambda x: x.period_process == period and x.state == 'draft')
         no_reconciled = len(array_no_reconciled)
@@ -104,3 +129,8 @@ class ReconcileContributions(models.TransientModel):
         for record in self:
             record.correct_registry = len(record.env['nominal.relationship.mindef.contributions'].search(
                 [('period_process', '=', record.month + '/' + record.year), ('state', '=', 'reconc')]))
+
+    def register_missing_payments(self):
+        for record in self:
+            record.env['nominal.relationship.mindef.contributions'].search(
+                [('period_process', '=', record.month + '/' + record.year), ('state', '=','reconc')]).write({'state': 'draft'})

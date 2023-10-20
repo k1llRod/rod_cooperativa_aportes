@@ -39,7 +39,8 @@ class PayrollPayments(models.Model):
     payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
-        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'), ('contribution_interest', 'Aporte y rendimiento COAA')],
+        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
+         ('contribution_interest', 'Aporte y rendimiento COAA'),('no_contribution', 'Sin aporte')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
@@ -237,3 +238,11 @@ class PayrollPayments(models.Model):
     def draft_massive(self):
         for record in self:
             record.state = 'draft'
+
+    def no_contribution(self):
+        for record in self:
+            record.miscellaneous_income = 0
+            record.regulation_cup = 0
+            record.mandatory_contribution_certificate = 0
+            record.voluntary_contribution_certificate = 0
+            record.state = 'no_contribution'
