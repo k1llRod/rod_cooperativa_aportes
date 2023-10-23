@@ -24,7 +24,10 @@
                     <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="advanced_automata"/>
                     <field name="drawback" optional="show"/>
-                    <field name="state" decoration-danger="state == 'draft'" decoration-success="state == 'progress'"
+                    <field name="state" decoration-info="state == 'contribution_interest'"
+                                               decoration-success="state in ['transfer','ministry_defense']"
+                                               decoration-warning="state == 'draft'"
+                                               decoration-danger="state == 'no_contribution'"
                            widget="badge"/>
                     <button name="0" type="object" class="oe_highlight" icon="fa-eye"/>
                 </tree>
@@ -171,7 +174,10 @@
                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
                         <field name="register_advanced_payments_ids" optional="hide" readonly="1"/>
-                        <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
+                        <field name="state" decoration-info="state == 'contribution_interest'"
+                                               decoration-success="state in ['transfer','ministry_defense']"
+                                               decoration-warning="state == 'draft'"
+                                               decoration-danger="state == 'no_contribution'"
                                widget="badge"/>
                         <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
                     </tree>

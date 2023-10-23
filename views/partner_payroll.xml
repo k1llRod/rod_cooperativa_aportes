@@ -160,6 +160,7 @@
                                         <field name="state" decoration-info="state == 'contribution_interest'"
                                                decoration-success="state in ['transfer','ministry_defense']"
                                                decoration-warning="state == 'draft'"
+                                               decoration-danger="state == 'no_contribution'"
                                                widget="badge"/>
                                         <button name="open_one2many_line" type="object" class="oe_highlight"
                                                 icon="fa-eye"/>
