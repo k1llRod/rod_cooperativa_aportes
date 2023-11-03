@@ -299,24 +299,6 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.state = 'finalized'
 
-    # @api.depends('mandatory_contribution_certificate_total')
-    # def compute_contributions_literal(self):
-    #     p = inflect.engine()
-    #     # translator = Translator(to_lang="es")
-    #     literal_english = p.number_to_words(int(self.mandatory_contribution_certificate_total))
-    #     # literal_spanish = translator.translate(literal_english)
-    #     self.literal_total_voluntary_contribution = literal_english.upper()
-
-    # def payment_advance(self):
-    #     for record in self:
-    #         record.payroll_payment_ids.create({
-    #             'name': 'Pago de aportes',
-    #             'partner_payrolls_id': record.id,
-    #         })
-    #         record.payroll_payments_ids.create({
-    #             'income': 0,
-    #             'income_passive': 0,
-    #             'payment_date': datetime.now(),
-    #             'partner_payroll_id': record.id,
-    #
-    #         })
+    def cron_compute_outstanding_payments(self):
+        for record in self:
+            record.compute_outstanding_payments()

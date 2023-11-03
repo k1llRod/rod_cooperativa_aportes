@@ -198,11 +198,24 @@
                     <field name="name"
                            filter_domain="['|', ('display_name', 'ilike', self)]"/>
                     <field name="partner_code_contact"/>
-
+                    <filter name="capital_initial_greater_zero"
+                            string="Capital inicial mayor que '0'"
+                            domain="[('state','=','contribution_interest')]"/>
+                    <separator />
+                    <filter name="partner_active_service"
+                            string="Asociados servicio activo"
+                            domain="[('partner_status_especific', '=', 'active_service')]"/>
+                    <filter name="partner_passive_reserve_a"
+                            string="Asociados Pasivo categoria 'A'"
+                            domain="[('partner_status_especific','=','passive_reserve_a')]"/>
+                    <filter name="partner_passive_reserve_b"
+                            string="Asociados Pasivo categoria 'B'"
+                            domain="[('partner_status_especific','=','passive_reserve_b')]"/>
                     <group expand="0" string="Group By">
                         <filter string="Por asociado"
                                 name="group_partner_status"
                                 context="{'group_by': 'partner_name'}"/>
+
                     </group>
 
                     <!--                    <field name="email" filter_domain="[('email', 'ilike', self)]"/>-->

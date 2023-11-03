@@ -49,9 +49,9 @@
                         </div>
                     </button>
                 </xpath>
-                <xpath expr="//field[@name='partner']" position="after">
-                    <field name="date_unsubscribe" attrs="{'invisible': [('state','!=','unsubscribe')]}"/>
-                </xpath>
+<!--                <xpath expr="//field[@name='partner']" position="after">-->
+<!--                    <field name="date_unsubscribe" attrs="{'invisible': [('state','!=','unsubscribe')]}"/>-->
+<!--                </xpath>-->
             </field>
         </record>
 
