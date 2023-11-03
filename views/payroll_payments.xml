@@ -29,7 +29,7 @@
                                                decoration-warning="state == 'draft'"
                                                decoration-danger="state == 'no_contribution'"
                            widget="badge"/>
-                    <button name="0" type="object" class="oe_highlight" icon="fa-eye"/>
+                    <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
                 </tree>
             </field>
         </record>
