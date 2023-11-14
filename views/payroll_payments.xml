@@ -21,7 +21,7 @@
                            sum="Total"/>
                     <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}"
                            sum="Total"/>
-                    <field name="date_pivote" />
+                    <field name="date_pivote" optional="hide"/>
                     <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="advanced_automata"/>
                     <field name="drawback" optional="show"/>
