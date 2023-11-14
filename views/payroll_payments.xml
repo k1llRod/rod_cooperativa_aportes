@@ -21,6 +21,7 @@
                            sum="Total"/>
                     <field name="voluntary_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}"
                            sum="Total"/>
+                    <field name="date_pivote" />
                     <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="advanced_automata"/>
                     <field name="drawback" optional="show"/>
@@ -85,8 +86,8 @@
                                 <field name="regulation_cup"/>
                                 <field name="mandatory_contribution_certificate"/>
                                 <field name="voluntary_contribution_certificate"/>
-<!--                                <field name="payment_post_mortem"/>-->
-                                <field name="payment_date"/>
+                                <field name="date_pivote" />
+                                <field name="payment_date" />
                                 <field name="period_register"/>
                             </group>
                             <group>
@@ -172,6 +173,7 @@
 <!--                        <field name="payment_post_mortem" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
                         <field name="voluntary_contribution_certificate"
                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                        <field name="date_pivote" optional="hide"/>
                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"/>
                         <field name="register_advanced_payments_ids" optional="hide" readonly="1"/>
                         <field name="state" decoration-info="state == 'contribution_interest'"

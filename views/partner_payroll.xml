@@ -153,6 +153,7 @@
                                         <!--                                        <field name="payment_post_mortem"-->
                                         <!--                                               attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"-->
                                         <!--                                               sum="Total"/>-->
+                                        <field name="date_pivote"/>
                                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"
                                                optional="show"/>
                                         <field name="register_advanced_payments_ids" optional="hide" readonly="1"/>
