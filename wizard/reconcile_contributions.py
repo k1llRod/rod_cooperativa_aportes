@@ -1,13 +1,14 @@
 from odoo import models, fields, api, _
 from datetime import datetime, date, timedelta
-from odoo.exceptions import UserError, ValidationError
+from dateutil.relativedelta import relativedelta
 
 
 class ReconcileContributions(models.TransientModel):
     _name = 'reconcile.contributions'
     _description = 'Conciliar pagos de aportes'
 
-    date_field_select = fields.Date(string="Fecha", require=True, default=fields.Date.today())
+    date_payment = fields.Date(string="Fecha de pago", require=True, default=fields.Date.today())
+    date_field_select = fields.Date(string="Fecha periodo", require=True, default=fields.Date.today() - relativedelta(months=1))
     month = fields.Char(string="Mes", compute="compute_date_format")
     year = fields.Char(string="Año", compute="compute_date_format")
     reconcile_records = fields.Integer(string="Registros para conciliar", readonly=True)
@@ -69,13 +70,15 @@ class ReconcileContributions(models.TransientModel):
             if search_partner:
                 if len(partner.payroll_payments_ids) == 0:
                     val = {'partner_payroll_id': partner.id,
-                           'payment_date': self.date_field_select,
+                           'payment_date': self.date_payment,
+                           'date_pivote': self.date_field_select,
                            'income': search_partner.amount_bs,
                            'income_passive': 0,
                            'drawback': self.drawback}
                 else:
                     val = {'partner_payroll_id': partner.id,
-                           'payment_date': self.date_field_select,
+                           'payment_date': self.date_payment,
+                           'date_pivote': self.date_field_select,
                            'income': search_partner.amount_bs,
                            'income_passive': 0,
                            'drawback': self.drawback}
@@ -98,7 +101,8 @@ class ReconcileContributions(models.TransientModel):
             else:
                 if len(partner.payroll_payments_ids) > 0 and partner.date_burn_partner != False:
                     val = {'partner_payroll_id': partner.id,
-                           'payment_date': self.date_field_select,
+                           'payment_date': self.date_payment,
+                           'date_pivote': self.date_field_select,
                            'income': search_partner.amount_bs,
                            'income_passive': 0,
                            'drawback': self.drawback}

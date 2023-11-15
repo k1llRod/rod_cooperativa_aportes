@@ -53,29 +53,21 @@ class PayrollPayments(models.Model):
     register_advanced_payments_ids = fields.Many2one('advance.payments')
     date_pivote = fields.Datetime(string='Fecha de pivote')
 
-    # @api.depends('partner_payroll_id')
-    # def _get_partner_name(self):
+    # @api.onchange('payment_date')
+    # def onchange_payment_date(self):
     #     for record in self:
-    #         record.partner_name = record.partner_payroll_id.partner_id.name
-    #         record.partner_code_contact = record.partner_payroll_id.partner_id.code_contact
-    #         # record.partner_status_especific = record.partner_payroll_id.partner_status_especific
-    #         record.partner_status = record.partner_payroll_id.partner_status
-
-    @api.onchange('payment_date')
-    def onchange_payment_date(self):
-        for record in self:
-            if self.payment_date:
-                record.period_register = record.payment_date.strftime('%m') + '/' + record.payment_date.strftime('%Y')
-    @api.onchange('date_pivote')
-    def onchange_date_pivote(self):
-        for record in self:
-            if self.date_pivote:
-                record.period_register = record.date_pivote.strftime('%m') + '/' + record.date_pivote.strftime('%Y')
-
-    # @api.depends('payment_date')
-    # def compute_period_register(self):
+    #         if self.payment_date:
+    #             record.period_register = record.payment_date.strftime('%m') + '/' + record.payment_date.strftime('%Y')
+    # @api.onchange('date_pivote')
+    # def onchange_date_pivote(self):
     #     for record in self:
-    #         record.period_register = record.payment_date.strftime('%m') + '/' + record.payment_date.strftime('%Y')
+    #         if self.date_pivote:
+    #             record.period_register = record.date_pivote.strftime('%m') + '/' + record.date_pivote.strftime('%Y')
+
+    @api.depends('date_pivote')
+    def compute_period_register(self):
+        for record in self:
+            record.period_register = record.date_pivote.strftime('%m') + '/' + record.date_pivote.strftime('%Y')
 
     @api.model
     def create(self, vals_list):

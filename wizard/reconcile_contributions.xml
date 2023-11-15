@@ -9,6 +9,7 @@
                     <sheet>
                         <group>
                             <group>
+                                <field name="date_payment" />
                                 <field name="date_field_select"/>
                                 <field name="month"/>
                                 <field name="year"/>
