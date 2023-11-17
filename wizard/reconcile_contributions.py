@@ -60,56 +60,54 @@ class ReconcileContributions(models.TransientModel):
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].search(
             [('period_process', '=', period), ('state', '=', 'draft')])
         partner_payroll_ids = self.env['partner.payroll'].search(
-            ['|', ('state', '=', 'process'), ('partner_status_especific', '=', 'active_service')])
-
-        status_dinamic = 'ministry_defense'
+            [('partner_status_especific', '=', 'active_service')])
+        payroll_payments_ids = self.env['payroll.payments']
         if self.drawback == True:
             status_dinamic = 'drawback'
         for partner in partner_payroll_ids:
-            search_partner = filing_cabinet_ids.filtered(lambda x: x.eit_item == partner.partner_id.code_contact)
-            if search_partner:
-                if len(partner.payroll_payments_ids) == 0:
-                    val = {'partner_payroll_id': partner.id,
-                           'payment_date': self.date_payment,
-                           'date_pivote': self.date_field_select,
-                           'income': search_partner.amount_bs,
-                           'income_passive': 0,
-                           'drawback': self.drawback}
-                else:
-                    val = {'partner_payroll_id': partner.id,
-                           'payment_date': self.date_payment,
-                           'date_pivote': self.date_field_select,
-                           'income': search_partner.amount_bs,
-                           'income_passive': 0,
-                           'drawback': self.drawback}
-                mo = self.env['payroll.payments'].create(val)
-                partner_id = self.env['res.partner'].search([('id', '=', partner.partner_id.id)])
-                partner_id.city = search_partner.distribution
-                if self.drawback == True: mo.onchange_drawback()
-                mo.ministry_defense()
-                mo.onchange_income()
-                if self.drawback == True:
-                    list = ''
-                    for rec in self.months:
-                        list = rec.name + ',' + list
-                    partner.message_post(body="Reintegro: " + list)
-                    mo.message_post(body="Reintegro: " + list)
-
-                search_partner.date_process = self.date_field_select
-                search_partner.state = 'reconciled'
-                search_partner.period_process = self.month + '/' + self.year
-            else:
-                if len(partner.payroll_payments_ids) > 0 and partner.date_burn_partner != False:
-                    val = {'partner_payroll_id': partner.id,
-                           'payment_date': self.date_payment,
-                           'date_pivote': self.date_field_select,
-                           'income': search_partner.amount_bs,
-                           'income_passive': 0,
-                           'drawback': self.drawback}
+            if not partner.payroll_payments_ids.filtered(lambda x: x.period_register == self.month + '/' + self.year):
+                search_partner = filing_cabinet_ids.filtered(lambda x: x.eit_item == partner.partner_id.code_contact)
+                if search_partner:
+                    if len(partner.payroll_payments_ids) == 0:
+                        val = {'partner_payroll_id': partner.id,
+                               'payment_date': self.date_payment,
+                               'date_pivote': self.date_field_select,
+                               'income': search_partner.amount_bs,
+                               'income_passive': 0,
+                               'drawback': self.drawback}
+                    else:
+                        val = {'partner_payroll_id': partner.id,
+                               'payment_date': self.date_payment,
+                               'date_pivote': self.date_field_select,
+                               'income': search_partner.amount_bs,
+                               'income_passive': 0,
+                               'drawback': self.drawback}
                     mo = self.env['payroll.payments'].create(val)
-                    mo.no_contribution()
+                    partner_id = self.env['res.partner'].search([('id', '=', partner.partner_id.id)])
+                    partner_id.city = search_partner.distribution
+                    if self.drawback == True: mo.onchange_drawback()
+                    mo.ministry_defense()
+                    mo.onchange_income()
+                    if self.drawback == True:
+                        list = ''
+                        for rec in self.months:
+                            list = rec.name + ',' + list
+                        partner.message_post(body="Reintegro: " + list)
+                        mo.message_post(body="Reintegro: " + list)
 
-
+                    search_partner.date_process = self.date_field_select
+                    search_partner.state = 'reconciled'
+                    search_partner.period_process = self.month + '/' + self.year
+                else:
+                    if partner.date_burn_partner != False:
+                        val = {'partner_payroll_id': partner.id,
+                               'payment_date': self.date_payment,
+                               'date_pivote': self.date_field_select,
+                               'income': search_partner.amount_bs,
+                               'income_passive': 0,
+                               'drawback': self.drawback}
+                        mo = self.env['payroll.payments'].create(val)
+                        mo.no_contribution()
         array_no_reconciled = filing_cabinet_ids.filtered(lambda x: x.period_process == period and x.state == 'draft')
         no_reconciled = len(array_no_reconciled)
         for rec in array_no_reconciled:
@@ -128,7 +126,6 @@ class ReconcileContributions(models.TransientModel):
             'target': 'new',
             'context': context,
         }
-
     def compute_reconcile_records(self):
         for record in self:
             record.correct_registry = len(record.env['nominal.relationship.mindef.contributions'].search(

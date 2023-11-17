@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 from datetime import datetime, timedelta
 from odoo.exceptions import ValidationError
 import re
+from dateutil.relativedelta import relativedelta
 
 
 class PayrollPayments(models.Model):
@@ -51,7 +52,7 @@ class PayrollPayments(models.Model):
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
     advanced_automata = fields.Boolean(string='Adelanto automatico')
     register_advanced_payments_ids = fields.Many2one('advance.payments')
-    date_pivote = fields.Datetime(string='Fecha de pivote')
+    date_pivote = fields.Datetime(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1), tracking=True)
 
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
@@ -244,6 +245,10 @@ class PayrollPayments(models.Model):
 
     def no_contribution(self):
         for record in self:
+            verify = record.partner_payroll_id.payroll_payments_ids.filtered(
+                lambda x: (x.state == 'ministry_defense' and x.period_register == record.period_register))
+            if len(verify) > 0:
+                raise ValidationError('Ya existe un pago confirmado para este periodo')
             record.miscellaneous_income = 0
             record.regulation_cup = 0
             record.mandatory_contribution_certificate = 0
