@@ -54,6 +54,24 @@ class PayrollPayments(models.Model):
     register_advanced_payments_ids = fields.Many2one('advance.payments')
     date_pivote = fields.Datetime(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1), tracking=True)
 
+    account_income_id = fields.Many2one('account.account', string='Ingreso',
+                                        default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
+                                            'rod_cooperativa_aportes.account_income_id'))
+    account_inscription_id = fields.Many2one('account.account', string='Inscripcion',
+                                             default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
+                                                 'rod_cooperativa_aportes.account_inscription_id'))
+    account_regulation_cup_id = fields.Many2one('account.account', string='Tasa de regulacion',
+                                                default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
+                                                    'rod_cooperativa_aportes.account_regulation_cup_id'))
+    account_mandatory_contribution_id = fields.Many2one('account.account', string='Aportes obligatorios',
+                                                        default=lambda self: self.env[
+                                                            'ir.config_parameter'].sudo().get_param(
+                                                            'rod_cooperativa_aportes.account_mandatory_contribution_id'))
+    account_voluntary_contribution_id = fields.Many2one('account.account', string='Aportes voluntarios',
+                                                        default=lambda self: self.env[
+                                                            'ir.config_parameter'].sudo().get_param(
+                                                            'rod_cooperativa_aportes.account_voluntary_contribution_id'))
+
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
     #     for record in self:
@@ -75,6 +93,11 @@ class PayrollPayments(models.Model):
         name = self.env['ir.sequence'].next_by_code('payroll.payments')
         vals_list['name'] = name
         res = super(PayrollPayments, self).create(vals_list)
+        res.account_income_id = res.partner_payroll_id.account_income_id
+        res.account_inscription_id = res.partner_payroll_id.account_inscription_id
+        res.account_regulation_cup_id = res.partner_payroll_id.account_regulation_cup_id
+        res.account_mandatory_contribution_id = res.partner_payroll_id.account_mandatory_contribution_id
+        res.account_voluntary_contribution_id = res.partner_payroll_id.account_voluntary_contribution_id
         # if len(res.partner_payroll_id.payroll_payments_ids) == 1:
         #     res.partner_payroll_id.date_burn_partner = fields.Datetime.now()
         #     if res.partner_payroll_id.partner_status_especific == 'active_service' or res.partner_payroll_id.partner_status_especific == 'letter_a' or res.partner_payroll_id.partner_status_especific == 'passive_reserve_b':
@@ -242,6 +265,36 @@ class PayrollPayments(models.Model):
     def draft_massive(self):
         for record in self:
             record.state = 'draft'
+
+    def create_account_move(self):
+        account_move = self.env['account.move']
+        move_data = {
+            # 'date': datetime.now(),
+            'journal_id': 9,
+            'line_ids': [
+                (0, 0, {
+                    'account_id': self.account_income_id.id,  # ID de otra cuenta contable para el crédito. Ajusta según tus necesidades.
+                    'credit': self.income,
+                }),
+                (0, 0, {
+                    'account_id': self.account_inscription_id.id,
+                    'debit': self.miscellaneous_income,
+                }),
+                (0, 0, {
+                    'account_id': self.account_regulation_cup_id.id,
+                    'debit': self.regulation_cup,
+                }),
+                (0, 0, {
+                    'account_id': self.account_mandatory_contribution_id.id,
+                    'debit': self.mandatory_contribution_certificate,
+                }),
+                (0, 0, {
+                    'account_id': self.account_voluntary_contribution_id.id,
+                    'debit': self.voluntary_contribution_certificate,
+                }),
+            ],
+        }
+        account_move.create(move_data)
 
     def no_contribution(self):
         for record in self:

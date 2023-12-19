@@ -177,6 +177,19 @@
                             <page string="Pagos adelantados">
                                 <field name="advanced_payments_ids"/>
                             </page>
+                            <page string="Contabilidad">
+                                <group>
+                                    <group>
+                                        <field name="account_income_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="account_inscription_id"/>
+                                        <field name="account_regulation_cup_id"/>
+                                        <field name="account_mandatory_contribution_id"/>
+                                        <field name="account_voluntary_contribution_id"/>
+                                    </group>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

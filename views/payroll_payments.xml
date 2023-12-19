@@ -98,7 +98,23 @@
                                 <field name="glosa_contribution_interest" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Contabilidad">
+                                <group>
+                                    <group>
+                                        <field name="account_income_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="account_inscription_id"/>
+                                        <field name="account_regulation_cup_id"/>
+                                        <field name="account_mandatory_contribution_id"/>
+                                        <field name="account_voluntary_contribution_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
+
                     <div class="oe_chatter">
                         <field name="message_follower_ids" groups="base.group_user"/>
                         <field name="activity_ids"/>
@@ -244,6 +260,13 @@
             <field name="binding_model_id" ref="model_payroll_payments"/>
             <field name="state">code</field>
             <field name="code">action = records.draft_massive()</field>
+        </record>
+        <record id="action_publish_accounting" model="ir.actions.server">
+            <field name="name">Publicar asiento contable</field>
+            <field name="model_id" ref="model_payroll_payments"/>
+            <field name="binding_model_id" ref="model_payroll_payments"/>
+            <field name="state">code</field>
+            <field name="code">action = records.create_account_move()</field>
         </record>
 
     </data>
