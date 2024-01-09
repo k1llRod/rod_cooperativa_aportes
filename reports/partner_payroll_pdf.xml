@@ -246,7 +246,7 @@
                                             </t>
                                         </t>
                                     </tbody>
-                                    <tfoot style="font-size:12px;border-top: 1px solid black;">
+                                    <tbody style="font-size:12px;border-top: 1px solid black;">
                                         <tr>
                                             <td colspan="2"></td>
                                             <td>
@@ -276,7 +276,7 @@
                                                 <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')) + sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')), 2)"/>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tbody>
 
                                 </table>
                                 <br/>
@@ -337,7 +337,7 @@
                                             <strong>Total capital inicio:</strong>
                                         </td>
                                         <td>
-                                            <span>0</span>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest').mapped('voluntary_contribution_certificate')),2)"/>
                                         </td>
                                     </tr>
                                     <tr>

@@ -246,7 +246,7 @@
                                             </t>
                                         </t>
                                     </tbody>
-                                    <tfoot style="font-size:12px;border-top: 1px solid black;">
+                                    <tbody style="font-size:12px;border-top: 1px solid black;">
                                         <tr>
                                             <td colspan="2"></td>
                                             <td>
@@ -282,7 +282,7 @@
                                                                                                         or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')), 2)"/>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tbody>
 
                                 </table>
 
