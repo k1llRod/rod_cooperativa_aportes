@@ -190,10 +190,11 @@ class PartnerPayroll(models.Model):
             record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial
 
     def return_draft(self):
-        if self.state == 'process' and self.count_pay_contributions == 0:
-            self.state = 'draft'
-        else:
-            raise ValidationError(_('No se puede regresar a borrador si ya se han realizado pagos'))
+        self.state = 'draft'
+        # if self.state == 'process' and self.count_pay_contributions == 0:
+        #     self.state = 'draft'
+        # else:
+        #     raise ValidationError(_('No se puede regresar a borrador si ya se han realizado pagos'))
 
     @api.depends('payroll_payments_ids')
     def compute_updated_partner(self):
