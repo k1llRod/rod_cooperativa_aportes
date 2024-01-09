@@ -56,8 +56,8 @@
                         <!--                                class="oe_highlight"/>-->
                         <button name="return_draft" string="Borrador" type="object"
                                 class="oe_close_button"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator" />
+<!--                                attrs="{'invisible': ['|',('state', '!=', 'process'),('state','!=','finalized')]}"/>-->
                         <button name="init_partner_payroll_interest" string="Establecer interes" type="object"
                                 class="oe_highlight"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
