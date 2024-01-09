@@ -178,7 +178,7 @@ class PayrollPayments(models.Model):
             self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.month_ids'))
         sw = 0
         for month in month_flag:
-            if month == self.payment_date.month and self.drawback == False:
+            if month == self.date_pivote.month and self.drawback == False:
                 self.mandatory_contribution_certificate = 100
                 sw = 1
         if sw == 0:

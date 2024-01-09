@@ -184,7 +184,12 @@
                                                         <t t-esc="line_number"/>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <t t-esc="p.payment_date.strftime('%d-%m-%Y')"/>
+                                                        <t t-if="p.date_pivote">
+                                                            <t t-esc="p.date_pivote.strftime('%d-%m-%Y')"/>
+                                                        </t>
+                                                        <t t-else="p.date_pivote == ''">
+                                                            <t t-esc="p.payment_date.strftime('%d-%m-%Y')"/>
+                                                        </t>
                                                         <!--                                                    <span t-field="p.payment_date.strftime('%Y-%m-%d')"></span>-->
                                                     </td>
                                                     <td class="align-middle">
