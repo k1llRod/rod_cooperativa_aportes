@@ -14,8 +14,8 @@
                     <field name="period_register"/>
                     <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                     <field name="income_passive"/>
-                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="miscellaneous_income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
+                    <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
 <!--                    <field name="payment_post_mortem"/>-->
                     <field name="mandatory_contribution_certificate" attrs="{'readonly': [('state', '!=', 'draft')]}"
                            sum="Total"/>
@@ -182,8 +182,8 @@
                                sum="Total"/>
                         <field name="income_passive"
                                sum="Total"/>
-                        <field name="miscellaneous_income" optional="hide"/>
-                        <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" optional="hide"/>
+                        <field name="miscellaneous_income" optional="hide" sum="Total" />
+                        <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total" optional="hide"/>
                         <field name="mandatory_contribution_certificate"
                                attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
 <!--                        <field name="payment_post_mortem" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>-->
