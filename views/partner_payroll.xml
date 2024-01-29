@@ -253,5 +253,14 @@
             <field name="code">action = records.select_init_partner_payroll()</field>
         </record>
 
+        <record id="action_publish_accouting_entries" model="ir.actions.server">
+            <field name="name">Publicar asientos contables</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="binding_model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="state">code</field>
+            <field name="code">action = records.publish_accouting_entries()</field>
+        </record>
+
+
     </data>
 </odoo>

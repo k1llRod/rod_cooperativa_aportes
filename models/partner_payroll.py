@@ -308,3 +308,9 @@ class PartnerPayroll(models.Model):
     def cron_compute_outstanding_payments(self):
         for record in self:
             record.compute_outstanding_payments()
+
+    def publish_accouting_entries(self):
+        for record in self:
+            payments = record.payroll_payments_ids
+            for payment in payments:
+                payment.create_account_move()

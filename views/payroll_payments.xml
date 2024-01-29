@@ -82,6 +82,7 @@
                                 <field name="partner_code_contact"/>
 <!--                                <field name="income" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('partner_status', '!=', 'active')]}"/>-->
 <!--                                <field name="income_passive" attrs="{'invisible': [('partner_status', '!=', 'passive')], 'readonly': [('state', '!=', 'draft')]}"/>-->
+                                <field name="income"/>
                                 <field name="miscellaneous_income" />
                                 <field name="regulation_cup"/>
                                 <field name="mandatory_contribution_certificate"/>

@@ -15,7 +15,8 @@ class PayrollPayments(models.Model):
     name = fields.Char(string='ID aporte')
     partner_payroll_id = fields.Many2one('partner.payroll', string='Planilla de socio')
     partner_name = fields.Char(String='Nombre del socio', related='partner_payroll_id.partner_id.name', store=True)
-    partner_code_contact = fields.Char(string='Codigo de socio', related='partner_payroll_id.partner_id.code_contact', store=True)
+    partner_code_contact = fields.Char(string='Codigo de socio', related='partner_payroll_id.partner_id.code_contact',
+                                       store=True)
     partner_status = fields.Selection([('active', 'Activo'),
                                        ('active_reserve', 'Reserva activa'),
                                        ('passive', 'Servicio pasivo'),
@@ -26,7 +27,8 @@ class PayrollPayments(models.Model):
                                                  ('passive_reserve_a', 'Reserva pasivo "A"'),
                                                  ('passive_reserve_b', 'Reserva pasivo "B"'),
                                                  ('leave', 'Baja')], string='Tipo de asociado',
-                                                related='partner_payroll_id.partner_id.partner_status_especific', store=True)
+                                                related='partner_payroll_id.partner_id.partner_status_especific',
+                                                store=True)
 
     income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
     income_passive = fields.Float(string='DESC. PASIVO', required=True, tracking=True)
@@ -41,7 +43,7 @@ class PayrollPayments(models.Model):
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
         [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
-         ('contribution_interest', 'Aporte y rendimiento COAA'),('no_contribution', 'Sin aporte')],
+         ('contribution_interest', 'Aporte y rendimiento COAA'), ('no_contribution', 'Sin aporte')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
@@ -52,7 +54,8 @@ class PayrollPayments(models.Model):
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
     advanced_automata = fields.Boolean(string='Adelanto automatico')
     register_advanced_payments_ids = fields.Many2one('advance.payments')
-    date_pivote = fields.Datetime(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1), tracking=True)
+    date_pivote = fields.Datetime(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1),
+                                  tracking=True)
 
     account_income_id = fields.Many2one('account.account', string='Ingreso',
                                         default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
@@ -117,7 +120,7 @@ class PayrollPayments(models.Model):
         }
 
     @api.depends('income', 'income_passive', 'mandatory_contribution_certificate', 'miscellaneous_income',
-                 'regulation_cup','historical_contribution_coaa','historical_interest_coaa')
+                 'regulation_cup', 'historical_contribution_coaa', 'historical_interest_coaa')
     def compute_voluntary_contribution_certificate(self):
         for record in self:
             if record.partner_payroll_id.partner_status == 'active':
@@ -267,34 +270,38 @@ class PayrollPayments(models.Model):
             record.state = 'draft'
 
     def create_account_move(self):
-        account_move = self.env['account.move']
-        move_data = {
-            # 'date': datetime.now(),
-            'journal_id': 9,
-            'line_ids': [
-                (0, 0, {
-                    'account_id': self.account_income_id.id,  # ID de otra cuenta contable para el crédito. Ajusta según tus necesidades.
-                    'credit': self.income,
-                }),
-                (0, 0, {
-                    'account_id': self.account_inscription_id.id,
-                    'debit': self.miscellaneous_income,
-                }),
-                (0, 0, {
-                    'account_id': self.account_regulation_cup_id.id,
-                    'debit': self.regulation_cup,
-                }),
-                (0, 0, {
-                    'account_id': self.account_mandatory_contribution_id.id,
-                    'debit': self.mandatory_contribution_certificate,
-                }),
-                (0, 0, {
-                    'account_id': self.account_voluntary_contribution_id.id,
-                    'debit': self.voluntary_contribution_certificate,
-                }),
-            ],
+        # move_line_vals = []
+        move_line_vals = [(0, 0, {'account_id': self.account_income_id.id,
+                                 'debit': 0, 'credit': self.income, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                 'amount_currency': 0
+                                 }),
+                         (0, 0, {'account_id': self.account_inscription_id.id,
+                                 'credit': 0, 'debit': self.miscellaneous_income,
+                                 'amount_currency': 0
+                                 }),
+                         (0, 0, {'account_id': self.account_regulation_cup_id.id,
+                                 'credit': 0, 'debit': self.regulation_cup,
+                                 'amount_currency': 0
+                                 }),
+                         (0, 0, {'account_id': self.account_mandatory_contribution_id.id,
+                                 'credit': 0, 'debit': self.mandatory_contribution_certificate,
+                                 'amount_currency': 0
+                                 }),
+                         (0, 0, {'account_id': self.account_voluntary_contribution_id.id,
+                                 'credit': 0, 'debit': self.voluntary_contribution_certificate,
+                                 'amount_currency': 0
+                                 }),
+                         ]
+        move_vals = {
+            "date": datetime.today(),
+            "journal_id": 3,
+            "ref": "test",
+            # "company_id": payment.company_id.id,
+            "name": "name test",
+            "state": "draft",
+            "line_ids": move_line_vals,
         }
-        account_move.create(move_data)
+        self.env['account.move'].create(move_vals)
 
     def no_contribution(self):
         for record in self:
