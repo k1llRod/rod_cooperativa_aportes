@@ -176,6 +176,7 @@
                                     </thead>
                                     <tbody style="font-size:12px;">
                                         <tr t-set="acumulador" t-value="0"/>
+                                        <tr t-set="acumulador1" t-value="0"/>
                                         <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['payment_date'])" t-as="p">
                                             <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
@@ -225,11 +226,13 @@
                                                     </td>
                                                     <td class="align-middle">
                                                         <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
+                                                        <t t-set="acumulador1"
+                                                           t-value="acumulador1 + round(p.voluntary_contribution_certificate, 2)"/>
                                                     </td>
                                                     <td class="align-middle">
                                                         <span t-esc="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
                                                         <t t-set="acumulador"
-                                                           t-value="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
+                                                           t-value="acumulador + round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
                                                     </td>
                                                     <td class="align-middle">
                                                         <t t-if="p.state == 'transfer'">
@@ -272,10 +275,10 @@
                                                 <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')),2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')), 2)"/>
+                                                <span t-esc="acumulador1"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')) + sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')), 2)"/>
+                                                <span t-esc="acumulador"/>
                                             </td>
                                         </tr>
                                     </tbody>
