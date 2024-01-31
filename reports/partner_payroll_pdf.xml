@@ -257,11 +257,11 @@
                                                     <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('income_passive')),2)"/>
                                                 </t>
                                             </td>
-                                            <td>
-                                                <t t-if="o.partner_status_especific != 'passive_reserve_b'">
+                                            <t t-if="o.partner_status_especific != 'passive_reserve_b'">
+                                                <td>
                                                     <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest').mapped('voluntary_contribution_certificate')),2)"/>
-                                                </t>
-                                            </td>
+                                                </td>
+                                            </t>
                                             <td>
                                                 <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('miscellaneous_income')),2)"/>
                                             </td>
