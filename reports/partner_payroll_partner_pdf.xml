@@ -177,7 +177,7 @@
                                     <tbody style="font-size:12px;">
                                         <tr t-set="acumulador" t-value="0"/>
                                         <tr t-set="acumulador1" t-value="0"/>
-                                        <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['payment_date'])" t-as="p">
+                                        <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['period_register'])" t-as="p">
                                             <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
@@ -274,10 +274,10 @@
                                                 <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense' or x.state=='contribution_interest').mapped('mandatory_contribution_certificate')),2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="acumulador1"/>
+                                                <span t-esc="round(acumulador1,2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="acumulador"/>
+                                                <span t-esc="round(acumulador,2)"/>
                                             </td>
                                         </tr>
                                     </tbody>
