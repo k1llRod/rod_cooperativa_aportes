@@ -269,29 +269,51 @@ class PayrollPayments(models.Model):
         for record in self:
             record.state = 'draft'
 
-    def create_account_move(self):
-        # move_line_vals = []
-        move_line_vals = [(0, 0, {'account_id': self.account_income_id.id,
-                                 'debit': 0, 'credit': self.income, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                 'amount_currency': 0
-                                 }),
-                         (0, 0, {'account_id': self.account_inscription_id.id,
-                                 'credit': 0, 'debit': self.miscellaneous_income,
-                                 'amount_currency': 0
-                                 }),
-                         (0, 0, {'account_id': self.account_regulation_cup_id.id,
-                                 'credit': 0, 'debit': self.regulation_cup,
-                                 'amount_currency': 0
-                                 }),
-                         (0, 0, {'account_id': self.account_mandatory_contribution_id.id,
-                                 'credit': 0, 'debit': self.mandatory_contribution_certificate,
-                                 'amount_currency': 0
-                                 }),
-                         (0, 0, {'account_id': self.account_voluntary_contribution_id.id,
-                                 'credit': 0, 'debit': self.voluntary_contribution_certificate,
-                                 'amount_currency': 0
-                                 }),
-                         ]
+    def create_account_move(self,income,inscription,regulation_cup,mandatory_contribution,voluntary_contribution):
+        if not income:
+            income = self.account_income_id.id
+        if not inscription:
+            inscription = self.account_inscription_id.id
+        if not regulation_cup:
+            regulation_cup = self.account_regulation_cup_id.id
+        if not mandatory_contribution:
+            mandatory_contribution = self.account_mandatory_contribution_id.id
+        if not voluntary_contribution:
+            voluntary_contribution = self.account_voluntary_contribution_id.id
+        if self.state == 'ministry_defense' or self.state == 'transfer':
+            move_line_vals = [(0, 0, {'account_id': income.id,
+                                     'debit': self.income, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             (0, 0, {'account_id': inscription.id,
+                                      'debit': 0, 'credit': self.miscellaneous_income, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             (0, 0, {'account_id': regulation_cup.id,
+                                     'debit': 0, 'credit': self.regulation_cup, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             (0, 0, {'account_id': mandatory_contribution.id,
+                                     'debit': 0, 'credit': self.mandatory_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             (0, 0, {'account_id': voluntary_contribution.id,
+                                     'debit': 0, 'credit': self.voluntary_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             ]
+        if self.state == 'contribution_interest':
+            
+            move_line_vals = [(0, 0, {'account_id': income.id,
+                                     'debit': self.historical_contribution_coaa, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             (0, 0, {'account_id': voluntary_contribution.id,
+                                      'debit': 0, 'credit': self.historical_interest_coaa, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'amount_currency': 0
+                                     }),
+                             ]
+
         move_vals = {
             "date": datetime.today(),
             "journal_id": 3,

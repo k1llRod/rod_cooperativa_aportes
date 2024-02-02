@@ -313,4 +313,9 @@ class PartnerPayroll(models.Model):
         for record in self:
             payments = record.payroll_payments_ids
             for payment in payments:
-                payment.create_account_move()
+                income = record.account_income_id
+                inscription = record.account_inscription_id
+                regulation_cup = record.account_regulation_cup_id
+                mandatory_contribution = record.account_mandatory_contribution_id
+                voluntary_contribution = record.account_voluntary_contribution_id
+                payment.create_account_move(income,inscription,regulation_cup,mandatory_contribution,voluntary_contribution)
