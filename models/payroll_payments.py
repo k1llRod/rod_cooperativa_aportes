@@ -269,17 +269,17 @@ class PayrollPayments(models.Model):
         for record in self:
             record.state = 'draft'
 
-    def create_account_move(self,income,inscription,regulation_cup,mandatory_contribution,voluntary_contribution):
+    def create_account_move(self,income=False,inscription=False,regulation_cup=False,mandatory_contribution=False,voluntary_contribution=False):
         if not income:
-            income = self.account_income_id.id
+            income = self.account_income_id
         if not inscription:
-            inscription = self.account_inscription_id.id
+            inscription = self.account_inscription_id
         if not regulation_cup:
-            regulation_cup = self.account_regulation_cup_id.id
+            regulation_cup = self.account_regulation_cup_id
         if not mandatory_contribution:
-            mandatory_contribution = self.account_mandatory_contribution_id.id
+            mandatory_contribution = self.account_mandatory_contribution_id
         if not voluntary_contribution:
-            voluntary_contribution = self.account_voluntary_contribution_id.id
+            voluntary_contribution = self.account_voluntary_contribution_id
         if self.state == 'ministry_defense' or self.state == 'transfer':
             move_line_vals = [(0, 0, {'account_id': income.id,
                                      'debit': self.income, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
@@ -303,13 +303,14 @@ class PayrollPayments(models.Model):
                                      }),
                              ]
         if self.state == 'contribution_interest':
-            
+
+            total = self.historical_contribution_coaa + self.historical_interest_coaa
             move_line_vals = [(0, 0, {'account_id': income.id,
-                                     'debit': self.historical_contribution_coaa, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'debit': self.voluntary_contribution_certificate, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      }),
                              (0, 0, {'account_id': voluntary_contribution.id,
-                                      'debit': 0, 'credit': self.historical_interest_coaa, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                      'debit': 0, 'credit': total, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      }),
                              ]
@@ -319,7 +320,7 @@ class PayrollPayments(models.Model):
             "journal_id": 3,
             "ref": "test",
             # "company_id": payment.company_id.id,
-            "name": "name test",
+            # "name": "name test",
             "state": "draft",
             "line_ids": move_line_vals,
         }
