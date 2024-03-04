@@ -177,7 +177,7 @@
                                     <tbody style="font-size:12px;">
                                         <tr t-set="acumulador" t-value="0"/>
                                         <tr t-set="acumulador1" t-value="0"/>
-                                        <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['period_register'])" t-as="p">
+                                        <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['date_pivote'])" t-as="p">
                                             <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
