@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','contacts','mail', 'rod_cooperativa','web_notify','account','web_responsive','web'],
+    'depends': ['base','contacts','mail', 'rod_cooperativa','rod_loan_emergency','web_notify','account','web_responsive','web'],
 
     # always loaded
     'data': [
@@ -53,5 +53,8 @@
         'reports/partner_payroll_partner_pdf.xml',
         'reports/report_res_partner_pdf.xml',
         'reports/certificate_voluntary.xml',
+        'reports/report_paperformat_data.xml',
+        'reports/report_res_partner_elections.xml',
+        # 'reports/report_wrd.xml',
     ],
 }

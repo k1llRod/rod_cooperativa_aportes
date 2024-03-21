@@ -29,6 +29,7 @@ class ResPartner(models.Model):
     contributions_count = fields.Integer(string='Aportes', compute='compute_contributions_count')
     loan_count = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     loan_count_mortgage = fields.Integer(string='Préstamos', compute='compute_contributions_count')
+    loan_count_loan_emergency = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     date_unsubscribe = fields.Date(string='Fecha de baja')
 
 
@@ -37,13 +38,11 @@ class ResPartner(models.Model):
             contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))
             loans = len(record.env['loan.application'].search([('partner_id', '=', record.id),('with_guarantor','!=','mortgage')]))
             loans_mortgage = len(record.env['loan.application'].search([('partner_id', '=', record.id),('with_guarantor','=','mortgage')]))
+            loans_emergency = len(record.env['loan.application.emergency'].search([('partner_id', '=', record.id)]))
             record.contributions_count = contributions
             record.loan_count = loans
             record.loan_count_mortgage = loans_mortgage
-
-
-
-
+            record.loan_count_loan_emergency = loans_emergency
 
     def action_view_contributions(self):
         self.ensure_one()
@@ -67,6 +66,13 @@ class ResPartner(models.Model):
         action['domain'] = [
             ('partner_id.id', '=', self.id),
             ('with_guarantor','=','mortgage')
+        ]
+        return action
+    def action_view_loans_emergency(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id("rod_cooperativa.action_loan_emergency_application")
+        action['domain'] = [
+            ('partner_id.id', '=', self.id)
         ]
         return action
 
@@ -121,6 +127,19 @@ class ResPartner(models.Model):
             'target': 'current',
         }
 
+    def init_loan_emergency(self):
+        loan_application = self.env['loan.application.emergency'].create({'partner_id': self.id,
+                                                                         'date': datetime.now(),
+                                                                         })
+        return {
+            'name': 'Detalle del prestamo',
+            'type': 'ir.actions.act_window',
+            'res_model': 'loan.application.emergency',
+            'res_id': loan_application.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
     def init_massive_payment(self):
         partners_off = self.env['partner.payroll'].search([])
         domain = []
@@ -138,3 +157,5 @@ class ResPartner(models.Model):
         self.date_unsubscribe = datetime.now()
         self.state = 'unsubscribe'
 
+    def print_report_partner_elections(self):
+        return self.env.ref('rod_cooperativa_aportes.report_res_partner_elections').report_action(self)

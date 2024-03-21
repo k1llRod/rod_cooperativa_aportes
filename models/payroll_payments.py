@@ -144,7 +144,7 @@ class PayrollPayments(models.Model):
                 verify = record.partner_payroll_id.payroll_payments_ids.filtered(
                     lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and (
                             x.period_register == record.period_register))
-                if len(verify) > 0 and record.drawback == False:
+                if len(verify) > 0 and record.drawback == False and record.partner_status != 'passive':
                     raise ValidationError('Ya existe un pago confirmado para este periodo')
                 if record.partner_payroll_id.advance_mandatory_certificate > 0 and record.switch_draf == False:
                     record.partner_payroll_id.advance_mandatory_certificate = record.partner_payroll_id.advance_mandatory_certificate - record.mandatory_contribution_certificate
@@ -282,7 +282,7 @@ class PayrollPayments(models.Model):
             voluntary_contribution = self.account_voluntary_contribution_id
         if self.state == 'ministry_defense' or self.state == 'transfer':
             move_line_vals = [(0, 0, {'account_id': income.id,
-                                     'debit': self.income, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'debit': self.income_passive if self.income == 0 else self.income, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      }),
                              (0, 0, {'account_id': inscription.id,

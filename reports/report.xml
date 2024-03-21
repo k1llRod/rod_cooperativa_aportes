@@ -88,4 +88,15 @@
         <field name="binding_type">report</field>
     </record>
 
+<!--    <record id="action_report_res_partner_elections" model="ir.actions.report">-->
+<!--        <field name="name">Filiación personal elecciones PDF</field>-->
+<!--        <field name="model">res.partner</field>-->
+<!--        <field name="report_type">qweb-html</field>-->
+<!--        <field name="report_name">rod_cooperativa_aportes.report_res_partner</field>-->
+<!--        <field name="report_file">rod_cooperativa_aportes.report.report_res_partner</field>-->
+<!--        <field name="binding_model_id" ref="model_res_partner"/>-->
+<!--&lt;!&ndash;        <field name="paperformat_id" ref="rod_cooperativa_aportes.paperformat_certificate" />&ndash;&gt;-->
+<!--        <field name="binding_type">report</field>-->
+<!--    </record>-->
+
 </odoo>

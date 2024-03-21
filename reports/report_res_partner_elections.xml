@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="rod_layout_elections">
+            <div class="header">
+                <div class="row">
+                    <div class="o_background_header">
+                        <table style="width:100%;font-size:14px;">
+                            <tr>
+                                <td style="width:500px;text-align:center;center;">COOPERATIVA DE
+                                    AHORRO Y CREDITO DE
+                                    VINCULO LABORAL
+                                </td>
+                                <td style="width:160px"></td>
+                                <td>Paginas:
+                                    <span class="topage"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;center;">COA - 4 DE DICIEMBRE R.L.
+                                </td>
+                                <td></td>
+                                <td>Fecha:
+                                    <!--                                    <t t-set="now" t-value="context.get('tz').localize(fields.Datetime.now())" />-->
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">LA PAZ - BOLIVIA</td>
+                                <td></td>
+
+                            </tr>
+                        </table>
+                        <br/>
+                        <div style="font-size:18px;font-weight:bold;"><center>RELACION NOMINAL DE SOCIOS ACTIVOS DE LA COOPERATIVA "COA-4 DE DICIEMBRE"</center></div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="article o_report_standard">
+                <t t-out="0"/>
+            </div>
+            <div class="footer o_standard_footer">
+                <center>
+                    Page:
+                    <span class="page"/>
+                    /
+                    <span class="topage"/>
+                </center>
+            </div>
+        </template>
+        <template id="report_res_partner_elections_pdf">
+            <t t-call="web.html_container">
+                <t t-call="rod_cooperativa_aportes.rod_layout_elections">
+                    <tr t-set="acumulador" t-value="1"/>
+                    <t t-foreach="docs" t-as="o">
+                        <div class="page" style="page-break-inside: avoid;">
+                            <div class="body" style="page-break-inside: avoid;">
+                                <div style="width:100%; display:block;position:relative;page-breake-inside:avoid;">
+                                    <t t-if="acumulador % 2 == 0">
+                                        <div >
+                                            <table class="table table-bordered" border="1" style="width:50%;font-size:10px;page-breake-inside:avoid;">
+                                            <tr>
+                                                <td style="padding:0;margin:0;width:14px;font-weight:bold;"><center>Nro</center></td>
+                                                <td rowspan="6" style="width:110px;">
+                                                    <t t-if="o.image_1920 != False">
+                                                        <img t-att-src="image_data_uri(o.image_1920)" style="max-width: 100px; max-height: 100px;"/>
+                                                    </t>
+
+                                                </td>
+                                                <td style="padding:0;margin:0;width:45px;font-weight:bold;">Nombre</td>
+                                                <td style="padding:0;margin:0;">
+                                                    <t t-esc="o.name"/>
+                                                </td >
+                                                <tr>
+                                                    <td rowspan="5" style="font-weight:bold;font-size:14px;"><span t-esc="acumulador"/></td>
+                                                    <td style="padding:0;margin:0;font-weight:bold;">Grado</td>
+                                                    <td style="padding:0;margin:0;">
+                                                        <t t-esc="o.category_partner_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td style="padding:0;margin:0;font-weight:bold;">C.I.</td>
+                                                    <td style="padding:0;margin:0;">
+                                                        <t t-esc="o.vat"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td style="padding:0;margin:0;font-weight:bold;">C.M.</td>
+                                                    <td style="padding:0;margin:0;">
+                                                        <t t-esc="o.ci_military"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td style="padding:0;margin:0;height:105px;" colspan="2"></td>
+<!--                                                    <td style="padding:0;margin:0;height:55px;"></td>-->
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:0;margin:0;font-weight:bold;" colspan="2">
+                                                        <div style="width:100%;display:block;">
+                                                            <div style="width:50%;border-right:1px solid gray;float:left;"><center>FIRMA</center></div>
+                                                            <div style="width:50%;border-left:1px solid gray;float:left;"><center>HUELLA</center></div>
+                                                        </div>
+                                                    </td>
+<!--                                                    <td style="padding:0;margin:0;font-weight:bold;">Huella</td>-->
+                                                </tr>
+                                            </tr>
+                                        </table>
+                                        </div>
+                                    </t>
+                                    <t t-else="else">
+                                        <div >
+                                            <table class="table table-bordered" border="1" style="width:50%;float:left;font-size:10px;page-breake-inside:avoid;">
+                                            <tr>
+                                                <td style="padding:0;margin:0;width:14px;font-weight:bold;"><center>Nro</center></td>
+                                                <td rowspan="6" style="width:110px;">
+                                                    <t t-if="o.image_1920 != False">
+                                                        <img t-att-src="image_data_uri(o.image_1920)"
+                                                             style="max-width: 100px; max-height: 100px;"/>
+                                                    </t>
+                                                </td>
+                                                <td style="padding:0;margin:0;width:45px;font-weight:bold;">Nombre</td>
+                                                <td style="padding:0;margin:0;" colspan="2">
+                                                    <t t-esc="o.name"/>
+                                                </td>
+                                                <tr>
+                                                    <td rowspan="5" style="font-weight:bold;font-size:14px;"><span t-esc="acumulador"/></td>
+                                                    <td style="padding:0;margin:0;font-weight:bold;">Grado</td>
+                                                    <td style="padding:0;margin:0;" colspan="2">
+                                                        <t t-esc="o.category_partner_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td style="padding:0;margin:0;font-weight:bold;">C.I.</td>
+                                                    <td style="padding:0;margin:0;">
+                                                        <t t-esc="o.vat"/>
+                                                    </td>
+                                                </tr>
+                                                <tr >
+
+                                                    <td style="padding:0;margin:0;font-weight:bold;">C.M.</td>
+                                                    <td style="padding:0;margin:0;">
+                                                        <t t-esc="o.ci_military"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td style="padding:0;margin:0;height:105px;" colspan="2"></td>
+<!--                                                    <td style="padding:0;margin:0;height:55px;"></td>-->
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:0;margin:0;font-weight:bold;" colspan="2">
+                                                        <div style="width:100%;display:block;">
+                                                            <div style="width:50%;border-right:1px solid gray;float:left;">
+                                                                <center>FIRMA</center>
+                                                            </div>
+                                                            <div style="width:50%;border-left:1px solid gray;float:left;">
+                                                                <center>HUELLA</center>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tr>
+                                        </table>
+                                        </div>
+                                    </t>
+                                </div>
+                                <t t-if="acumulador % 10 == 0">
+                                    <div style="page-break-before: always;">
+
+                                    </div>
+                                </t>
+                                <t t-set="acumulador" t-value="acumulador + 1"/>
+
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <report
+            id="rod_cooperativa_aportes.report_res_partner_elections"
+            string="Filiacion Personal"
+            model="res.partner"
+            report_type="qweb-html"
+            name="rod_cooperativa_aportes.report_res_partner_elections_pdf"
+            paperformat="rod_cooperativa_aportes.paperformat_elections"
+        />
+    </data>
+</odoo>
