@@ -230,12 +230,12 @@ class PartnerPayroll(models.Model):
     def compute_outstanding_payments(self):
         for record in self:
             if record.date_burn_partner != False:
-                make_register = int(((datetime.now() - record.date_burn_partner).days) / 30)
+                make_register = round(((datetime.now() - record.date_burn_partner).days) / 30)
             else:
                 make_register = 0
             # make_register = record.calculate_month_difference()
-            record.outstanding_payments = make_register - int(len(record.payroll_payments_ids.filtered(lambda
-                                                                                                           x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
+            record.outstanding_payments = make_register - round(len(record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
+
 
     def calculate_month_difference(self):
         for record in self:

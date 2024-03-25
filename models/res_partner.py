@@ -6,8 +6,12 @@ from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    state = fields.Selection([('draft', 'Borrador'), ('verificate', 'Verificación'), ('activate', 'Socio activo'),
-                              ('rejected', 'Rechazado'), ('unsubscribe', 'Baja')],
+    state = fields.Selection([('draft', 'Borrador'),
+                              ('verificate', 'Verificación'),
+                              ('activate', 'Socio activo'),
+                              ('external','Externo'),
+                              ('rejected', 'Rechazado'),
+                              ('unsubscribe', 'Baja')],
                              string='Estado', default='draft', track_visibility='onchange')
 
     def init_partner(self):
@@ -87,7 +91,10 @@ class ResPartner(models.Model):
                 raise ValidationError(_('Debe ingresar la Fotocopía de la cédula de identidad'))
             if not self.photocopy_military_ci:
                 raise ValidationError(_('Debe ingresar la Fotocopia de la  cédula militar'))
-            self.state = 'verificate'
+            if self.partner_status == 'external':
+                self.state = 'external'
+            else:
+                self.state = 'verificate'
 
     def approve_partner(self):
         self.ensure_one()

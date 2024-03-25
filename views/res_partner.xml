@@ -20,6 +20,7 @@
                         <button name="init_loan_mortgage" string="Iniciar prestamo hipotecario" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'verificate'),('loan_count_mortgage','>','0')]}"/>
                         <button name="init_loan_emergency" string="Iniciar prestamo emergencia" type="object"
+                                attrs="{'invisible': [('state','!=','verificate'),('state','!=','external')]}"
                                 />
 <!--                        <button name="init_loan_emergency" string="Iniciar prestamo de emergencia" type="object"-->
 <!--                                />-->
