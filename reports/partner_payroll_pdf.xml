@@ -157,6 +157,7 @@
                                         <tr style="font-size:12px;">
                                             <th class="align-middle">N</th>
                                             <th class="align-middle">FECHA</th>
+                                            <th class="align-middle">PERIODO</th>
                                             <th class="align-middle">DEPOSITO</th>
                                             <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                 <th style="width:85px; padding:5px;" class="align-middle">CAPITAL DE
@@ -185,13 +186,16 @@
                                                         <t t-esc="line_number"/>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <t t-if="p.date_pivote">
-                                                            <t t-esc="p.date_pivote.strftime('%d-%m-%Y')"/>
-                                                        </t>
-                                                        <t t-else="p.date_pivote == ''">
+                                                        <t t-if="p.payment_date">
                                                             <t t-esc="p.payment_date.strftime('%d-%m-%Y')"/>
                                                         </t>
+                                                        <t t-else="p.payment_date == ''">
+                                                            <t t-esc="p.date_pivote.strftime('%d-%m-%Y')"/>
+                                                        </t>
                                                         <!--                                                    <span t-field="p.payment_date.strftime('%Y-%m-%d')"></span>-->
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="p.period_register"/>
                                                     </td>
                                                     <td class="align-middle">
                                                         <t t-if="p.income">
@@ -285,32 +289,32 @@
 
                                 </table>
                                 <br/>
-                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">
-                                    <table class="table text-center align-middle" style="font-size: 15px;">
-                                        <thead>
-                                            <th></th>
-                                            <th>SALDO APORTE PASIVO</th>
-                                            <th>SALDO TAZA DE REGULACION</th>
-                                            <th>SALDO APORTE OBLIGATORIO</th>
-                                        </thead>
-                                        <t t-foreach="o.advanced_payments_ids" t-as="a">
-                                            <tr>
-                                                <td>
+<!--                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">-->
+<!--                                    <table class="table text-center align-middle" style="font-size: 15px;">-->
+<!--                                        <thead>-->
+<!--                                            <th></th>-->
+<!--                                            <th>SALDO APORTE PASIVO</th>-->
+<!--                                            <th>SALDO TAZA DE REGULACION</th>-->
+<!--                                            <th>SALDO APORTE OBLIGATORIO</th>-->
+<!--                                        </thead>-->
+<!--                                        <t t-foreach="o.advanced_payments_ids" t-as="a">-->
+<!--                                            <tr>-->
+<!--                                                <td>-->
 
-                                                </td>
-                                                <td>
-                                                    <span t-field="a.remaining_contribution_passive"/>
-                                                </td>
-                                                <td>
-                                                    <span t-field="a.remaining_regulation_cup"/>
-                                                </td>
-                                                <td>
-                                                    <span t-field="a.remaining_mandatory_contribution"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </table>
-                                </t>
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-field="a.remaining_contribution_passive"/>-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-field="a.remaining_regulation_cup"/>-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-field="a.remaining_mandatory_contribution"/>-->
+<!--                                                </td>-->
+<!--                                            </tr>-->
+<!--                                        </t>-->
+<!--                                    </table>-->
+<!--                                </t>-->
 
                                 <table>
                                     <tr>
