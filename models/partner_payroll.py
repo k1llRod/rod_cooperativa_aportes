@@ -78,6 +78,13 @@ class PartnerPayroll(models.Model):
     account_mandatory_contribution_id = fields.Many2one('account.account', string='Aportes obligatorios', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_mandatory_contribution_id'))
     account_voluntary_contribution_id = fields.Many2one('account.account', string='Aportes voluntarios', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_voluntary_contribution_id'))
 
+    payment_type = fields.Selection([('cossmil_discount', 'Descuento COSSMIL'),
+                                     ('voluntary_contribution', 'Aporte voluntario'),
+                                     ('voluntary_contribution_discount', 'Descuento voluntario de aportes')], string='Tipo de pago')
+    since_payment = fields.Date(string='Desde')
+    until_payment = fields.Date(string='Hasta')
+
+
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     @api.depends('payroll_payments_ids')

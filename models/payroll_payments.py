@@ -43,7 +43,9 @@ class PayrollPayments(models.Model):
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
         [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
-         ('contribution_interest', 'Aporte y rendimiento COAA'), ('no_contribution', 'Sin aporte')],
+         ('contribution_interest', 'Aporte y rendimiento COAA'),
+         ('no_contribution', 'Sin aporte'),
+         ('capital_initial','Capital inicial')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
@@ -74,6 +76,8 @@ class PayrollPayments(models.Model):
                                                         default=lambda self: self.env[
                                                             'ir.config_parameter'].sudo().get_param(
                                                             'rod_cooperativa_aportes.account_voluntary_contribution_id'))
+
+    capital_initial = fields.Float(string='Capital inicial')
 
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
@@ -120,7 +124,7 @@ class PayrollPayments(models.Model):
         }
 
     @api.depends('income', 'income_passive', 'mandatory_contribution_certificate', 'miscellaneous_income',
-                 'regulation_cup', 'historical_contribution_coaa', 'historical_interest_coaa')
+                 'regulation_cup', 'historical_contribution_coaa', 'historical_interest_coaa','capital_initial')
     def compute_voluntary_contribution_certificate(self):
         for record in self:
             if record.partner_payroll_id.partner_status == 'active':
@@ -131,8 +135,14 @@ class PayrollPayments(models.Model):
                     record.mandatory_contribution_certificate = 0
                     record.voluntary_contribution_certificate = record.historical_contribution_coaa + record.historical_interest_coaa
             else:
-                record.voluntary_contribution_certificate = record.income_passive - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
-
+                if record.capital_initial > 0:
+                    record.voluntary_contribution_certificate = record.capital_initial
+                    record.regulation_cup = 0
+                    record.miscellaneous_income = 0
+                    record.mandatory_contribution_certificate = 0
+                    record.income_passive = 0
+                else:
+                    record.voluntary_contribution_certificate = record.income_passive - record.mandatory_contribution_certificate - record.miscellaneous_income - record.regulation_cup
     def confirm_payroll(self):
         for record in self:
             if record.state == 'draft':
@@ -337,3 +347,15 @@ class PayrollPayments(models.Model):
             record.mandatory_contribution_certificate = 0
             record.voluntary_contribution_certificate = 0
             record.state = 'no_contribution'
+
+    def capital_initial_a(self):
+        for record in self:
+            record.state = 'capital_initial'
+
+    # @api.onchange('capital_initial')
+    # def onchange_capital_initial(self):
+    #     for record in self:
+    #         record.regulation_cup = 0
+    #         record.mandatory_contribution_certificate = 0
+    #         record.miscellaneous_income = 0
+

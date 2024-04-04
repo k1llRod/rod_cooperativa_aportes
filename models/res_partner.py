@@ -36,7 +36,6 @@ class ResPartner(models.Model):
     loan_count_loan_emergency = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     date_unsubscribe = fields.Date(string='Fecha de baja')
 
-
     def compute_contributions_count(self):
         for record in self:
             contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))

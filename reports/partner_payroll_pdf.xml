@@ -255,7 +255,7 @@
                                     </tbody>
                                     <tbody style="font-size:12px;border-top: 1px solid black;">
                                         <tr>
-                                            <td colspan="2"></td>
+                                            <td colspan="3"></td>
                                             <td>
                                                 <t t-if="p.income">
                                                     <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>

@@ -65,6 +65,11 @@
                                 class="oe_close_button"
                                 attrs="{'invisible':[('state','=','draft')]}"
                         />
+                        <button name="capital_initial_a" string="Capital inicial" type="object"
+                                class="oe_close_button"
+                                attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
+                        />
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,transfer,ministry_defense"/>
                     </header>
                     <sheet>
@@ -94,9 +99,10 @@
                             <group>
                                 <field name="drawback" attrs="{'readonly': [('state','!=','draft')], 'invisible': [('state','=','contribution_interest')] }" />
                                 <field name="switch_draf" />
+                                <field name="capital_initial"/>
                                 <field name="historical_contribution_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
                                 <field name="historical_interest_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
-                                <field name="glosa_contribution_interest" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
+                                <field name="glosa_contribution_interest" />
                             </group>
                         </group>
                         <notebook>
