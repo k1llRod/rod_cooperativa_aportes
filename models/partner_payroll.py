@@ -129,8 +129,9 @@ class PartnerPayroll(models.Model):
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
             record.capital_initial = sum(
-                record.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest').mapped(
+                record.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest' or x.state == 'capital_initial').mapped(
                     'voluntary_contribution_certificate'))
+
 
     def init_payroll_partner_wizard(self):
         # Acción para abrir el wizard
