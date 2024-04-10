@@ -83,6 +83,7 @@ class PartnerPayroll(models.Model):
                                      ('voluntary_contribution_discount', 'Descuento voluntario de aportes')], string='Tipo de pago')
     since_payment = fields.Date(string='Desde')
     until_payment = fields.Date(string='Hasta')
+    amount_type = fields.Float(string='Aporte voluntario post mortem', default=0.0)
 
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
