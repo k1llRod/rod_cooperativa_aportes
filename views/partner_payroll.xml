@@ -111,7 +111,7 @@
                                 <field name="contribution_total" readonly="1"/>
                                 <h2>Test</h2>
                                 <field name="payment_type"/>
-<!--                                <field name="amount_type"/>-->
+                                <field name="amount_type"/>
                                 <field name="since_payment"/>
                                 <field name="until_payment"/>
 
