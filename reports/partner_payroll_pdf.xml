@@ -149,6 +149,44 @@
                                             </td>
                                         </t>
                                     </tr>
+                                    <t t-if="o.partner_id.partner_status == 'passive'">
+                                        <tr>
+                                            <td>
+                                                <strong>TIPO DE PAGO</strong>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.payment_type"></span>
+                                            </td>
+                                            <td>
+                                                <strong>FECHA DE NACIMIENTO</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.partner_id.date_birthday"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>APORTE V. POSTMORTEM</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.amount_type"></span>
+                                            </td>
+                                            <td>
+                                                <strong>EDAD</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.partner_id.years_completed"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>DESDE:</strong>
+                                                <span t-field="o.since_payment"/>
+                                                <strong>HASTA:</strong>
+                                                <span t-field="o.until_payment"></span>
+                                            </td>
+                                        </tr>
+                                    </t>
 
                                 </table>
                                 <br/>
