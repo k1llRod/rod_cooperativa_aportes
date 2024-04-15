@@ -80,7 +80,7 @@ class PartnerPayroll(models.Model):
 
     payment_type = fields.Selection([('cossmil_discount', 'Descuento COSSMIL'),
                                      ('voluntary_contribution', 'Aporte voluntario'),
-                                     ('voluntary_contribution_discount', 'Descuento voluntario de aportes')], string='Tipo de pago')
+                                     ('voluntary_contribution_discount', 'Descuento devolucion de aportes')], string='Tipo de pago')
     since_payment = fields.Date(string='Desde')
     until_payment = fields.Date(string='Hasta')
     amount_type = fields.Float(string='Aporte voluntario post mortem', default=0.0)

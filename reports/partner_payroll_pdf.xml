@@ -155,10 +155,18 @@
                                                 <strong>TIPO DE PAGO</strong>
                                             </td>
                                             <td>
-                                                <span t-esc="o.payment_type"></span>
+                                                <t t-if="o.payment_type == 'cossmil_discount'">
+                                                    <span>Descuento COSSMIL</span>
+                                                </t>
+                                                <t t-if="o.payment_type == 'voluntary_contribution'">
+                                                    <span>APORTE VOLUNTARIO</span>
+                                                </t>
+                                                <t t-if="o.payment_type == 'voluntary_contribution_discount'">
+                                                    <span>DESCUENTO DEVOLUCION APORTES</span>
+                                                </t>
                                             </td>
                                             <td>
-                                                <strong>FECHA DE NACIMIENTO</strong>
+                                                <strong>FECHA NACIMIENTO</strong>
                                             </td>
                                             <td>
                                                 <span t-field="o.partner_id.date_birthday"></span>
