@@ -109,11 +109,13 @@
                                 <!--                                <field name="literal_total_voluntary_contribution"/>-->
                                 <field name="performance_management_total"/>
                                 <field name="contribution_total" readonly="1"/>
-                                <h2 style="color: blue;">Periodo Post mortem</h2>
-                                <field name="payment_type"/>
-                                <field name="amount_type"/>
-                                <field name="since_payment"/>
-                                <field name="until_payment"/>
+                                <h2 style="color: blue;" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}">Periodo Post mortem</h2>
+                                <field name="payment_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
+                                <field name="amount_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
+                                <field name="since_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
+                                <field name="until_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
+                                <field name="difference_year" invisible="0"/>
+                                <field name="year_now" invisible="0"/>
                             </group>
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -171,6 +173,14 @@
                                                 icon="fa-eye"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Debe">
+                                <group>
+                                    <group string="Aportes pendientes">
+                                        <field name="must_regulation_rate"/>
+                                        <field name="must_mandatory_contribution"/>
+                                    </group>
+                                </group>
                             </page>
                             <page string="Rendimiento">
                                 <field name="performance_management_ids" editable="top"/>
@@ -264,6 +274,25 @@
             <field name="state">code</field>
             <field name="code">action = records.publish_accouting_entries()</field>
         </record>
+
+        <record id="action_update_partner_payroll" model="ir.actions.server">
+            <field name="name">Actualizar</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="binding_model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="state">code</field>
+            <field name="code">action = records.compute_updated_partner()</field>
+        </record>
+
+        <record model="ir.actions.server" id="action_report_partner_payroll">
+            <field name="name">Deudas</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="binding_model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model._init_report_partner_payroll()
+            </field>
+        </record>
+
 
 
     </data>

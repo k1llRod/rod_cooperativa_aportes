@@ -188,10 +188,19 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <strong>DESDE:</strong>
-                                                <span t-field="o.since_payment"/>
-                                                <strong>HASTA:</strong>
+                                                <strong style="color:red;">DESDE:</strong>
+                                            </td>
+                                            <td>
                                                 <span t-field="o.until_payment"></span>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong style="color:red;">HASTA:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.since_payment"/>
                                             </td>
                                         </tr>
                                     </t>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <report id="report_partner_payroll_id"
+				model="report.rod_cooperativa_aportes.partner_payroll_report"
+				string="Report Name Goes Here"
+				name="rod_cooperativa_aportes.report_partner_payroll"
+				file="rod_cooperativa_aportes.report_partner_payroll"
+				report_type="qweb-html" />
+
+        <template id="report_partner_payroll">
+            <t t-call="report.layout">
+                <div class="page">
+                    <div class="text-center">
+                        <h4>
+                            <b>Hello This is Custom Report (Odoo QWEB)</b>
+                        </h4>
+                        <t t-foreach="hold_data_array" t-as="data">
+                            <t t-esc="data[0]" />
+                            <t t-esc="data[1]" />
+
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>

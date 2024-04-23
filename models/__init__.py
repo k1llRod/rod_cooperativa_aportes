@@ -9,6 +9,7 @@ from . import nominal_relationship_mindef_contributions
 from . import month
 from . import performance_management
 from . import performance_index_log
+from . import dynamic_report_partner_payroll
 
 # from . import payroll_payment
 

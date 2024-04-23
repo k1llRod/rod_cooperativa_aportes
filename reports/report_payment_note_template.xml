@@ -22,94 +22,122 @@
                                 <center><h2>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-B)</h2></center>
                                 <center><h3>DETALLE DE PAGO</h3></center>
                                 <br/>
-                                <br/>
                                 <table style="font-family:Arial;">
                                     <tbody>
                                         <tr>
                                             <td style="width: 220px;font-weight:bold;">GRADO</td>
-                                            <td><span t-field="o.advanced_partner_payroll_id.partner_id.category_partner_id"/></td>
+                                            <td><span t-field="o.partner_id.category_partner_id"/></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>NOMBRE COMPLETO:</strong></td>
-                                            <td><span t-field="o.advanced_partner_payroll_id.partner_id.name"/></td>
+                                            <td><strong>NOMBRE(S):</strong></td>
+                                            <td><span t-field="o.partner_id.name_contact"/></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>C.I.:</strong></td>
-                                            <td><span t-field="o.advanced_partner_payroll_id.partner_id.vat"/></td>
+                                            <td><strong>APELLIDO(S):</strong></td>
+                                            <td><span t-field="o.partner_id.paternal_surname"/> <span t-field="o.partner_id.maternal_surname"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>PROMOCION:</strong></td>
+                                            <td><span t-field="o.partner_id.graduation_year"/></td>
                                         </tr>
                                         <tr>
                                             <td><strong>TIPO DE APORTE: </strong></td>
-                                            <td>DESCUENTO DE APORTES</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>CANTIDAD DE MESES: </strong></td>
-                                            <td><span t-field="o.n_months"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>MONTO TOTAL:</strong></td>
-                                            <td><t t-set="sum_total"
-                                               t-value="round(o.miscellaneous_income + o.regulation_cup + o.mandatory_contribution + o.contribution_passive,2)"/>
-                                            <t t-esc="sum_total"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>BANCO: </strong></td>
-                                            <td>UNION</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>A NOMBRE: </strong></td>
-                                            <td>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL COA-4 DIC R.L.</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>CUENTA CORRIENTE M/N: </strong></td>
-                                            <td>10000046662082</td>
-                                        </tr>
+                                            <td>
+                                                <t t-if="o.payment_type == 'cossmil_discount'">
+                                                    DESCUENTO COSSMIL
+                                                </t>
+                                                <t t-if="o.payment_type == 'voluntary_contribution'">
+                                                    APORTE VOLUNTARIO
+                                                </t>
+                                                <t t-if="o.payment_type == 'voluntary_contribution_discount'">
+                                                    DESCUENTO DEVOLUCION DE APORTES
+                                                </t>
 
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><strong>MONTO: </strong></td>
+                                            <td><span t-field="o.amount_type"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>DESDE: </strong></td>
+                                            <td><span t-field="o.since_payment"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>HASTA: </strong></td>
+                                            <td><span t-field="o.until_payment"/></td>
+                                        </tr>
                                     </tbody>
                                 </table>
-                                <br/>
-                                <br/>
+                                <center><h2>OBLIGACIONES CON LA AFCOOP. 2024</h2></center>
                                 <div>
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <td></td>
-                                                <td>N meses</td>
-                                                <td>Inscripción</td>
-                                                <td>Tasa regulación</td>
-                                                <td>Aporte obligatorio</td>
-                                                <td>Aporte pasivo</td>
-                                                <td><strong>Total a pagar</strong></td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
+                                    <t t-if="o.year_now >= o.difference_year ">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <td><center><strong>APORTES</strong></center></td>
+                                                    <td><strong>SEMESTRAL</strong></td>
+                                                    <td><strong>ANUAL</strong></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
+                                                    <td>
+                                                        100.00 Bs.
+                                                    </td>
+                                                    <td>
+                                                        200.00 Bs.
+                                                    </td>
 
-                                                <td></td>
-                                                <td>
-                                                    <span t-field="o.n_months"/>
-                                                </td>
-                                                <td>
-                                                    <span t-field="o.miscellaneous_income"/>
-                                                </td>
-                                                <td>
-                                                    <span t-field="o.regulation_cup"/>
-                                                </td>
-                                                <td>
-                                                    <span t-field="o.mandatory_contribution"/>
-                                                </td>
-                                                <td>
-                                                    <span t-field="o.contribution_passive"/>
-                                                </td>
-                                                <td>
-                                                    <strong>
-                                                        <t t-set="sum_total"
-                                                           t-value="round(o.miscellaneous_income + o.regulation_cup + o.mandatory_contribution + o.contribution_passive,2)"/>
-                                                        <t t-esc="sum_total"/>
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                                                </tr>
+                                                <tr>
+                                                    <td>APORTES AFCOOP. (TASA REGULACION)</td>
+                                                    <td>0.50 ctvos.</td>
+                                                    <td>6.00 Bs.</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>APORTES POST MORTEM</td>
+                                                    <td></td>
+                                                    <td>167.04 Bs.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>TOTAL DEPOSITAR GESTION <span t-field="o.difference_year"/></strong>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>373.04 Bs.</td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                </t>
+                                    <ul>
+                                        <li><strong>CUENTA CORRIENTE M/N</strong> 10000046662082</li>
+                                        <li>BANCO UNION</li>
+                                        <li><strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL COA-4 DIC. R.L.</strong></li>
+                                    </ul>
+
+                                    <h2>NOTA.-</h2>
+                                    <p>
+                                        A PARTIR DE LA GESTION <strong><span t-field="o.difference_year"/></strong> DEBE DEPOSITAR EL APORTE POST MORTEM (24$US. ANUALES) <strong>APORTE POST MORTEM</strong>
+                                    </p>
+                                    <h3>APORTE POST MORTEM</h3>
+                                    <table style="width: 40%;">
+                                        <tr>
+                                            <td></td>
+                                            <td>ANUAL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bs.</td>
+                                            <td>167.28</td>
+                                            <td></td>
+                                        </tr>
+
                                     </table>
+
                                 </div>
                             </div>
                         </div>

@@ -38,7 +38,7 @@
         'views/performance_index_log.xml',
         'views/rod_cooperativa_aportes_menuitem.xml',
         'views/advance_payments.xml',
-        # 'views/contacts.xml',
+        'views/views.xml',
         'wizard/init_payroll_partner.xml',
         'wizard/reconcile_contributions.xml',
         'wizard/homolagate_form.xml',
@@ -55,6 +55,16 @@
         'reports/certificate_voluntary.xml',
         'reports/report_paperformat_data.xml',
         'reports/report_res_partner_elections.xml',
+        # 'reports/report_partner_payroll.xml',
         # 'reports/report_wrd.xml',
     ],
+
+    'assets': {
+        'web.assets_backend': [
+            'rod_cooperativa_aportes/static/src/js/partner_payroll.js',
+        ],
+        'web.assets_qweb': [
+            'rod_cooperativa_aportes/static/src/xml/partner_payroll.xml',
+        ],
+    }
 }

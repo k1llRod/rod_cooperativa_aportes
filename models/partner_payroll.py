@@ -52,7 +52,7 @@ class PartnerPayroll(models.Model):
                                             compute="compute_count_pay_contributions")
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
     tree_updated_partner = fields.Boolean(string='Actualizado', related='updated_partner')
-    outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_outstanding_payments", store=True)
+    outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_updated_partner", store=True)
 
     voluntary_contribution_certificate_total = fields.Float(string='Cert. Aport. Vol. Total',
                                                             compute='compute_count_pay_contributions', store=True)
@@ -84,10 +84,24 @@ class PartnerPayroll(models.Model):
     since_payment = fields.Date(string='Desde')
     until_payment = fields.Date(string='Hasta')
     amount_type = fields.Float(string='Aporte voluntario post mortem', default=0.0)
+    difference_year = fields.Integer(string='Diferencia de años', compute='compute_difference_year')
+    year_now = fields.Integer(string='Año actual', compute='compute_difference_year')
 
+    missing_payments = fields.Integer(string='Pagos faltantes')
+    must_regulation_rate = fields.Float(string='Debe tasa de regulación')
+    must_mandatory_contribution = fields.Float(string='Debe aporte obligatorio')
+    must_voluntary_contribution = fields.Float(string='Debe aporte voluntario')
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
+    @api.depends('since_payment', 'until_payment')
+    def compute_difference_year(self):
+        for record in self:
+            record.year_now = datetime.now().year
+            if record.until_payment != False:
+                record.difference_year = record.until_payment.year + 1
+            else:
+                record.difference_year = 0
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
         self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
@@ -207,6 +221,9 @@ class PartnerPayroll(models.Model):
 
     @api.depends('payroll_payments_ids')
     def compute_updated_partner(self):
+        regulation_cup = float(self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
+        mandatory_contribution = float(self.env['ir.config_parameter'].sudo().get_param(
+            'rod_cooperativa_aportes.mandatory_contribution_certificate'))
         diff_months = 0
         for record in self:
             if record.date_burn_partner:
@@ -219,8 +236,13 @@ class PartnerPayroll(models.Model):
                 record.updated_partner = True
                 self.env.user.notify_success(message='Planilla de aportes actualizado'.format(record.partner_id.name),
                                              title='Verificado')
+                record.outstanding_payments = 0
             else:
                 record.updated_partner = False
+                record.outstanding_payments = diff_months - count_payments
+                record.must_regulation_rate = record.outstanding_payments * regulation_cup
+                record.must_mandatory_contribution = record.outstanding_payments * mandatory_contribution
+
                 self.env.user.notify_warning(
                     message='Planilla de aportes desactualizada'.format(record.partner_id.name))
 
@@ -235,15 +257,15 @@ class PartnerPayroll(models.Model):
             }
         }
 
-    @api.depends('payroll_payments_ids')
-    def compute_outstanding_payments(self):
-        for record in self:
-            if record.date_burn_partner != False:
-                make_register = round(((datetime.now() - record.date_burn_partner).days) / 30)
-            else:
-                make_register = 0
-            # make_register = record.calculate_month_difference()
-            record.outstanding_payments = make_register - round(len(record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
+    # @api.depends('payroll_payments_ids')
+    # def compute_outstanding_payments(self):
+    #     for record in self:
+    #         if record.date_burn_partner != False:
+    #             make_register = round(((datetime.now() - record.date_burn_partner).days) / 30) - 1
+    #         else:
+    #             make_register = 0
+    #         # make_register = record.calculate_month_difference()
+    #         record.outstanding_payments = make_register - round(len(record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
 
 
     def calculate_month_difference(self):
@@ -314,9 +336,9 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.state = 'finalized'
 
-    def cron_compute_outstanding_payments(self):
-        for record in self:
-            record.compute_outstanding_payments()
+    # def cron_compute_outstanding_payments(self):
+    #     for record in self:
+    #         record.compute_outstanding_payments()
 
     def publish_accouting_entries(self):
         for record in self:
@@ -328,3 +350,27 @@ class PartnerPayroll(models.Model):
                 mandatory_contribution = record.account_mandatory_contribution_id
                 voluntary_contribution = record.account_voluntary_contribution_id
                 payment.create_account_move(income,inscription,regulation_cup,mandatory_contribution,voluntary_contribution)
+
+    def _init_report_partner_payroll(self):
+        self_obj = self.browse(self)[0]
+        data_obj = self.pool.get('ir.model.data')
+        data_id = data_obj._get_id('rod_cooperativa_aportes', 'partner_payroll_tree_id')
+        view_id = False
+        if data_id:
+            view_id = data_obj.browse(data_id).res_id
+        form_data_id = data_obj._get_id('rod_cooperativa_aportes', 'partner_payroll_form_id')
+        if form_data_id:
+            form_view_id = data_obj.browse(form_data_id).res_id
+
+        # context.update({'active_ids': [], 'no_complete_name':1})
+        return {
+            'name': _('Planilla de socio'),
+            'view_type': 'form',
+            'res_model': 'partner.payroll',
+            'view_id': False,
+            'views': [(view_id, 'tree'), (form_view_id, 'form')],
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            'nodestroy': True,
+            # 'context': context,
+        }
