@@ -159,7 +159,7 @@ odoo.define('rod_cooperativa_aportes.partner_payroll', function (require) {
                 filter_data_selected.date_to = moment(this.$el.find('.datetimepicker-input[name="date_to"]').val(), time.getLangDateFormat()).locale('en').format('YYYY-MM-DD');
             }
             if ($(".report_type").length) {
-                console.log()
+                console.log('FUNCIONA BOTON')
                 var report_res = document.getElementById("report_res")
                 filter_data_selected.report_type = $(".report_type")[1].value
                 report_res.value = $(".report_type")[1].value

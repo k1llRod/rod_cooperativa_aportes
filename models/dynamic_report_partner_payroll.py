@@ -47,8 +47,8 @@ class DynamicReportPartnerPayroll(models.Model):
     def get_filter(self, option):
         data = self.get_filter_data(option)
         filters = {}
-        if data.get('report_type') == 'report_by_order':
-            filters['report_type'] = 'Report By Order'
+        # if data.get('report_type') == 'report_by_order':
+        #     filters['report_type'] = 'Report By Order'
         return filters
 
     def get_filter_data(self, option):
@@ -63,34 +63,25 @@ class DynamicReportPartnerPayroll(models.Model):
     def _get_report_sub_lines(self, data, report, date_from, date_to):
         report_sub_lines = []
         new_filter = None
-        if data.get('report_type') == 'report_by_order':
-            query = '''
-                    select * from partner_payroll
-                             '''
-            term = 'Where '
-            if data.get('date_from'):
-                query += "Where l.date_order >= '%s' " % data.get('date_from')
-                term = 'AND '
-            if data.get('date_to'):
-                query += term + "l.date_order <= '%s' " % data.get('date_to')
-            query += "group by l.user_id,res_users.partner_id,res_partner.name,l.partner_id,l.date_order,l.name,l.amount_total,l.notes,l.id"
-            self._cr.execute(query)
-            report_by_order = self._cr.dictfetchall()
-            report_sub_lines.append(report_by_order)
-        elif data.get('report_type') == 'report_by_product':
-            query = '''
-                    select * from partner_payroll
-                              '''
-            term = 'Where '
-            if data.get('date_from'):
-                query += "Where l.date_order >= '%s' " % data.get('date_from')
-                term = 'AND '
-            if data.get('date_to'):
-                query += term + "l.date_order <= '%s' " % data.get('date_to')
-            # query += "group by l.amount_total,purchase_order_line.name,purchase_order_line.price_unit,purchase_order_line.product_id,product_product.default_code,product_template.categ_id,product_category.name"
-            self._cr.execute(query)
-            report_by_product = self._cr.dictfetchall()
-            report_sub_lines.append(report_by_product)
+        query = '''
+                select * from partner_payroll
+                         '''
+        term = 'Where '
+        if data.get('date_from'):
+            query += "Where l.date_order >= '%s' " % data.get('date_from')
+            term = 'AND '
+        if data.get('date_to'):
+            query += term + "l.date_order <= '%s' " % data.get('date_to')
+
+        # query += "group by l.user_id,res_users.partner_id,res_partner.name,l.partner_id,l.date_order,l.name,l.amount_total,l.notes,l.id"
+        self._cr.execute(query)
+        report_by_order = self._cr.dictfetchall()
+        report_sub_lines.append(report_by_order)
+
+        # query += "group by l.amount_total,purchase_order_line.name,purchase_order_line.price_unit,purchase_order_line.product_id,product_product.default_code,product_template.categ_id,product_category.name"
+        self._cr.execute(query)
+        report_by_product = self._cr.dictfetchall()
+        report_sub_lines.append(report_by_product)
         return report_sub_lines
 
     def _get_report_values(self, data):

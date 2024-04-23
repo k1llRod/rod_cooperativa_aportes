@@ -114,8 +114,8 @@
                                 <field name="amount_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="since_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="until_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
-                                <field name="difference_year" invisible="0"/>
-                                <field name="year_now" invisible="0"/>
+                                <field name="difference_year" invisible="1"/>
+                                <field name="year_now" invisible="1"/>
                             </group>
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>

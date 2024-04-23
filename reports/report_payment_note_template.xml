@@ -77,6 +77,7 @@
                                             <thead>
                                                 <tr>
                                                     <td><center><strong>APORTES</strong></center></td>
+                                                    <td><strong>MENSUAL</strong></td>
                                                     <td><strong>SEMESTRAL</strong></td>
                                                     <td><strong>ANUAL</strong></td>
                                                 </tr>
@@ -84,6 +85,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
+                                                    <td></td>
                                                     <td>
                                                         100.00 Bs.
                                                     </td>
@@ -95,11 +97,13 @@
                                                 <tr>
                                                     <td>APORTES AFCOOP. (TASA REGULACION)</td>
                                                     <td>0.50 ctvos.</td>
+                                                    <td></td>
                                                     <td>6.00 Bs.</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>APORTES POST MORTEM</td>
+                                                    <td></td>
                                                     <td></td>
                                                     <td>167.04 Bs.</td>
                                                 </tr>
@@ -107,6 +111,7 @@
                                                     <td>
                                                         <strong>TOTAL DEPOSITAR GESTION <span t-field="o.difference_year"/></strong>
                                                     </td>
+                                                    <td></td>
                                                     <td></td>
                                                     <td>373.04 Bs.</td>
                                                 </tr>
