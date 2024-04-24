@@ -91,6 +91,9 @@ class PartnerPayroll(models.Model):
     must_regulation_rate = fields.Float(string='Debe tasa de regulación')
     must_mandatory_contribution = fields.Float(string='Debe aporte obligatorio')
     must_voluntary_contribution = fields.Float(string='Debe aporte voluntario')
+    must_post_mortem = fields.Float(string='Debe aporte post mortem')
+    must_total = fields.Float(string='Debe total')
+    must_gestion = fields.Integer(string='Debe gestion')
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
@@ -100,6 +103,8 @@ class PartnerPayroll(models.Model):
             record.year_now = datetime.now().year
             if record.until_payment != False:
                 record.difference_year = record.until_payment.year + 1
+                if record.difference_year < record.year_now:
+                    record.difference_year = record.year_now
             else:
                 record.difference_year = 0
     @api.depends('payroll_payments_ids')
@@ -227,22 +232,67 @@ class PartnerPayroll(models.Model):
         diff_months = 0
         for record in self:
             if record.date_burn_partner:
-                diff = relativedelta(datetime.now(), record.date_burn_partner)
-                diff_months = diff.years * 12 + diff.months
-            count_payments = len(
-                record.payroll_payments_ids.filtered(
-                    lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
+                if record.partner_status_especific == 'passive_reserve_a' or record.partner_status_especific == 'passive_reserve_b':
+                    diff = datetime.now().year - record.date_burn_partner.year  + 1
+                    diff_months = diff * 12
+                    deb_regulation_cup = regulation_cup * diff_months
+                    deb_mandatory = mandatory_contribution * (diff_months / 12)
+                    payments = record.payroll_payments_ids.filtered(
+                            lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False)
+                    sum_count_regulation_cup = sum(payments.mapped('regulation_cup'))
+                    sum_count_mandatory = sum(payments.mapped('mandatory_contribution_certificate'))
+                    sum_count_income_passive = sum(payments.mapped('income_passive'))
+                    sum_count_voluntary_contribution = round(sum(payments.mapped('voluntary_contribution_certificate')),2)
+                    sum_payment = int(round((sum_count_regulation_cup / regulation_cup)))
+                    sum_mandatory = int(round(sum_count_mandatory / mandatory_contribution))
+                    sum_income = sum_count_income_passive / 12
+                    sum_voluntary = sum_count_voluntary_contribution / 12
+                    if sum_payment >= diff_months  and sum_mandatory >= diff_months/6:
+                        count_payments = int(sum_payment)
+                    else:
+                        if sum_payment > (sum_mandatory * 6):
+                            count_payments = sum_payment
+                        else:
+                            count_payments = sum_mandatory * 6
+                        count_mandatory = sum_mandatory
+                else:
+                    diff = relativedelta(datetime.now(), record.date_burn_partner)
+                    diff_months = diff.years * 12 + diff.months
+                    count_payments = len(
+                        record.payroll_payments_ids.filtered(
+                            lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
                 self.env.user.notify_success(message='Planilla de aportes actualizado'.format(record.partner_id.name),
                                              title='Verificado')
                 record.outstanding_payments = 0
+                record.must_regulation_rate = 0
+                record.must_mandatory_contribution = 0
+                if record.year_now >= record.difference_year:
+                    if sum_count_voluntary_contribution > 0:
+                        record.must_post_mortem = 0
+                    else:
+                        record.must_post_mortem = 167.04
+                    record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
+                else:
+                    record.must_post_mortem = 0
             else:
                 record.updated_partner = False
                 record.outstanding_payments = diff_months - count_payments
                 record.must_regulation_rate = record.outstanding_payments * regulation_cup
-                record.must_mandatory_contribution = record.outstanding_payments * mandatory_contribution
-
+                record.must_mandatory_contribution = (record.outstanding_payments/6) * mandatory_contribution
+                record.must_gestion = count_payments / 12
+                if record.year_now >= record.difference_year:
+                    if sum_count_voluntary_contribution > ((record.must_gestion) * 167.04):
+                        record.must_post_mortem = 0
+                    else:
+                        if record.until_payment.year < 2023:
+                            record.must_post_mortem = (167.04 * (record.must_gestion + ((record.difference_year) - 2023))) - sum_count_voluntary_contribution
+                        else:
+                            record.must_post_mortem = record.must_gestion * 167.04
+                else:
+                    record.must_post_mortem = 0
+                record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
                 self.env.user.notify_warning(
                     message='Planilla de aportes desactualizada'.format(record.partner_id.name))
 

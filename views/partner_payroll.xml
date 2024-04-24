@@ -114,8 +114,8 @@
                                 <field name="amount_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="since_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="until_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
-                                <field name="difference_year" invisible="1"/>
-                                <field name="year_now" invisible="1"/>
+                                <field name="difference_year" invisible="0"/>
+                                <field name="year_now" invisible="0"/>
                             </group>
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -179,6 +179,9 @@
                                     <group string="Aportes pendientes">
                                         <field name="must_regulation_rate"/>
                                         <field name="must_mandatory_contribution"/>
+                                        <field name="must_post_mortem"/>
+                                        <field name="must_gestion"/>
+                                        <field name="must_total"/>
                                     </group>
                                 </group>
                             </page>

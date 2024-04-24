@@ -70,19 +70,20 @@
                                         </tr>
                                     </tbody>
                                 </table>
+
                                 <center><h2>OBLIGACIONES CON LA AFCOOP. 2024</h2></center>
                                 <div>
-                                    <t t-if="o.year_now >= o.difference_year ">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <td><center><strong>APORTES</strong></center></td>
-                                                    <td><strong>MENSUAL</strong></td>
-                                                    <td><strong>SEMESTRAL</strong></td>
-                                                    <td><strong>ANUAL</strong></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <td><center><strong>APORTES</strong></center></td>
+                                                <td><strong>MENSUAL</strong></td>
+                                                <td><strong>SEMESTRAL</strong></td>
+                                                <td><strong>ANUAL</strong></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="o.must_mandatory_contribution > 0">
                                                 <tr>
                                                     <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
                                                     <td></td>
@@ -90,35 +91,37 @@
                                                         100.00 Bs.
                                                     </td>
                                                     <td>
-                                                        200.00 Bs.
+                                                        <span t-field="o.must_mandatory_contribution"/> Bs.
                                                     </td>
 
                                                 </tr>
+                                            </t>
+                                            <t t-if="o.must_regulation_rate > 0">
                                                 <tr>
                                                     <td>APORTES AFCOOP. (TASA REGULACION)</td>
                                                     <td>0.50 ctvos.</td>
                                                     <td></td>
-                                                    <td>6.00 Bs.</td>
+                                                    <td><span t-field="o.must_regulation_rate"/> Bs.</td>
                                                 </tr>
-
+                                            </t>
+                                            <t t-if="o.year_now >= o.difference_year ">
                                                 <tr>
                                                     <td>APORTES POST MORTEM</td>
                                                     <td></td>
                                                     <td></td>
-                                                    <td>167.04 Bs.</td>
+                                                    <td><span t-field="o.must_post_mortem"/> Bs.</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <strong>TOTAL DEPOSITAR GESTION <span t-field="o.difference_year"/></strong>
-                                                    </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>373.04 Bs.</td>
-                                                </tr>
-                                            </tbody>
-
-                                        </table>
-                                </t>
+                                            </t>
+                                            <tr>
+                                                <td>
+                                                    <strong>TOTAL DEPOSITAR GESTION <span t-field="o.difference_year"/></strong>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><span t-field="o.must_total"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     <ul>
                                         <li><strong>CUENTA CORRIENTE M/N</strong> 10000046662082</li>
                                         <li>BANCO UNION</li>
