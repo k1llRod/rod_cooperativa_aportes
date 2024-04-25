@@ -247,29 +247,34 @@ class PartnerPayroll(models.Model):
                     post_mortem = 167.28
                     period_reg = []
                     for i in range(n):
-                        periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
-                        period_reg = np.unique(periods)
-                        register = record.payroll_payments_ids.filtered(lambda x: x.period_register == period_reg[i])
-                        sum_miscellanous = sum(register.mapped('miscellaneous_income'))
-                        sum_regulation_cup = sum(register.mapped('regulation_cup'))
-                        sum_mandatory = sum(register.mapped('mandatory_contribution_certificate'))
-                        sum_voluntary = sum(register.mapped('voluntary_contribution_certificate'))
-                        cal_regulation_cup = reg_cup - sum_regulation_cup
-                        cal_mandatory = mandatory - sum_mandatory
-                        cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
-                        cal_post_mortem = 0 if gestion_process < record.until_payment.year else post_mortem - sum_voluntary
-                        self.env['due.payments'].create({
-                            'name': period_reg[i] if len(period_reg) > 0 else 0,
-                            'd_miscellaneous_income': cal_miscellaneous,
-                            'd_regulation_cup': cal_regulation_cup,
-                            'd_mandatory_contribution': cal_mandatory,
-                            'd_voluntary_contribution': sum_voluntary,
-                            'd_post_mortem': cal_post_mortem,
-                            'due_partner_payroll_id': record.id,
-                            'gestion': gestion_process
-                        })
-                        gestion_process += 1
-                        count_payments = 0
+                        try:
+                            periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
+                            period_reg = np.unique(periods)
+                            register = record.payroll_payments_ids.filtered(lambda x: x.period_register == period_reg[i])
+                            sum_miscellanous = sum(register.mapped('miscellaneous_income'))
+                            sum_regulation_cup = sum(register.mapped('regulation_cup'))
+                            sum_mandatory = sum(register.mapped('mandatory_contribution_certificate'))
+                            sum_voluntary = sum(register.mapped('voluntary_contribution_certificate'))
+                            cal_regulation_cup = reg_cup - sum_regulation_cup
+                            cal_mandatory = mandatory - sum_mandatory
+                            cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
+                            cal_post_mortem = 0 if gestion_process < record.until_payment.year else post_mortem - sum_voluntary
+                            self.env['due.payments'].create({
+                                'name': period_reg[i] if len(period_reg) > 0 else 0,
+                                'd_miscellaneous_income': cal_miscellaneous,
+                                'd_regulation_cup': cal_regulation_cup,
+                                'd_mandatory_contribution': cal_mandatory,
+                                'd_voluntary_contribution': sum_voluntary,
+                                'd_post_mortem': cal_post_mortem,
+                                'due_partner_payroll_id': record.id,
+                                'gestion': gestion_process
+                            })
+                            gestion_process += 1
+                            count_payments = 0
+                        except:
+                            count_payments = 0
+                            pass
+
                 else:
                     diff = relativedelta(datetime.now(), record.date_burn_partner)
                     diff_months = diff.years * 12 + diff.months
