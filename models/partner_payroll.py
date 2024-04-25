@@ -3,6 +3,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 from itertools import groupby
+import numpy as np
 import re
 
 # import inflect
