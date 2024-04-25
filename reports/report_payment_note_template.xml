@@ -120,7 +120,7 @@
                                                         <td>APORTES AFCOOP. (TASA REGULACION)</td>
                                                         <td>0.50 ctvos.</td>
                                                         <td></td>
-                                                        <td>6 Bs.</td>
+                                                        <td>6.00 Bs.</td>
                                                         <td>
                                                             <span t-field="p.d_regulation_cup"/>
                                                             Bs.

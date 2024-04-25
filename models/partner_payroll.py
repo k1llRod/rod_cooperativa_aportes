@@ -233,6 +233,7 @@ class PartnerPayroll(models.Model):
         mandatory_contribution = float(self.env['ir.config_parameter'].sudo().get_param(
             'rod_cooperativa_aportes.mandatory_contribution_certificate'))
         diff_months = 0
+        count_payments = 0
         for record in self:
             if record.date_burn_partner:
                 if record.partner_status_especific == 'passive_reserve_a' or record.partner_status_especific == 'passive_reserve_b':
@@ -250,7 +251,11 @@ class PartnerPayroll(models.Model):
                         try:
                             periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
                             period_reg = np.unique(periods)
-                            register = record.payroll_payments_ids.filtered(lambda x: x.period_register == period_reg[i])
+                            if i < len(period_reg):
+                                period = period_reg[i]
+                            else:
+                                period = False
+                            register = record.payroll_payments_ids.filtered(lambda x: x.period_register == period)
                             sum_miscellanous = sum(register.mapped('miscellaneous_income'))
                             sum_regulation_cup = sum(register.mapped('regulation_cup'))
                             sum_mandatory = sum(register.mapped('mandatory_contribution_certificate'))
@@ -258,9 +263,9 @@ class PartnerPayroll(models.Model):
                             cal_regulation_cup = reg_cup - sum_regulation_cup
                             cal_mandatory = mandatory - sum_mandatory
                             cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
-                            cal_post_mortem = 0 if gestion_process < record.until_payment.year else post_mortem - sum_voluntary
+                            cal_post_mortem = 0 if gestion_process <= record.until_payment.year else post_mortem - sum_voluntary
                             self.env['due.payments'].create({
-                                'name': period_reg[i] if len(period_reg) > 0 else 0,
+                                'name': period if len(period_reg) > 0 else 0,
                                 'd_miscellaneous_income': cal_miscellaneous,
                                 'd_regulation_cup': cal_regulation_cup,
                                 'd_mandatory_contribution': cal_mandatory,
