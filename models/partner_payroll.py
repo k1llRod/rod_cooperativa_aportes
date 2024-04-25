@@ -259,7 +259,7 @@ class PartnerPayroll(models.Model):
                         cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
                         cal_post_mortem = 0 if gestion_process < record.until_payment.year else post_mortem - sum_voluntary
                         self.env['due.payments'].create({
-                            'name': period_reg[i],
+                            'name': period_reg[i] if len(period_reg) > 0 else 0,
                             'd_miscellaneous_income': cal_miscellaneous,
                             'd_regulation_cup': cal_regulation_cup,
                             'd_mandatory_contribution': cal_mandatory,

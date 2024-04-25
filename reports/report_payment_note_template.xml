@@ -120,7 +120,7 @@
                                                         <td>APORTES AFCOOP. (TASA REGULACION)</td>
                                                         <td>0.50 ctvos.</td>
                                                         <td></td>
-                                                        <td>6</td>
+                                                        <td>6 Bs.</td>
                                                         <td>
                                                             <span t-field="p.d_regulation_cup"/>
                                                             Bs.
@@ -149,7 +149,13 @@
                                                     <td></td>
                                                     <td>
                                                         <t t-set="total_sum" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem,2)"/>
-                                                        <span t-esc="total_sum"/>
+                                                        <t t-if="total_sum > 0">
+                                                            <span t-esc="total_sum"/> Bs.
+                                                        </t>
+                                                        <t t-else="else">
+                                                            0.00 Bs
+                                                        </t>
+
                                                     </td>
                                                 </tr>
                                             </tbody>
