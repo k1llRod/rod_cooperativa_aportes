@@ -1,0 +1,57 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo partner payroll -->
+        <record model="ir.ui.view" id="due_payments_tree_id">
+            <field name="name">due.payments.tree</field>
+            <field name="model">due.payments</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" decoration-info="True"/>
+                    <field name="gestion" decoration-info="True"/>
+                    <field name="d_miscellaneous_income" sum="Total" decoration-info="True"/>
+                    <field name="d_regulation_cup" sum="Total" decoration-info="True"/>
+                    <field name="d_mandatory_contribution" sum="Total" decoration-info="True"/>
+                    <field name="d_voluntary_contribution" sum="Total" decoration-info="True"/>
+                    <field name="d_post_mortem" sum="Total" decoration-info="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario loan.application  -->
+
+        <record model="ir.ui.view" id="due_payments_form_id">
+            <field name="name">due.payments.form</field>
+            <field name="model">due.payments</field>
+            <field name="arch" type="xml">
+                <form string="Debe" class="oe_left oe_edit_only oe_form_required">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="d_miscellaneous_income"/>
+                                <field name="d_regulation_cup"/>
+                                <field name="d_mandatory_contribution"/>
+                                <field name="d_voluntary_contribution"/>
+                                <field name="d_post_mortem"/>
+                            </group>
+                        </group>
+                    </sheet>
+<!--                    <div class="oe_chatter">-->
+<!--                        <field name="message_follower_ids" groups="base.group_user"/>-->
+<!--                        <field name="activity_ids"/>-->
+<!--                        <field name="message_ids"/>-->
+<!--                    </div>-->
+                </form>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar loan.application -->
+
+        <record id="action_advance_payments" model="ir.actions.act_window">
+            <field name="name">Pagos adelantados</field>
+            <field name="res_model">advance.payments</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

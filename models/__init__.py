@@ -10,6 +10,7 @@ from . import month
 from . import performance_management
 from . import performance_index_log
 from . import dynamic_report_partner_payroll
+from . import due_payments
 
 # from . import payroll_payment
 

@@ -38,6 +38,7 @@
         'views/performance_index_log.xml',
         'views/rod_cooperativa_aportes_menuitem.xml',
         'views/advance_payments.xml',
+        'views/due_payments.xml',
         'views/views.xml',
         'wizard/init_payroll_partner.xml',
         'wizard/reconcile_contributions.xml',

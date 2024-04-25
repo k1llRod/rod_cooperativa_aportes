@@ -175,15 +175,7 @@
                                 </field>
                             </page>
                             <page string="Debe">
-                                <group>
-                                    <group string="Aportes pendientes">
-                                        <field name="must_regulation_rate"/>
-                                        <field name="must_mandatory_contribution"/>
-                                        <field name="must_post_mortem"/>
-                                        <field name="must_gestion"/>
-                                        <field name="must_total"/>
-                                    </group>
-                                </group>
+                                <field name="due_payments_ids"/>
                             </page>
                             <page string="Rendimiento">
                                 <field name="performance_management_ids" editable="top"/>

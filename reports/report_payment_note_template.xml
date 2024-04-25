@@ -71,57 +71,90 @@
                                     </tbody>
                                 </table>
 
-                                <center><h2>OBLIGACIONES CON LA AFCOOP. 2024</h2></center>
-                                <div>
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <td><center><strong>APORTES</strong></center></td>
-                                                <td><strong>MENSUAL</strong></td>
-                                                <td><strong>SEMESTRAL</strong></td>
-                                                <td><strong>ANUAL</strong></td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-if="o.must_mandatory_contribution > 0">
-                                                <tr>
-                                                    <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
-                                                    <td></td>
-                                                    <td>
-                                                        100.00 Bs.
-                                                    </td>
-                                                    <td>
-                                                        <span t-field="o.must_mandatory_contribution"/> Bs.
-                                                    </td>
 
-                                                </tr>
-                                            </t>
-                                            <t t-if="o.must_regulation_rate > 0">
+                                <div>
+                                    <t t-foreach="o.due_payments_ids" t-as="p">
+                                        <center><h2>OBLIGACIONES CON LA AFCOOP. <span t-field="p.gestion"/></h2></center>
+                                        <table class="table table-striped">
+                                            <thead>
                                                 <tr>
-                                                    <td>APORTES AFCOOP. (TASA REGULACION)</td>
-                                                    <td>0.50 ctvos.</td>
-                                                    <td></td>
-                                                    <td><span t-field="o.must_regulation_rate"/> Bs.</td>
+                                                    <td>
+                                                        <center>
+                                                            <strong>APORTES</strong>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <strong>MENSUAL</strong>
+                                                    </td>
+                                                    <td>
+                                                        <strong>SEMESTRAL</strong>
+                                                    </td>
+                                                    <td>
+                                                        <strong>ANUAL</strong>
+                                                    </td>
+                                                    <td>
+                                                        <strong>DEBE</strong>
+                                                    </td>
                                                 </tr>
-                                            </t>
-                                            <t t-if="o.year_now >= o.difference_year ">
+                                            </thead>
+                                            <tbody>
+
+                                                <t t-if="p.d_mandatory_contribution > 0">
+                                                    <tr>
+                                                        <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
+                                                        <td></td>
+                                                        <td>
+                                                            100.00 Bs.
+                                                        </td>
+                                                        <td>
+                                                            200.00 Bs.
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="p.d_mandatory_contribution"/>
+                                                            Bs.
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="p.d_regulation_cup > 0">
+                                                    <tr>
+                                                        <td>APORTES AFCOOP. (TASA REGULACION)</td>
+                                                        <td>0.50 ctvos.</td>
+                                                        <td></td>
+                                                        <td>6</td>
+                                                        <td>
+                                                            <span t-field="p.d_regulation_cup"/>
+                                                            Bs.
+                                                        </td>
+                                                    </tr>
+                                                </t>
+
+                                                <t t-if="p.d_post_mortem > 0">
+                                                    <tr>
+                                                        <td>APORTES POST MORTEM</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>167.28 Bs.</td>
+                                                        <td>
+                                                            <span t-field="p.d_post_mortem"/>
+                                                            Bs.
+                                                        </td>
+                                                    </tr>
+                                                </t>
                                                 <tr>
-                                                    <td>APORTES POST MORTEM</td>
+                                                    <td>
+                                                        <strong>TOTAL DEPOSITAR GESTION <span t-field="p.gestion"/></strong>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
-                                                    <td><span t-field="o.must_post_mortem"/> Bs.</td>
+                                                    <td></td>
+                                                    <td>
+                                                        <t t-set="total_sum" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem,2)"/>
+                                                        <span t-esc="total_sum"/>
+                                                    </td>
                                                 </tr>
-                                            </t>
-                                            <tr>
-                                                <td>
-                                                    <strong>TOTAL DEPOSITAR GESTION 2024</strong>
-                                                </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td><span t-field="o.must_total"/></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </t>
                                     <ul>
                                         <li><strong>CUENTA CORRIENTE M/N</strong> 10000046662082</li>
                                         <li>BANCO UNION</li>

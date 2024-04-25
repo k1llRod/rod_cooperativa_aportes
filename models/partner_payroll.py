@@ -2,8 +2,9 @@ from odoo import models, fields, api, _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
+from itertools import groupby
+import numpy as np
 import re
-
 
 # import inflect
 # from translate import Translator
@@ -65,6 +66,7 @@ class PartnerPayroll(models.Model):
     # payroll_payment_ids = fields.One2many('payroll.payment', 'partner_payrolls_id', string='Pagos de planilla')
     advanced_payments_ids = fields.One2many('advance.payments', 'advanced_partner_payroll_id',
                                             string='Pagos adelantados')
+    due_payments_ids = fields.One2many('due.payments', 'due_partner_payroll_id', string='Pagos pendientes')
     balance_advance_contribution_passive = fields.Float(string='Saldo aportes pasivos',
                                                         compute='compute_balance_advance')
     balance_advance_regulation_cup = fields.Float(string='Saldo taza de regulación', compute='compute_balance_advance')
@@ -94,6 +96,7 @@ class PartnerPayroll(models.Model):
     must_post_mortem = fields.Float(string='Debe aporte post mortem')
     must_total = fields.Float(string='Debe total')
     must_gestion = fields.Integer(string='Debe gestion')
+
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
@@ -233,28 +236,40 @@ class PartnerPayroll(models.Model):
         for record in self:
             if record.date_burn_partner:
                 if record.partner_status_especific == 'passive_reserve_a' or record.partner_status_especific == 'passive_reserve_b':
-                    diff = datetime.now().year - record.date_burn_partner.year  + 1
-                    diff_months = diff * 12
-                    deb_regulation_cup = regulation_cup * diff_months
-                    deb_mandatory = mandatory_contribution * (diff_months / 12)
-                    payments = record.payroll_payments_ids.filtered(
-                            lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False)
-                    sum_count_regulation_cup = sum(payments.mapped('regulation_cup'))
-                    sum_count_mandatory = sum(payments.mapped('mandatory_contribution_certificate'))
-                    sum_count_income_passive = sum(payments.mapped('income_passive'))
-                    sum_count_voluntary_contribution = round(sum(payments.mapped('voluntary_contribution_certificate')),2)
-                    sum_payment = int(round((sum_count_regulation_cup / regulation_cup)))
-                    sum_mandatory = int(round(sum_count_mandatory / mandatory_contribution))
-                    sum_income = sum_count_income_passive / 12
-                    sum_voluntary = sum_count_voluntary_contribution / 12
-                    if sum_payment >= diff_months  and sum_mandatory >= diff_months/6:
-                        count_payments = int(sum_payment)
-                    else:
-                        if sum_payment > (sum_mandatory * 6):
-                            count_payments = sum_payment
-                        else:
-                            count_payments = sum_mandatory * 6
-                        count_mandatory = sum_mandatory
+                    record.due_payments_ids.unlink()
+                    gestion_ini = 2023
+                    gestion_end = datetime.now().year
+                    n = gestion_end - gestion_ini + 1
+                    gestion_process = gestion_ini
+                    inscription = 10
+                    reg_cup = regulation_cup * 12
+                    mandatory = mandatory_contribution * 2
+                    post_mortem = 167.28
+                    period_reg = []
+                    for i in range(n):
+                        periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
+                        period_reg = np.unique(periods)
+                        register = record.payroll_payments_ids.filtered(lambda x: x.period_register == period_reg[i])
+                        sum_miscellanous = sum(register.mapped('miscellaneous_income'))
+                        sum_regulation_cup = sum(register.mapped('regulation_cup'))
+                        sum_mandatory = sum(register.mapped('mandatory_contribution_certificate'))
+                        sum_voluntary = sum(register.mapped('voluntary_contribution_certificate'))
+                        cal_regulation_cup = reg_cup - sum_regulation_cup
+                        cal_mandatory = mandatory - sum_mandatory
+                        cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
+                        cal_post_mortem = 0 if gestion_process < record.until_payment.year else post_mortem - sum_voluntary
+                        self.env['due.payments'].create({
+                            'name': period_reg[i],
+                            'd_miscellaneous_income': cal_miscellaneous,
+                            'd_regulation_cup': cal_regulation_cup,
+                            'd_mandatory_contribution': cal_mandatory,
+                            'd_voluntary_contribution': sum_voluntary,
+                            'd_post_mortem': cal_post_mortem,
+                            'due_partner_payroll_id': record.id,
+                            'gestion': gestion_process
+                        })
+                        gestion_process += 1
+                        count_payments = 0
                 else:
                     diff = relativedelta(datetime.now(), record.date_burn_partner)
                     diff_months = diff.years * 12 + diff.months
@@ -268,30 +283,12 @@ class PartnerPayroll(models.Model):
                 record.outstanding_payments = 0
                 record.must_regulation_rate = 0
                 record.must_mandatory_contribution = 0
-                if record.year_now >= record.difference_year:
-                    if sum_count_voluntary_contribution > 0:
-                        record.must_post_mortem = 0
-                    else:
-                        record.must_post_mortem = 167.04
-                    record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
-                else:
-                    record.must_post_mortem = 0
             else:
                 record.updated_partner = False
                 record.outstanding_payments = diff_months - count_payments
                 record.must_regulation_rate = record.outstanding_payments * regulation_cup
                 record.must_mandatory_contribution = (record.outstanding_payments/6) * mandatory_contribution
                 record.must_gestion = count_payments / 12
-                if record.year_now >= record.difference_year:
-                    if sum_count_voluntary_contribution > ((record.must_gestion) * 167.04):
-                        record.must_post_mortem = 0
-                    else:
-                        if record.until_payment.year < 2023:
-                            record.must_post_mortem = (167.04 * (record.must_gestion + ((record.difference_year) - 2023))) - sum_count_voluntary_contribution
-                        else:
-                            record.must_post_mortem = record.must_gestion * 167.04
-                else:
-                    record.must_post_mortem = 0
                 record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
                 self.env.user.notify_warning(
                     message='Planilla de aportes desactualizada'.format(record.partner_id.name))
