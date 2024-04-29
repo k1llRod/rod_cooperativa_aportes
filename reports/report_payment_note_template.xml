@@ -20,13 +20,15 @@
                         <div class="page">
                             <div class="body">
                                 <center><h2>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-B)</h2></center>
-                                <center><h3>DETALLE DE PAGO</h3></center>
+                                <center><h4>DETALLE DE PAGO</h4></center>
                                 <br/>
                                 <table style="font-family:Arial;">
                                     <tbody>
                                         <tr>
                                             <td style="width: 220px;font-weight:bold;">GRADO</td>
                                             <td><span t-field="o.partner_id.category_partner_id"/></td>
+                                            <td>CELULAR</td>
+                                            <td><span t-field="o.partner_id.mobile"/></td>
                                         </tr>
                                         <tr>
                                             <td><strong>NOMBRE(S):</strong></td>
@@ -165,6 +167,8 @@
                                         <li><strong>CUENTA CORRIENTE M/N</strong> 10000046662082</li>
                                         <li>BANCO UNION</li>
                                         <li><strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL COA-4 DIC. R.L.</strong></li>
+                                        <li><strong>EL DEPOSITO DEBE LLEVAR EL NOMBRE DEL INTERESADO (ASOCIADO).</strong></li>
+                                        <li>EL DEPOSITO DEBE SER ENVIADO EN FORMATO PDF AL SIGUIENTE NUMERO <strong>68212344.</strong></li>
                                     </ul>
 
                                     <h2>NOTA.-</h2>
