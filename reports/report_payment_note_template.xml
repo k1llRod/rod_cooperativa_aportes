@@ -27,8 +27,6 @@
                                         <tr>
                                             <td style="width: 220px;font-weight:bold;">GRADO</td>
                                             <td><span t-field="o.partner_id.category_partner_id"/></td>
-                                            <td>CELULAR</td>
-                                            <td><span t-field="o.partner_id.mobile"/></td>
                                         </tr>
                                         <tr>
                                             <td><strong>NOMBRE(S):</strong></td>
@@ -69,6 +67,10 @@
                                         <tr>
                                             <td><strong>HASTA: </strong></td>
                                             <td><span t-field="o.until_payment"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CELULAR: </strong></td>
+                                            <td><span t-field="o.partner_id.mobile"/></td>
                                         </tr>
                                     </tbody>
                                 </table>
