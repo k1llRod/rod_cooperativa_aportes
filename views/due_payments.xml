@@ -13,6 +13,7 @@
                     <field name="d_mandatory_contribution" sum="Total" decoration-info="True"/>
                     <field name="d_voluntary_contribution" sum="Total" decoration-info="True"/>
                     <field name="d_post_mortem" sum="Total" decoration-info="True"/>
+                    <field name="d_total"/>
                 </tree>
             </field>
         </record>

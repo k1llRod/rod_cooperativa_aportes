@@ -78,6 +78,8 @@
 
                                 <div>
                                     <t t-foreach="o.due_payments_ids" t-as="p">
+                                        <t t-set="cero" t-value="0"/>
+                                        <t t-set="total" t-value="cero"/>
                                         <center><h2>OBLIGACIONES CON LA AFCOOP. <span t-field="p.gestion"/></h2></center>
                                         <table class="table table-striped">
                                             <thead>
@@ -102,7 +104,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-
                                                 <t t-if="p.d_miscellaneous_income > 0">
                                                     <tr>
                                                         <td>INSCRIPCION ASOCIADO AFCOOP</td>
@@ -112,6 +113,8 @@
                                                         <td><span t-field="p.d_miscellaneous_income"/> Bs.</td>
 
                                                     </tr>
+                                                </t>
+                                                <t t-if="p.d_mandatory_contribution > 0">
                                                     <tr>
                                                         <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
                                                         <td></td>
@@ -154,15 +157,16 @@
                                                 </t>
                                                 <tr>
                                                     <td>
-                                                        <strong>TOTAL DEPOSITAR GESTION <span t-field="p.gestion"/></strong>
+                                                        <strong>TOTAL A PAGAR GESTION <span t-field="p.gestion"/></strong>
                                                     </td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td>
-                                                        <t t-set="total_sum" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem,2)"/>
-                                                        <t t-if="total_sum > 0">
-                                                            <span t-esc="total_sum"/> Bs.
+                                                        <t t-set="total" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem + p.d_miscellaneous_income,2)"/>
+                                                        <t t-set="total_sum" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem + p.d_miscellaneous_income,2)"/>
+                                                        <t t-if="total > 0">
+                                                            <span t-esc="total"/> Bs.
                                                         </t>
                                                         <t t-else="else">
                                                             0.00 Bs
@@ -173,6 +177,7 @@
                                             </tbody>
                                         </table>
                                     </t>
+<!--                                    <h3>TOTAL A DEPOSITAR <span t-esc="total_sum"/></h3>-->
                                     <ul>
                                         <li><strong>CUENTA CORRIENTE M/N</strong> 10000046662082</li>
                                         <li>BANCO UNION</li>

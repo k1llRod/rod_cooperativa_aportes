@@ -15,4 +15,5 @@ class DuePayments(models.Model):
     d_voluntary_contribution = fields.Float(string='Aporte voluntario')
     d_post_mortem = fields.Float(string='D. post morte')
     gestion = fields.Integer(string='Gestion')
+    d_total = fields.Float(string='Total debe')
     due_partner_payroll_id = fields.Many2one('partner.payroll', string='Pagos adelantados')
