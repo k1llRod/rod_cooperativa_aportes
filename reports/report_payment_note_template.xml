@@ -103,7 +103,15 @@
                                             </thead>
                                             <tbody>
 
-                                                <t t-if="p.d_mandatory_contribution > 0">
+                                                <t t-if="p.d_miscellaneous_income > 0">
+                                                    <tr>
+                                                        <td>INSCRIPCION ASOCIADO AFCOOP</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><span t-field="p.d_miscellaneous_income"/> Bs.</td>
+
+                                                    </tr>
                                                     <tr>
                                                         <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
                                                         <td></td>

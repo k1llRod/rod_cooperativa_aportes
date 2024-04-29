@@ -108,6 +108,8 @@ class PartnerPayroll(models.Model):
                 record.difference_year = record.until_payment.year + 1
                 if record.difference_year < record.year_now:
                     record.difference_year = record.year_now
+                if record.until_payment.year < 2023:
+                    record.difference_year = 2023
             else:
                 record.difference_year = 0
     @api.depends('payroll_payments_ids')
@@ -247,6 +249,7 @@ class PartnerPayroll(models.Model):
                     mandatory = mandatory_contribution * 2
                     post_mortem = 167.28
                     period_reg = []
+                    sw = 0
                     for i in range(n):
                         try:
                             periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
@@ -262,7 +265,12 @@ class PartnerPayroll(models.Model):
                             sum_voluntary = sum(register.mapped('voluntary_contribution_certificate'))
                             cal_regulation_cup = reg_cup - sum_regulation_cup
                             cal_mandatory = mandatory - sum_mandatory
-                            cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
+                            if sw == 0:
+                                cal_miscellaneous = 0 if record.miscellaneous_income == 0 else inscription - sum_miscellanous
+                                sw = 1
+                            else:
+                                cal_miscellaneous = 0
+
                             cal_post_mortem = 0 if gestion_process <= record.until_payment.year else post_mortem - sum_voluntary
                             self.env['due.payments'].create({
                                 'name': period if len(period_reg) > 0 else 0,
