@@ -239,7 +239,7 @@ class PartnerPayroll(models.Model):
         for record in self:
             if record.date_burn_partner:
                 if record.partner_status_especific == 'passive_reserve_a' or record.partner_status_especific == 'passive_reserve_b':
-                    record.due_payments_ids.unlink()
+                    # record.due_payments_ids.unlink()
                     gestion_ini = 2023
                     gestion_end = datetime.now().year
                     n = gestion_end - gestion_ini + 1
@@ -273,6 +273,8 @@ class PartnerPayroll(models.Model):
 
                             cal_post_mortem = 0 if gestion_process <= record.until_payment.year else post_mortem - sum_voluntary
                             d_total = cal_miscellaneous + cal_regulation_cup + cal_mandatory + cal_post_mortem
+                            # record.due_payments_ids.unlink()
+                            
                             self.env['due.payments'].create({
                                 'name': period if len(period_reg) > 0 else 0,
                                 'd_miscellaneous_income': cal_miscellaneous,
