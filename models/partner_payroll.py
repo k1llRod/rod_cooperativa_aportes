@@ -274,7 +274,7 @@ class PartnerPayroll(models.Model):
                             cal_post_mortem = 0 if gestion_process <= record.until_payment.year else post_mortem - sum_voluntary
                             d_total = cal_miscellaneous + cal_regulation_cup + cal_mandatory + cal_post_mortem
                             # record.due_payments_ids.unlink()
-                            
+                            self.env['due.payments'].search([('due_partner_payroll_id','=',record.id)]).unlink()
                             self.env['due.payments'].create({
                                 'name': period if len(period_reg) > 0 else 0,
                                 'd_miscellaneous_income': cal_miscellaneous,
