@@ -123,7 +123,7 @@ class PayrollPayments(models.Model):
             'target': 'current',
         }
 
-    @api.depends('income', 'income_passive', 'mandatory_contribution_certificate', 'miscellaneous_income',
+    @api.depends('income', 'mandatory_contribution_certificate', 'miscellaneous_income',
                  'regulation_cup', 'historical_contribution_coaa', 'historical_interest_coaa','capital_initial')
     def compute_voluntary_contribution_certificate(self):
         for record in self:
