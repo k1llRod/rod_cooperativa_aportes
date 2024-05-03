@@ -241,7 +241,10 @@ class PartnerPayroll(models.Model):
                 if record.partner_status_especific == 'passive_reserve_a' or record.partner_status_especific == 'passive_reserve_b':
                     # record.due_payments_ids.unlink()
                     self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
-                    gestion_ini = 2023
+                    if record.since_payment.year > 2023:
+                        gestion_ini = record.since_payment.year
+                    else:
+                        gestion_ini = 2023
                     gestion_end = datetime.now().year
                     n = gestion_end - gestion_ini + 1
                     gestion_process = gestion_ini
