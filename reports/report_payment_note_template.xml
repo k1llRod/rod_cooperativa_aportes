@@ -145,7 +145,7 @@
 
                                                 <t t-if="p.d_post_mortem > 0">
                                                     <tr>
-                                                        <td>APORTES POST MORTEM</td>
+                                                        <td>APORTE POST MORTEM</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td>167.28 Bs.</td>
