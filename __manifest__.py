@@ -39,7 +39,7 @@
         'views/rod_cooperativa_aportes_menuitem.xml',
         'views/advance_payments.xml',
         'views/due_payments.xml',
-        'views/views.xml',
+        # 'views/views.xml',
         'wizard/init_payroll_partner.xml',
         'wizard/reconcile_contributions.xml',
         'wizard/homolagate_form.xml',
@@ -60,12 +60,12 @@
         # 'reports/report_wrd.xml',
     ],
 
-    'assets': {
-        'web.assets_backend': [
-            'rod_cooperativa_aportes/static/src/js/partner_payroll.js',
-        ],
-        'web.assets_qweb': [
-            'rod_cooperativa_aportes/static/src/xml/partner_payroll.xml',
-        ],
-    }
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'rod_cooperativa_aportes/static/src/js/partner_payroll.js',
+    #     ],
+    #     'web.assets_qweb': [
+    #         'rod_cooperativa_aportes/static/src/xml/partner_payroll.xml',
+    #     ],
+    # }
 }

@@ -33,6 +33,7 @@ class PartnerPayroll(models.Model):
                                                 related='partner_id.partner_status_especific', store=True)
     code_contact = fields.Char(string='Código de asociado', related='partner_id.code_contact', store=True)
     vat = fields.Char(string='CI', related='partner_id.vat')
+    city = fields.Char(string='Ciudad', related='partner_id.city')
     date_registration = fields.Datetime(string='Fecha de registro')
     date_burn_partner = fields.Datetime(string='Fecha de afiliacion')
     total_contribution = fields.Float(string='Total aportado')

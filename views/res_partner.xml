@@ -30,8 +30,10 @@
                                 class="oe_highlight" attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
                         <button name="return_form" string="Solicitud rechazada" type="object"
                                 attrs="{'invisible': [('state', '!=', 'verificate')]}"/>
-                        <button name="unsubscribe" string="Dar de baja" type="object"
-                                confirm="¿Está seguro que desea dar de baja al asociado?"
+<!--                        <button name="unsubscribe" string="Dar de baja" type="object"-->
+<!--                                confirm="¿Está seguro que desea dar de baja al asociado?"-->
+<!--                        />-->
+                        <button name="form_unsubscribe" string="Dar de baja" type="object"
                         />
                     </header>
 
@@ -69,6 +71,27 @@
                             <span class="o_stat_text">Préstamos emergencia</span>
                         </div>
                     </button>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[1]" position="after">
+                    <page string="Post Mortem" >
+                        <group string="Datos bases">
+                            <field name="base_amount"/>
+                            <field name="base_longevity"/>
+                            <field name="global_amount"/>
+                            <button name="registry_payment_post_mortem" class="oe_highlight" string="Registrar pago" type="object" />
+
+                        </group>
+                        <field name="post_mortem_ids">
+                            <tree string="Pagos">
+                                <field name="name"/>
+                                <field name="family_ids"/>
+                                <field name="partner_id"/>
+                                <field name="type_payment"/>
+                                <field name="payment_date"/>
+                                <field name="return_amount"/>
+                            </tree>
+                        </field>
+                    </page>
                 </xpath>
 <!--                <xpath expr="//field[@name='name']" position="after">-->
 <!--                    <field name="loan_count_mortgage" />-->

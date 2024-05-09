@@ -183,19 +183,20 @@ class PayrollPayments(models.Model):
                 'rod_cooperativa_aportes.miscellaneous_income')
         verify_certify = len(self.partner_payroll_id.payroll_payments_ids.filtered(
             lambda x: x.mandatory_contribution_certificate > 0 and x.state != 'draft'))
-        if verify_certify == 0:
+        if verify_certify == 0 and self.partner_payroll_id.partner_status_especific != 'passive_reserve_b':
             self.mandatory_contribution_certificate = 100
             return
 
         month_flag = self.extract_numbers(
             self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.month_ids'))
         sw = 0
-        for month in month_flag:
-            if month == self.date_pivote.month and self.drawback == False:
-                self.mandatory_contribution_certificate = 100
-                sw = 1
-        if sw == 0:
-            self.mandatory_contribution_certificate = 0
+        if self.partner_payroll_id.partner_status_especific != 'passive_reserve_b':
+            for month in month_flag:
+                if month == self.date_pivote.month and self.drawback == False:
+                    self.mandatory_contribution_certificate = 100
+                    sw = 1
+            if sw == 0:
+                self.mandatory_contribution_certificate = 0
 
     def unlink(self):
         for record in self:

@@ -11,8 +11,10 @@ class ResPartner(models.Model):
                               ('activate', 'Socio activo'),
                               ('external','Externo'),
                               ('rejected', 'Rechazado'),
-                              ('unsubscribe', 'Baja')],
+                              ('unsubscribe', 'Baja'),
+                              ('deceased','Fallecido')],
                              string='Estado', default='draft', track_visibility='onchange')
+    # date_deceased = fields.Date(string='Fecha de fallecimiento')
 
     def init_partner(self):
         partner_payroll = self.env['partner.payroll'].create({'partner_id': self.id,
@@ -155,6 +157,16 @@ class ResPartner(models.Model):
         for rec in partners_init:
             rec.init_partner()
 
+    def form_unsubscribe(self):
+        a = 1
+        return {
+            'name': 'Baja de socio',
+            'type': 'ir.actions.act_window',
+            'res_model': 'form.deseaced',
+            'partner_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
     def unsubscribe(self):
         self.ensure_one()
         verificate_contribution = self.env['partner.payroll'].search([('partner_id','=',self.id)])
@@ -165,3 +177,19 @@ class ResPartner(models.Model):
 
     def print_report_partner_elections(self):
         return self.env.ref('rod_cooperativa_aportes.report_res_partner_elections').report_action(self)
+
+    def registry_payment_post_mortem(self):
+        family_ids = self.family_id.filtered(lambda x:x.beneficiary == True).ids
+        context = {
+            'default_partner_id': self.id,
+            'default_family_ids': family_ids,
+        }
+        return {
+            'name': 'Pago post mortem',
+            'type': 'ir.actions.act_window',
+            'res_model': 'payment.post.mortem',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+            'context': context,
+        }
