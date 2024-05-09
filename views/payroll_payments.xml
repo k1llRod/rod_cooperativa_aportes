@@ -10,6 +10,7 @@
                     <field name="name" readonly="1" optional="hide"/>
                     <field name="partner_payroll_id" invisible="1"/>
                     <field name="partner_status"/>
+                    <field name="city" optional="hide"/>
                     <field name="partner_status_especific"/>
                     <field name="period_register"/>
                     <field name="income" attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>

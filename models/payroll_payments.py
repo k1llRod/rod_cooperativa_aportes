@@ -29,7 +29,7 @@ class PayrollPayments(models.Model):
                                                  ('leave', 'Baja')], string='Tipo de asociado',
                                                 related='partner_payroll_id.partner_id.partner_status_especific',
                                                 store=True)
-
+    city = fields.Char(string='Ciudad', related='partner_payroll_id.partner_id.city', store=True)
     income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
     income_passive = fields.Float(string='DESC. PASIVO', required=True, tracking=True)
     mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)

@@ -15,6 +15,7 @@
                         />
                     </header>
                     <field name="name" optional="hide"/>
+                    <field name="city" optional="hide"/>
                     <field name="partner_id"/>
                     <field name="code_contact"/>
                     <field name="vat"/>
@@ -241,7 +242,9 @@
                         <filter string="Tipo de asociado"
                                 name="group_partner_status"
                                 context="{'group_by': 'partner_status_especific'}"/>
-
+                        <filter string="Por ciudad"
+                                name="group_city"
+                                context="{'group_by': 'city'}"/>
                     </group>
                 </search>
             </field>
