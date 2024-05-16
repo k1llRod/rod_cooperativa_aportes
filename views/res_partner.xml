@@ -74,18 +74,25 @@
                 </xpath>
                 <xpath expr="//sheet/notebook/page[1]" position="after">
                     <page string="Post Mortem" >
-                        <group string="Datos bases">
-                            <field name="base_amount"/>
-                            <field name="base_longevity"/>
-                            <field name="global_amount"/>
-                            <button name="registry_payment_post_mortem" class="oe_highlight" string="Registrar pago" type="object" />
-
+                        <group>
+                            <group string="Datos bases">
+                                <field name="base_amount"/>
+                                <field name="base_longevity"/>
+                                <field name="global_amount"/>
+                                <button name="registry_payment_post_mortem" class="oe_highlight" string="Registrar pago"
+                                        type="object"/>
+                            </group>
+                            <group string="Saldos">
+                                <field name="balance_post_mortem"/>
+                                <field name="balance_longevity"/>
+<!--                                <field name="Saldo post mortem"/>-->
+                            </group>
                         </group>
                         <field name="post_mortem_ids">
                             <tree string="Pagos">
                                 <field name="name"/>
-                                <field name="family_ids"/>
-                                <field name="partner_id"/>
+                                <field name="family_ids" widget="many2many_tags"/>
+                                <field name="partner_id" readonly="1"/>
                                 <field name="type_payment"/>
                                 <field name="payment_date"/>
                                 <field name="return_amount"/>
@@ -115,6 +122,20 @@
             <field name="binding_model_id" ref="model_res_partner"/>
             <field name="state">code</field>
             <field name="code">action = records.init_massive_payment()</field>
+        </record>
+        <record id="action_verificate_partner" model="ir.actions.server">
+            <field name="name">Estado Verificacion</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="binding_model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = records.verification_massive()</field>
+        </record>
+        <record id="action_draft_partner" model="ir.actions.server">
+            <field name="name">Estado Borrador</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="binding_model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = records.draft_massive()</field>
         </record>
 
 

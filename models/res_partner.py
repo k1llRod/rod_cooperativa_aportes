@@ -183,6 +183,9 @@ class ResPartner(models.Model):
         context = {
             'default_partner_id': self.id,
             'default_family_ids': family_ids,
+            'default_global_amount': self.global_amount,
+            'default_base_amount':self.base_amount,
+            'default_base_longevity_amount': self.base_longevity,
         }
         return {
             'name': 'Pago post mortem',
@@ -193,3 +196,11 @@ class ResPartner(models.Model):
             'target': 'new',
             'context': context,
         }
+
+    def verification_massive(self):
+        for rec in self:
+            rec.state = 'verificate'
+
+    def draft_massive(self):
+        for rec in self:
+            rec.state = 'draft'
