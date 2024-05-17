@@ -316,7 +316,7 @@
                                                     <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>
                                                 </t>
                                                 <t t-if="p.income_passive">
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('income_passive')),2)"/>
+                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income_passive')),2)"/>
                                                 </t>
                                             </td>
                                             <t t-if="o.partner_status_especific != 'passive_reserve_b'">
@@ -370,7 +370,7 @@
 <!--                                        </t>-->
 <!--                                    </table>-->
 <!--                                </t>-->
-
+                                <h2>Total aportes</h2>
                                 <table>
                                     <tr>
                                         <td style="margin-left:30px;">
@@ -379,23 +379,28 @@
                                         <td>
                                             <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')),2)"/>
                                         </td>
+
                                     </tr>
                                     <tr>
                                         <td>
                                             <strong>Total aportes voluntarios:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('voluntary_contribution_certificate')), 2)"/>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')), 2)"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <strong>Total tasa de regulación:</strong>
+                                            <strong>Total:</strong>
                                         </td>
-                                        <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
+                                        <td style="border-top:1px solid black;">
+                                            <span t-esc="round(o.contribution_total,2)"/>
                                         </td>
                                     </tr>
+                                </table>
+                                <hr/>
+                                <h2>Detalles</h2>
+                                <table>
                                     <tr>
                                         <td>
                                             <strong>Total capital inicio:</strong>
@@ -406,10 +411,18 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <strong>Total:</strong>
+                                            <strong>Inscripcion:</strong>
                                         </td>
-                                        <td style="border-top:1px solid black;">
-                                            <span t-esc="round(o.contribution_total,2)"/>
+                                        <td>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('miscellaneous_income')),2)"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Total tasa de regulación:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
                                         </td>
                                     </tr>
                                 </table>
