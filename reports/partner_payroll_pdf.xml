@@ -234,7 +234,7 @@
                                         <tr t-set="acumulador" t-value="0"/>
                                         <tr t-set="acumulador1" t-value="0"/>
                                         <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['date_pivote'])" t-as="p">
-                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest'">
+                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
                                                     <td class="align-middle">
@@ -266,9 +266,10 @@
                                                     </td>
                                                     <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                         <td class="align-middle">
-                                                            <t t-if="p.state == 'contribution_interest'">
+                                                            <t t-if="p.state == 'contribution_interest' or p.state == 'capital_initial'">
                                                                 <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
                                                             </t>
+
                                                             <t t-else="p.state == 'contribution_interest'">
                                                                 0
                                                             </t>
@@ -302,6 +303,9 @@
                                                         </t>
                                                         <t t-elif="p.state == 'contribution_interest'">
                                                             <span>Aporte rendimiento COAA</span>
+                                                        </t>
+                                                        <t t-elif="p.state == 'capital_initial'">
+                                                            <span>Capital inicial</span>
                                                         </t>
                                                     </td>
                                                 </tr>
@@ -406,7 +410,7 @@
                                             <strong>Total capital inicio:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest').mapped('voluntary_contribution_certificate')),2)"/>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest' or x.state=='capital_initial').mapped('voluntary_contribution_certificate')),2)"/>
                                         </td>
                                     </tr>
                                     <tr>
