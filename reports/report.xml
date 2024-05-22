@@ -94,6 +94,24 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="report_report_form_loan_xlsx" model="ir.actions.report">
+        <field name="name">Reporte deudas aportes</field>
+        <field name="model">report.form</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">rod_cooperativa_aportes.report_form_loan</field>
+        <field name="report_file">rod_cooperativa_aportes.report_form_loan</field>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="report_report_form_state_xlsx" model="ir.actions.report">
+        <field name="name">Reporte de asociados por reporte</field>
+        <field name="model">report.form</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">rod_cooperativa_aportes.report_form_state</field>
+        <field name="report_file">rod_cooperativa_aportes.report_form_state</field>
+        <field name="binding_type">report</field>
+    </record>
+
+
 <!--    <record id="action_report_res_partner_elections" model="ir.actions.report">-->
 <!--        <field name="name">Filiación personal elecciones PDF</field>-->
 <!--        <field name="model">res.partner</field>-->

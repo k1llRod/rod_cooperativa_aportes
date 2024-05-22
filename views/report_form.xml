@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="report_form_id">
+            <field name="name">report.form.form</field>
+            <field name="model">report.form</field>
+            <field name="arch" type="xml">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required" create="0">
+                    <header>
+
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_status_especific"/>
+                            </group>
+                            <group>
+                                <button name="report_loan" string="Reporte deudas" type="object" class="oe_highlight"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_report_form" model="ir.actions.act_window">
+            <field name="name">Reportes</field>
+            <field name="res_model">report.form</field>
+            <field name="view_mode">form</field>
+        </record>
+    </data>
+</odoo>

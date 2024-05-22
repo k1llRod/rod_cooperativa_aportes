@@ -2,3 +2,4 @@
 
 from . import payroll_payment_pdf
 from . import report_partner_payroll
+from . import report_report_form

@@ -39,11 +39,11 @@
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
                 sequence="1"
                 action="rod_cooperativa_aportes.action_payments_reports"/>
-      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports_deudas"
-                name="Deudas"
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_report_form"
+                name="Formulario de reportes"
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
                 sequence="2"
-                action="rod_cooperativa_aportes.action_report_partner_payroll"/>
+                action="rod_cooperativa_aportes.action_wizard_report_form_id"/>
 
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_configuration"
                 name="Configuración"
