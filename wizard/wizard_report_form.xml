@@ -8,14 +8,14 @@
                 <header>
                 </header>
                 <sheet>
-                    <group string="Socios por estado">
-                        <group>
-                            <field name="partner_status_especific_status"/>
-                        </group>
-                        <group>
-                            <button name="report_state_partner" string="Reporte deudas" type="object" class="oe_highlight"/>
-                        </group>
-                    </group>
+<!--                    <group string="Socios por estado">-->
+<!--                        <group>-->
+<!--                            <field name="partner_status_especific_status"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            <button name="report_state_partner" string="Reporte deudas" type="object" class="oe_highlight"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
                     <group string="Pagos pendientes">
                         <group>
                             <field name="partner_status_especific"/>

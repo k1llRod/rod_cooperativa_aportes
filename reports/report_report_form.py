@@ -73,3 +73,28 @@ class ReportReportForm(models.AbstractModel):
                     sheet.write(row, h, round(due.d_post_mortem,2))
                     sheet.write(row, i, round(due.d_total,2))
 
+        if data['partner_status_especific'] == 'active_service' or data['partner_status_especific'] == 'passive_reserve_a':
+            payroll_payment = self.env['payroll.payments'].search([('state', '=', 'no_contribution'),('partner_status_especific','=',data['partner_status_especific'])], order='partner_name,period_register')
+            sheet.write(row, a, 'N')
+            sheet.write(row, b, 'Socio')
+            sheet.write(row, c, 'Periodo')
+            sheet.write(row, d, 'Descuento')
+            sheet.write(row, d, 'D.Inscripcion')
+            sheet.write(row, e, 'D.Tasa de regulacion')
+            sheet.write(row, f, 'D.Aporte obligatorio')
+            sheet.write(row, g, 'D.Aporte voluntario')
+            # sheet.write(row, h, 'D.Post mortem')
+            # sheet.write(row, i, 'Total debe')
+            for payment in payroll_payment:
+                n += 1
+                row += 1
+                sheet.write(row, a, n)
+                sheet.write(row, b, payment.partner_name)
+                sheet.write(row, c, payment.period_register)
+                sheet.write(row, d, round(payment.income,2))
+                sheet.write(row, e, round(payment.regulation_cup,2))
+                sheet.write(row, f, round(payment.mandatory_contribution_certificate,2))
+                sheet.write(row, g, round(payment.voluntary_contribution_certificate,2))
+                # sheet.write(row, h, round(payment.d_post_mortem,2))
+                # sheet.write(row, i, round(payment.d_total,2))
+
