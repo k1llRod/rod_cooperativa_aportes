@@ -32,7 +32,7 @@ class ResPartner(models.Model):
             'target': 'current',
         }
 
-    contributions_count = fields.Integer(string='Aportes', compute='compute_contributions_count')
+    contributions_count = fields.Integer(string='Aportes', compute='compute_contributions_count', store=True)
     loan_count = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     loan_count_mortgage = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     loan_count_loan_emergency = fields.Integer(string='Préstamos', compute='compute_contributions_count')
