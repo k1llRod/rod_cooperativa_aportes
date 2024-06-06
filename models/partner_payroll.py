@@ -98,6 +98,15 @@ class PartnerPayroll(models.Model):
     must_total = fields.Float(string='Debe total')
     must_gestion = fields.Integer(string='Debe gestion')
 
+    partner_state = fields.Selection([('draft', 'Borrador'),
+                              ('verificate', 'Verificación'),
+                              ('activate', 'Socio activo'),
+                              ('external','Externo'),
+                              ('rejected', 'Rechazado'),
+                              ('unsubscribe', 'Baja'),
+                              ('deceased','Fallecido')],
+                             string='Estado', default='draft', related='partner_id.state', store=True)
+
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 

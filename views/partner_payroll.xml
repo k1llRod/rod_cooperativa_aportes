@@ -19,7 +19,7 @@
                     <field name="partner_id"/>
                     <field name="code_contact"/>
                     <field name="vat"/>
-                    <field name="partner_status"/>
+                    <field name="partner_state"/>
                     <field name="capital_initial"/>
                     <field name="partner_status_especific"/>
                     <field name="date_registration" optional="hide"/>
@@ -105,6 +105,7 @@
                                 <field name="partner_status" readonly="1"/>
                                 <field name="partner_status_especific" readonly="1"/>
                                 <field name="city"/>
+                                <field name="partner_state"/>
                                 <field name="capital_initial"/>
                                 <field name="voluntary_contribution_certificate_total"/>
                                 <field name="mandatory_contribution_certificate_total"/>
@@ -116,8 +117,8 @@
                                 <field name="amount_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="since_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="until_payment" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
-                                <field name="difference_year" invisible="0"/>
-                                <field name="year_now" invisible="0"/>
+                                <field name="difference_year" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
+                                <field name="year_now" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                             </group>
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>

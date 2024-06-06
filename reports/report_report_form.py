@@ -16,35 +16,39 @@ class ReportReportForm(models.AbstractModel):
         g = 6
         h = 7
         i = 8
+        j = 9
         row = 0
         col = 0
         n = 0
         if data['partner_status_especific'] == 'passive_reserve_b':
             sheet.write(row, a, 'N')
             sheet.write(row, b, 'Socio')
-            sheet.write(row, c, 'Gestion')
-            sheet.write(row, d, 'D.Inscripcion')
-            sheet.write(row, e, 'D.Tasa de regulacion')
-            sheet.write(row, f, 'D.Aporte obligatorio')
-            sheet.write(row, g, 'D.Aporte voluntario')
-            sheet.write(row, h, 'D.Post mortem')
-            sheet.write(row, i, 'Total debe')
+            sheet.write(row, c, 'Ciudad')
+            sheet.write(row, d, 'Gestion')
+            sheet.write(row, e, 'D.Inscripcion')
+            sheet.write(row, f, 'D.Tasa de regulacion')
+            sheet.write(row, g, 'D.Aporte obligatorio')
+            sheet.write(row, h, 'D.Aporte voluntario')
+            sheet.write(row, i, 'D.Post mortem')
+            sheet.write(row, j, 'Total debe')
+
             for partner in partner_payroll:
                 partner.compute_updated_partner()
                 n += 1
                 row += 1
                 sheet.write(row, a, n)
                 sheet.write(row, b, partner.partner_id.name)
+                sheet.write(row, c, partner.city)
                 srow = 0
                 for due in partner.due_payments_ids:
                     row += 1
-                    sheet.write(row, c, due.gestion)
-                    sheet.write(row, d, round(due.d_miscellaneous_income,2))
-                    sheet.write(row, e, round(due.d_regulation_cup,2))
-                    sheet.write(row, f, round(due.d_mandatory_contribution,2))
-                    sheet.write(row, g, round(due.d_voluntary_contribution,2))
-                    sheet.write(row, h, round(due.d_post_mortem,2))
-                    sheet.write(row, i, round(due.d_total,2))
+                    sheet.write(row, d, due.gestion)
+                    sheet.write(row, e, round(due.d_miscellaneous_income,2))
+                    sheet.write(row, f, round(due.d_regulation_cup,2))
+                    sheet.write(row, g, round(due.d_mandatory_contribution,2))
+                    sheet.write(row, h, round(due.d_voluntary_contribution,2))
+                    sheet.write(row, i, round(due.d_post_mortem,2))
+                    sheet.write(row, j, round(due.d_total,2))
 
         if data['partner_status_especific'] == 'passive_reserve_a':
             sheet.write(row, a, 'N')
