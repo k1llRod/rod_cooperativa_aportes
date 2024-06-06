@@ -5,7 +5,8 @@ class ReportReportForm(models.AbstractModel):
     _inherit = 'report.report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, data, lines):
-        partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', data['partner_status_especific'])])
+        # partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', data['partner_status_especific'])])
+        partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', data['partner_status_especific']), ('state', '=', 'process')])
         sheet = workbook.add_worksheet('Aportes')
         a = 0
         b = 1
@@ -41,7 +42,6 @@ class ReportReportForm(models.AbstractModel):
                 sheet.write(row, c, partner.city)
                 srow = 0
                 for due in partner.due_payments_ids:
-                    row += 1
                     sheet.write(row, d, due.gestion)
                     sheet.write(row, e, round(due.d_miscellaneous_income,2))
                     sheet.write(row, f, round(due.d_regulation_cup,2))
@@ -49,6 +49,8 @@ class ReportReportForm(models.AbstractModel):
                     sheet.write(row, h, round(due.d_voluntary_contribution,2))
                     sheet.write(row, i, round(due.d_post_mortem,2))
                     sheet.write(row, j, round(due.d_total,2))
+                    row += 1
+
 
         if data['partner_status_especific'] == 'passive_reserve_a':
             sheet.write(row, a, 'N')
