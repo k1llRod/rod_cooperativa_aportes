@@ -112,6 +112,7 @@
             <field name="inherit_id" ref="rod_cooperativa.res_partner_tree_inh"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='type_blood']" position="after">
+                    <field name="contributions_count"/>
                     <field name="state"/>
                 </xpath>
             </field>
