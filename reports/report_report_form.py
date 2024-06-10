@@ -20,7 +20,7 @@ class ReportReportForm(models.AbstractModel):
         j = 9
         row = 0
         col = 0
-        n = 1
+        n = 0
         if data['partner_status_especific'] == 'passive_reserve_b':
             sheet.write(row, a, 'N')
             sheet.write(row, b, 'Socio')
