@@ -6,7 +6,7 @@ class ReportReportForm(models.AbstractModel):
 
     def generate_xlsx_report(self, workbook, data, lines):
         # partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', data['partner_status_especific'])])
-        partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', data['partner_status_especific']), ('state', '=', 'process')])
+        partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', data['partner_status_especific']), ('state', '=', 'process')], order='partner_id')
         sheet = workbook.add_worksheet('Aportes')
         a = 0
         b = 1
@@ -20,7 +20,7 @@ class ReportReportForm(models.AbstractModel):
         j = 9
         row = 0
         col = 0
-        n = 0
+        n = 1
         if data['partner_status_especific'] == 'passive_reserve_b':
             sheet.write(row, a, 'N')
             sheet.write(row, b, 'Socio')
@@ -50,7 +50,7 @@ class ReportReportForm(models.AbstractModel):
                     sheet.write(row, i, round(due.d_post_mortem,2))
                     sheet.write(row, j, round(due.d_total,2))
                     row += 1
-
+                row -= 1
 
         if data['partner_status_especific'] == 'passive_reserve_a':
             sheet.write(row, a, 'N')
