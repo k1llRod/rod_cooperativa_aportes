@@ -7,13 +7,13 @@
                     <t t-if="not company">
                         <!-- Multicompany -->
                         <t t-if="company_id">
-                            <t t-set="company" t-value="company_id"/>
+                            <t t-set="company" t-value="company_id" style="font-size:10px;"/>
                         </t>
                         <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
-                            <t t-set="company" t-value="o.company_id.sudo()"/>
+                            <t t-set="company" t-value="o.company_id.sudo()" style="font-size:10px;"/>
                         </t>
                         <t t-else="else">
-                            <t t-set="company" t-value="res_company"/>
+                            <t t-set="company" t-value="res_company" style="font-size:10px;"/>
                         </t>
                     </t>
                     <t t-call="web.external_layout_standard">

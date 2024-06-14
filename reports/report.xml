@@ -102,6 +102,14 @@
         <field name="report_file">rod_cooperativa_aportes.report_form_loan</field>
         <field name="binding_type">report</field>
     </record>
+    <record id="report_report_category_b_xlsx" model="ir.actions.report">
+        <field name="name">Reporte deudas categoria B</field>
+        <field name="model">report.form</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">rod_cooperativa_aportes.report_category_b</field>
+        <field name="report_file">rod_cooperativa_aportes.report_category_b</field>
+        <field name="binding_type">report</field>
+    </record>
     <record id="report_report_form_state_xlsx" model="ir.actions.report">
         <field name="name">Reporte de asociados por reporte</field>
         <field name="model">report.form</field>

@@ -22,6 +22,7 @@
                         </group>
                         <group>
                             <button name="report_loan" string="Reporte deudas" type="object" class="oe_highlight"/>
+                            <button name="report_loan_category_b" string="Reporte categoria B" type="object" class="oe_highlight"/>
                         </group>
                     </group>
 
