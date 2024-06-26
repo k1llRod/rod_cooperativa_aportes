@@ -159,6 +159,9 @@ class ResPartner(models.Model):
 
     def form_unsubscribe(self):
         a = 1
+        context = {
+            'default_partner_id': self.id,
+        }
         return {
             'name': 'Baja de socio',
             'type': 'ir.actions.act_window',
@@ -166,6 +169,7 @@ class ResPartner(models.Model):
             'partner_id': self.id,
             'view_mode': 'form',
             'target': 'new',
+            'context': context,
         }
     def unsubscribe(self):
         self.ensure_one()

@@ -113,6 +113,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='type_blood']" position="after">
                     <field name="contributions_count"/>
+                    <field name="loan_count"/>
                     <field name="state"/>
                 </xpath>
             </field>
