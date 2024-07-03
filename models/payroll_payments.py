@@ -330,12 +330,12 @@ class PayrollPayments(models.Model):
         if self.state == 'contribution_interest' or self.state == 'capital_initial':
             total = self.historical_contribution_coaa + self.historical_interest_coaa
             data = (0, 0, {'account_id': income.id,
-                                     'debit': self.voluntary_contribution_certificate, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                     'debit': self.income_passive if self.income_passive > 0 else total, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
             move_line.append(data)
             data = (0, 0, {'account_id': voluntary_contribution.id,
-                                      'debit': 0, 'credit': total, 'partner_id': self.partner_payroll_id.partner_id.id,
+                                      'debit': 0, 'credit': self.voluntary_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
             move_line.append(data)
