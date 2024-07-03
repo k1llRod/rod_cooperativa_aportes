@@ -340,7 +340,7 @@ class PayrollPayments(models.Model):
                                      })
             move_line.append(data)
         move_vals = {
-            "date": datetime.today(),
+            "date": self.payment_date,
             "journal_id": journal_id,
             "ref": "Aporte de socio" + " " +self.partner_payroll_id.partner_id.name + " " + self.period_register,
             # "company_id": payment.company_id.id,
