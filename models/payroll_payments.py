@@ -81,6 +81,7 @@ class PayrollPayments(models.Model):
     account_move_id = fields.Many2one('account.move', string='Asiento contable')
 
     capital_initial = fields.Float(string='Capital inicial')
+    state_account = fields.Selection([('draft', 'Borrador'), ('posted', 'Contabilizado'), ('cancel', 'Cancelado')], default='draft', related='account_move_id.state', store=True)
 
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
@@ -290,7 +291,7 @@ class PayrollPayments(models.Model):
         if not income:
             income = self.account_income_id
         if not income_passive:
-            income_passive = self.account_income_id
+            income_passive = self.account_income_id if self.income == False else self.partner_payroll_id.income
         if not inscription:
             inscription = self.account_inscription_id
         if not regulation_cup:
@@ -300,28 +301,28 @@ class PayrollPayments(models.Model):
         if not voluntary_contribution:
             voluntary_contribution = self.account_voluntary_contribution_id
         if self.state == 'ministry_defense' or self.state == 'transfer':
-            data = (0, 0, {'account_id': income.id,
+            data = (0, 0, {'account_id': income.id if income.id != False else self.partner_payroll_id.account_income_id.id,
                                      'debit': self.income_passive if self.income == 0 else self.income, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
             move_line.append(data)
-            data = (0, 0, {'account_id': inscription.id,
+            data = (0, 0, {'account_id': inscription.id if inscription.id != False else self.partner_payroll_id.account_inscription_id.id,
                                       'debit': 0, 'credit': self.miscellaneous_income, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
             move_line.append(data)
-            data = (0, 0, {'account_id': regulation_cup.id,
+            data = (0, 0, {'account_id': regulation_cup.id if regulation_cup.id != False else self.partner_payroll_id.account_regulation_cup_id.id,
                                      'debit': 0, 'credit': self.regulation_cup, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
 
             move_line.append(data)
-            data = (0, 0, {'account_id': mandatory_contribution.id,
+            data = (0, 0, {'account_id': mandatory_contribution.id if mandatory_contribution.id != False else self.partner_payroll_id.account_mandatory_contribution_id.id,
                                      'debit': 0, 'credit': self.mandatory_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
             move_line.append(data)
-            data = (0, 0, {'account_id': voluntary_contribution.id,
+            data = (0, 0, {'account_id': voluntary_contribution.id if voluntary_contribution.id != False else self.partner_payroll_id.account_voluntary_contribution_id.id,
                                      'debit': 0, 'credit': self.voluntary_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
                                      'amount_currency': 0
                                      })
@@ -340,7 +341,7 @@ class PayrollPayments(models.Model):
         move_vals = {
             "date": datetime.today(),
             "journal_id": journal_id,
-            "ref": "test",
+            "ref": "Aporte de socio" + " " +self.partner_payroll_id.partner_id.name + " " + self.period_register,
             # "company_id": payment.company_id.id,
             # "name": "name test",
             "state": "draft",

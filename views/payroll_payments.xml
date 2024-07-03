@@ -31,6 +31,9 @@
                                                decoration-warning="state == 'draft'"
                                                decoration-danger="state == 'no_contribution'"
                            widget="badge"/>
+                    <field name="state_account" string="E.A.C." decoration-success="state_account in ['posted']"
+                                               decoration-warning="state_account == 'draft'"
+                                        widget="badge"/>
                     <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
                 </tree>
             </field>
@@ -66,6 +69,10 @@
                                 class="oe_close_button"
                                 attrs="{'invisible':[('state','=','draft')]}"
                         />
+                        <button name="create_account_move" string="Generar asiento" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible':['|',('state','=','draft'),('state_account','=','posted')]}"
+                        />
                         <button name="capital_initial_a" string="Capital inicial" type="object"
                                 class="oe_close_button"
                                 attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
@@ -81,7 +88,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_payroll_id"/>
+                                <field name="partner_payroll_id" readonly="1"/>
                                 <field name="partner_status"/>
                                 <field name="partner_status_especific"/>
                                 <field name="partner_name"/>
@@ -108,12 +115,16 @@
                         </group>
                         <notebook>
                             <page string="Contabilidad">
+                                <label for="state_account" string="Estado de asiento contable"/>
+                                <field name="state_account" decoration-danger="state_account == 'draft'"
+                                       decoration-info="state_account == 'posted'"
+                                       widget="badge"/>
                                 <group>
                                     <group>
                                         <field name="journal_id"/>
                                     </group>
                                     <group>
-                                        <field name="account_move_id"/>
+                                        <field name="account_move_id" readonly="1"/>
                                     </group>
                                 </group>
                                 <group>
@@ -213,6 +224,9 @@
                                                decoration-warning="state == 'draft'"
                                                decoration-danger="state == 'no_contribution'"
                                widget="badge"/>
+                        <field name="state_account" string="E.A.C." decoration-success="state_account in ['posted']"
+                                               decoration-warning="state_account == 'draft'"
+                                        widget="badge"/>
                         <button name="open_one2many_line" type="object" class="oe_highlight" icon="fa-eye"/>
                     </tree>
                     <search string="Buscar">
