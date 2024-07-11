@@ -39,7 +39,7 @@ class PayrollPayments(models.Model):
         self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup')))
     payment_post_mortem = fields.Float(string='PAGO POST MORTEM')
     miscellaneous_income = fields.Float(string='INSCRIPCION')
-    payment_date = fields.Datetime(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
+    payment_date = fields.Date(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
         [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
@@ -56,7 +56,7 @@ class PayrollPayments(models.Model):
     glosa_contribution_interest = fields.Text(string='Glosa de aporte')
     advanced_automata = fields.Boolean(string='Adelanto automatico')
     register_advanced_payments_ids = fields.Many2one('advance.payments')
-    date_pivote = fields.Datetime(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1),
+    date_pivote = fields.Date(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1),
                                   tracking=True)
 
     account_income_id = fields.Many2one('account.account', string='Ingreso',
