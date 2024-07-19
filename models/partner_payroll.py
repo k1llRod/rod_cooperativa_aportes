@@ -75,6 +75,7 @@ class PartnerPayroll(models.Model):
                                                           compute='compute_balance_advance')
     count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
                                                               compute='compute_contributions')
+    journal_id = fields.Many2one('account.journal', string='Diario')
     account_income_id = fields.Many2one('account.account', string='Ingreso', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_income_id'))
     account_inscription_id = fields.Many2one('account.account', string='Inscripcion', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_inscription_id'))
     account_regulation_cup_id = fields.Many2one('account.account', string='Tasa de regulacion', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_regulation_cup_id'))

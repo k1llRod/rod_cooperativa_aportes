@@ -192,6 +192,7 @@
                             <page string="Contabilidad">
                                 <group>
                                     <group>
+                                        <field name="journal_id"/>
                                         <field name="account_income_id"/>
                                     </group>
                                     <group>

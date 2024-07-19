@@ -285,73 +285,73 @@ class PayrollPayments(models.Model):
             record.state = 'draft'
 
     def create_account_move(self,income=False,income_passive=False,inscription=False,regulation_cup=False,mandatory_contribution=False,voluntary_contribution=False):
-        move_line_vals = []
-        move_line = []
-        journal_id = self.journal_id.id
-        if not income:
-            income = self.account_income_id
-        if not income_passive:
-            income_passive = self.account_income_id if self.income == False else self.partner_payroll_id.income
-        if not inscription:
-            inscription = self.account_inscription_id
-        if not regulation_cup:
-            regulation_cup = self.account_regulation_cup_id
-        if not mandatory_contribution:
-            mandatory_contribution = self.account_mandatory_contribution_id
-        if not voluntary_contribution:
-            voluntary_contribution = self.account_voluntary_contribution_id
-        if self.state == 'ministry_defense' or self.state == 'transfer':
-            data = (0, 0, {'account_id': income.id if income.id != False else self.partner_payroll_id.account_income_id.id,
-                                     'debit': self.income_passive if self.income == 0 else self.income, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
-            move_line.append(data)
-            data = (0, 0, {'account_id': inscription.id if inscription.id != False else self.partner_payroll_id.account_inscription_id.id,
-                                      'debit': 0, 'credit': self.miscellaneous_income, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
-            move_line.append(data)
-            data = (0, 0, {'account_id': regulation_cup.id if regulation_cup.id != False else self.partner_payroll_id.account_regulation_cup_id.id,
-                                     'debit': 0, 'credit': self.regulation_cup, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
+        for rec in self:
+            move_line_vals = []
+            move_line = []
+            journal_id = rec.journal_id.id
+            if not income:
+                income = rec.account_income_id
+            if not income_passive:
+                income_passive = rec.account_income_id if rec.income == False else rec.partner_payroll_id.income
+            if not inscription:
+                inscription = rec.account_inscription_id
+            if not regulation_cup:
+                regulation_cup = rec.account_regulation_cup_id
+            if not mandatory_contribution:
+                mandatory_contribution = rec.account_mandatory_contribution_id
+            if not voluntary_contribution:
+                voluntary_contribution = rec.account_voluntary_contribution_id
+            if rec.state == 'ministry_defense' or rec.state == 'transfer':
+                data = (0, 0, {'account_id': income.id if income.id != False else rec.partner_payroll_id.account_income_id.id,
+                                         'debit': rec.income_passive if rec.income == 0 else rec.income, 'credit': 0, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
+                if not (rec.income_passive == 0 and rec.income == 0): move_line.append(data)
+                data = (0, 0, {'account_id': inscription.id if inscription.id != False else rec.partner_payroll_id.account_inscription_id.id,
+                                          'debit': 0, 'credit': rec.miscellaneous_income, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
+                if not (rec.miscellaneous_income == 0): move_line.append(data)
+                data = (0, 0, {'account_id': regulation_cup.id if regulation_cup.id != False else rec.partner_payroll_id.account_regulation_cup_id.id,
+                                         'debit': 0, 'credit': rec.regulation_cup, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
 
-            move_line.append(data)
-            data = (0, 0, {'account_id': mandatory_contribution.id if mandatory_contribution.id != False else self.partner_payroll_id.account_mandatory_contribution_id.id,
-                                     'debit': 0, 'credit': self.mandatory_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
-            move_line.append(data)
-            data = (0, 0, {'account_id': voluntary_contribution.id if voluntary_contribution.id != False else self.partner_payroll_id.account_voluntary_contribution_id.id,
-                                     'debit': 0, 'credit': self.voluntary_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
-            move_line.append(data)
-        if self.state == 'contribution_interest' or self.state == 'capital_initial':
-            total = self.historical_contribution_coaa + self.historical_interest_coaa
-            data = (0, 0, {'account_id': income.id,
-                                     'debit': self.income_passive if self.income_passive > 0 else total, 'credit': 0, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
-            move_line.append(data)
-            data = (0, 0, {'account_id': voluntary_contribution.id,
-                                      'debit': 0, 'credit': self.voluntary_contribution_certificate, 'partner_id': self.partner_payroll_id.partner_id.id,
-                                     'amount_currency': 0
-                                     })
-            move_line.append(data)
-        move_vals = {
-            "date": self.payment_date,
-            "journal_id": journal_id,
-            "ref": "Aporte de socio" + " " +self.partner_payroll_id.partner_id.name + " " + self.period_register,
-            # "company_id": payment.company_id.id,
-            # "name": "name test",
-            "state": "draft",
-            "line_ids": move_line,
-        }
-        account_move_id = self.env['account.move'].create(move_vals)
-        self.account_move_id = account_move_id.id
-        account_move_id.payroll_payment_id = self.id
-        a = 1
+                if not (rec.regulation_cup == 0): move_line.append(data)
+                data = (0, 0, {'account_id': mandatory_contribution.id if mandatory_contribution.id != False else rec.partner_payroll_id.account_mandatory_contribution_id.id,
+                                         'debit': 0, 'credit': rec.mandatory_contribution_certificate, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
+                if not (rec.mandatory_contribution_certificate == 0): move_line.append(data)
+                data = (0, 0, {'account_id': voluntary_contribution.id if voluntary_contribution.id != False else rec.partner_payroll_id.account_voluntary_contribution_id.id,
+                                         'debit': 0, 'credit': rec.voluntary_contribution_certificate, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
+                if not(rec.voluntary_contribution_certificate == 0): move_line.append(data)
+            if rec.state == 'contribution_interest' or rec.state == 'capital_initial':
+                total = rec.historical_contribution_coaa + rec.historical_interest_coaa
+                data = (0, 0, {'account_id': income.id,
+                                         'debit': rec.income_passive if rec.income_passive > 0 else total, 'credit': 0, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
+                move_line.append(data)
+                data = (0, 0, {'account_id': voluntary_contribution.id,
+                                          'debit': 0, 'credit': rec.voluntary_contribution_certificate, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                                         'amount_currency': 0
+                                         })
+                move_line.append(data)
+            move_vals = {
+                "date": rec.payment_date,
+                "journal_id": journal_id if journal_id != False else rec.partner_payroll_id.journal_id.id,
+                "ref": "Aporte de socio" + " " +rec.partner_payroll_id.partner_id.name + " " + rec.period_register,
+                # "company_id": payment.company_id.id,
+                # "name": "name test",
+                "state": "draft",
+                "line_ids": move_line,
+            }
+            account_move_id = rec.env['account.move'].create(move_vals)
+            rec.account_move_id = account_move_id.id
+            account_move_id.payroll_payment_id = rec.id
     def no_contribution(self):
         for record in self:
             verify = record.partner_payroll_id.payroll_payments_ids.filtered(
