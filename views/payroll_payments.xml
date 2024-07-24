@@ -199,6 +199,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="replace">
                     <tree>
+                        <header>
+                            <button name="agroup_payroll_payments" string="Generar asiento" class="oe_highlight"
+                                    type="object"/>
+                        </header>
                         <field name="name" readonly="1" optional="show"/>
                         <field name="partner_payroll_id" optional="hide"/>
                         <field name="partner_name" string="Socio" optional="show"/>

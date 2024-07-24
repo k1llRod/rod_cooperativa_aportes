@@ -44,3 +44,5 @@ access_dynamic_report_partner_payroll,dynamic.report.partner.payroll,model_dynam
 access_due_payments,due.payments,model_due_payments,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
 
 access_wizard_report_form,wizard.report.form,model_wizard_report_form,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
+
+access_wizard_payroll_payments,wizard.payroll.payments,model_wizard_payroll_payments,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1

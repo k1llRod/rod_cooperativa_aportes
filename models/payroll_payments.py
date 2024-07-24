@@ -368,6 +368,45 @@ class PayrollPayments(models.Model):
         for record in self:
             record.state = 'capital_initial'
 
+    def agroup_payroll_payments(self):
+        payment_date = self[0].payment_date
+        period = self[0].period_register
+        sw = 0
+        val = []
+        for record in self:
+            if record.state == 'draft':
+                raise ValidationError('No se pueden validar pagos en estado "BORRADOR"')
+            val.append(record.income if record.income != 0 else record.income_passive)
+            if record.payment_date != payment_date:
+                sw = 1
+        if sw == 1:
+            raise ValidationError('No se pueden validar pagos con fechas diferentes')
+        total_income = sum(self.mapped('income')) if self.mapped('income') == 0 else sum(self.mapped('income_passive'))
+        total_miscellaneous_income = sum(self.mapped('miscellaneous_income'))
+        total_regulation_cup = sum(self.mapped('regulation_cup'))
+        total_mandatory_contribution = sum(self.mapped('mandatory_contribution_certificate'))
+        total_voluntary_contribution = sum(self.mapped('voluntary_contribution_certificate'))
+        amount_total = total_miscellaneous_income + total_regulation_cup + total_mandatory_contribution + total_voluntary_contribution
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.payroll.payments',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_total_income': total_income,
+                'default_payment_date': payment_date,
+                'default_total_miscellaneous_income': total_miscellaneous_income,
+                'default_total_regulation_cup': total_regulation_cup,
+                'default_total_mandatory_contribution': total_mandatory_contribution,
+                'default_total_voluntary_contribution': total_voluntary_contribution,
+                'default_amount_total': amount_total,
+                'default_val': self.ids,
+                'default_period':period,
+            }
+        }
+
+
+
     # @api.onchange('capital_initial')
     # def onchange_capital_initial(self):
     #     for record in self:
@@ -375,3 +414,12 @@ class PayrollPayments(models.Model):
     #         record.mandatory_contribution_certificate = 0
     #         record.miscellaneous_income = 0
 
+    # def agroup_payroll_payments(self):
+    #     a = 1
+    #
+    # return {
+    #     'type': 'ir.actions.act_window',
+    #     'res_model': 'wizard.payroll',
+    #     'view_mode': 'form',
+    #     'target': 'new',
+    # }
