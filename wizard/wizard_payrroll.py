@@ -35,7 +35,7 @@ class WizardPayroll(models.TransientModel):
     val = fields.Many2many('payroll.payments', string='Pagos')
     def action_confirm(self):
         move_line = []
-        reference = 'APORTES ' + self.period
+        reference = 'APORTES ' + self.period + self.val[0].partner_name
         for record in self:
             journal_id = record.account_journal_id
             for rec in self.val:
