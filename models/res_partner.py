@@ -38,6 +38,8 @@ class ResPartner(models.Model):
     loan_count_loan_emergency = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     date_unsubscribe = fields.Date(string='Fecha de baja')
 
+    partner_payroll_ids = fields.Many2one('partner.payroll', string='Aportes', compute='compute_contributions_count', store=True)
+    loan_application_ids = fields.Many2one('loan.application', string='Préstamos', compute='compute_contributions_count', store=True)
     def compute_contributions_count(self):
         for record in self:
             contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))
@@ -48,7 +50,8 @@ class ResPartner(models.Model):
             record.loan_count = loans
             record.loan_count_mortgage = loans_mortgage
             record.loan_count_loan_emergency = loans_emergency
-
+            record.partner_payroll_ids = record.env['partner.payroll'].search([('partner_id', '=', record.id)])[-1] if contributions > 0 else False
+            record.loan_application_ids = record.env['loan.application'].search([('partner_id', '=', record.id)])[-1] if loans > 0 else False
     def action_view_contributions(self):
         self.ensure_one()
         action = self.env["ir.actions.actions"]._for_xml_id("rod_cooperativa_aportes.action_partner_payroll")

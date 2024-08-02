@@ -76,6 +76,8 @@
                     <page string="Post Mortem" >
                         <group>
                             <group string="Datos bases">
+                                <field name="partner_payroll_ids"/>
+                                <field name="loan_application_ids"/>
                                 <field name="base_amount"/>
                                 <field name="base_longevity"/>
                                 <field name="global_amount"/>

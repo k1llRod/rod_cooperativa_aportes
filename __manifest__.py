@@ -59,7 +59,7 @@
         'reports/certificate_voluntary.xml',
         'reports/report_paperformat_data.xml',
         'reports/report_res_partner_elections.xml',
-        # 'reports/report_partner_payroll.xml',
+        'reports/report_res_partner_resumen.xml',
         # 'reports/report_wrd.xml',
     ],
 

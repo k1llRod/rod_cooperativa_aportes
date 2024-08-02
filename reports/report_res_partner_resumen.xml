@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="rod_layout_resumen">
+            <div class="header">
+                <div class="row">
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:20%;" rowspan="6">
+                                <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'" style="width:120px;"/>
+                            </td>
+                            <td style="width:60%;"><center>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL</center></td>
+                            <td style="width:20%;">
+                                <strong style="padding-left:15px;">Usuario: </strong><t t-esc="user.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><center>"COA-4 DE DICIEMBRE" R.L.</center></td>
+                            <td>
+                                <strong style="padding-left:15px;">Fecha: </strong><t t-esc="datetime.date.today().strftime('%d-%m-%Y')"/>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td><center>Mezzanine Of. 09 - Telf./Fax: 2420530</center></td>
+
+                        </tr>
+                        <tr>
+
+                            <td><center>Av. Ecuador N 738</center></td>
+
+                        </tr>
+                        <tr>
+
+                            <td><center>La Paz - Bolivia</center></td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+            <div class="article o_report_layout_standard">
+                <t t-out="0"/>
+            </div>
+            <div class="footer o_standard_footer">
+                <div class="row">
+
+                </div>
+            </div>
+        </template>
+        <template id="report_res_partner_resumen">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page body">
+                        <t t-call="rod_cooperativa_aportes.rod_layout_resumen">
+                            <div>
+                                <br/>
+                                <center><h3>LIQUIDACION AHORRO INDIVIDUAL CAPITALIZABLE</h3></center>
+                                <center><h3>No. /2024</h3></center>
+                                <center>Devolucion de <strong>APORTES y RENDIMIENTOS</strong>, de acuerdo al siguiente detalle:</center>
+                            </div>
+                            <div>
+                                <h3>APORTES</h3>
+                                <br/>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th>SOCIO</th>
+                                        <th>C. Aporte Obligatorio</th>
+                                        <th>C. Aporte Voluntario</th>
+                                        <th>Excedente percepcion</th>
+                                        <th>Total</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span t-field="o.name"/></td>
+                                            <td><span t-esc="round(o.partner_payroll_ids.mandatory_contribution_certificate_total,2)"/></td>
+                                            <td><span t-esc="round(o.partner_payroll_ids.voluntary_contribution_certificate_total,2)"/></td>
+                                            <td><span t-esc="round(o.partner_payroll_ids.performance_management_total,2)"/></td>
+                                            <td><span t-esc="round(o.partner_payroll_ids.contribution_total,2)"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br/>
+                                <hr/>
+                                <h3>CREDITOS</h3>
+                                <br/>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th>M. Prestamo $.</th>
+                                        <th>M. Prestamo Bs.</th>
+                                        <th>Meses</th>
+                                        <th>Fecha aprobacion</th>
+                                        <th>Saldo</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span t-esc="round(o.loan_application_ids.amount_loan_dollars,2)"/></td>
+                                            <td><span t-esc="round(o.loan_application_ids.amount_loan,2)"/></td>
+                                            <td><span t-esc="o.loan_application_ids.months_quantity"/></td>
+                                            <td><span t-esc="o.loan_application_ids.date_approval"/></td>
+                                            <td><span t-esc="o.loan_application_ids.balance_capital + o.loan_application_ids.balance_total_interest_month"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="oe_structure"/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
