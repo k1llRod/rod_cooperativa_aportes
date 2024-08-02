@@ -59,7 +59,7 @@
                         <t t-call="rod_cooperativa_aportes.rod_layout_resumen">
                             <div>
                                 <br/>
-                                <center><h3>LIQUIDACION AHORRO INDIVIDUAL CAPITALIZABLE</h3></center>
+                                <center><h3>DETALLE DE CERTIFICADOS DE APORTES Y CREDITO DEL SOCIO</h3></center>
                                 <center><h3>No. /2024</h3></center>
                                 <center>Devolucion de <strong>APORTES y RENDIMIENTOS</strong>, de acuerdo al siguiente detalle:</center>
                             </div>
@@ -69,16 +69,16 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <th>SOCIO</th>
-                                        <th>C. Aporte Obligatorio</th>
-                                        <th>C. Aporte Voluntario</th>
-                                        <th>Excedente percepcion</th>
+                                        <th>C. Aporte Obligatorio Bs.</th>
+                                        <th>C. Aporte Voluntario Bs.</th>
+                                        <th>Excedente percepcion Bs.</th>
                                         <th>Total</th>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td><span t-field="o.name"/></td>
                                             <td><span t-esc="round(o.partner_payroll_ids.mandatory_contribution_certificate_total,2)"/></td>
-                                            <td><span t-esc="round(o.partner_payroll_ids.voluntary_contribution_certificate_total,2)"/></td>
+                                            <td><span t-esc="round((o.partner_payroll_ids.voluntary_contribution_certificate_total + o.partner_payroll_ids.capital_initial), 2)"/></td>
                                             <td><span t-esc="round(o.partner_payroll_ids.performance_management_total,2)"/></td>
                                             <td><span t-esc="round(o.partner_payroll_ids.contribution_total,2)"/></td>
                                         </tr>
