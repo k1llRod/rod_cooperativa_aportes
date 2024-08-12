@@ -48,6 +48,7 @@
         'wizard/set_interest.xml',
         'wizard/set_management.xml',
         'wizard/wizard_payroll.xml',
+        'wizard/wizard_payroll_return.xml',
         'views/rod_cooperativa_aportes_menuitem.xml',
         'data/month_data.xml',
         'reports/report.xml',

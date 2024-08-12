@@ -461,3 +461,23 @@ class PartnerPayroll(models.Model):
             'nodestroy': True,
             # 'context': context,
         }
+
+    def wizard_payroll_return(self):
+        for record in self:
+            context = {
+                'default_name': record.name,
+                'default_date_pivote': datetime.now(),
+                'default_payment_date': datetime.now(),
+                'default_mount': record.total,
+                'default_glosa': 'Devolucion de aportes',
+                'default_partner_payroll_id': record.id,
+            }
+            return {
+                'name': 'Pago de aportes',
+                'type': 'ir.actions.act_window',
+                'res_model': 'wizard.payroll.return',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'context': context,
+                'target': 'new',
+            }

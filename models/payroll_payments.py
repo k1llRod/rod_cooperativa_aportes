@@ -20,7 +20,7 @@ class PayrollPayments(models.Model):
     partner_status = fields.Selection([('active', 'Activo'),
                                        ('active_reserve', 'Reserva activa'),
                                        ('passive', 'Servicio pasivo'),
-                                       ('leave', 'Baja')], string="Situacion general",
+                                       ('leave', 'Baja'),], string="Situacion general",
                                       related='partner_payroll_id.partner_id.partner_status', store=True)
     partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
@@ -45,7 +45,8 @@ class PayrollPayments(models.Model):
         [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
          ('contribution_interest', 'Aporte y rendimiento COAA'),
          ('no_contribution', 'Sin aporte'),
-         ('capital_initial','Capital inicial')],
+         ('capital_initial','Capital inicial'),
+         ('partner_return', 'Devolucion')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
@@ -113,7 +114,11 @@ class PayrollPayments(models.Model):
         #     res.partner_payroll_id.date_burn_partner = fields.Datetime.now()
         #     if res.partner_payroll_id.partner_status_especific == 'active_service' or res.partner_payroll_id.partner_status_especific == 'letter_a' or res.partner_payroll_id.partner_status_especific == 'passive_reserve_b':
         #         res.partner_payroll_id.state = 'process'
-        res.partner_payroll_id.message_post(body="Pago creado: " + vals_list['name'])
+        if vals_list['income'] > 0:
+            res.partner_payroll_id.message_post(body="Pago creado: " + vals_list['name'])
+        else:
+            res.partner_payroll_id.message_post(body="Devolucion creada: " + vals_list['name'])
+
         return res
 
     def open_one2many_line(self, context=None):

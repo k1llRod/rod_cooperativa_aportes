@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="wizard_payroll_return_form" model="ir.ui.view">
+            <field name="name">Formulario devolucion de aportes</field>
+            <field name="model">wizard.payroll.return</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <group>
+                        <group>
+                            <field name="partner_payroll_id" readonly="1"/>
+                            <field name="date_pivote"/>
+                            <field name="period" readonly="1"/>
+                            <field name="payment_date"/>
+                            <field name="mount"/>
+                        </group>
+                        <group>
+                            <field name="glosa" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_confirm" string="Confirmar" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

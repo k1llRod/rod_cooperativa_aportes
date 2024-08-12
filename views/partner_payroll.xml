@@ -73,6 +73,12 @@
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'process')]}"/>
 
+                        <button name="wizard_payroll_return" string="Devolucion aportes" type="object"
+                                class="oe_highlight"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}"
+                        />
+
                         <!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
                         <!--                                />-->
 <!--                        <button name="validate_partner_passive" string="Validar asociado" type="object"/>-->
