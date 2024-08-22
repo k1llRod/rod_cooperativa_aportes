@@ -14,5 +14,11 @@
             <field name="prefix">BOLCOAA</field>
             <field name="padding">4</field>
         </record>
+        <record id="seq_mandatory_contribution_certificate" model="ir.sequence">
+            <field name="name">Secuencia de certificados aporte obligatorio</field>
+            <field name="code">payroll.payments</field>
+            <field name="prefix"></field>
+            <field name="padding">6</field>
+        </record>
     </data>
 </odoo>

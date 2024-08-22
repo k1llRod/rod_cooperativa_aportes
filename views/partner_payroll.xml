@@ -128,6 +128,7 @@
                             </group>
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="afiliated_time"/>
                                 <field name="date_registration" readonly="1"/>
                                 <!--                                <field name="advanced_payments" />-->
                                 <!--                                <field name="advance_mandatory_certificate" widget="integer"/>-->

@@ -109,6 +109,8 @@ class PartnerPayroll(models.Model):
                              string='Estado', default='draft', related='partner_id.state', store=True)
 
 
+    afiliated_time = fields.Integer(string='Tiempo afiliado', compute='_onchange_name')
+
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     @api.depends('since_payment', 'until_payment')
@@ -481,3 +483,14 @@ class PartnerPayroll(models.Model):
                 'context': context,
                 'target': 'new',
             }
+
+    @api.depends('date_burn_partner')
+    def _onchange_name(self):
+        for record in self:
+            if record.date_burn_partner:
+                year_difference = datetime.now().year - record.date_burn_partner.year
+                month_difference = datetime.now().month - record.date_burn_partner.month
+                total = year_difference * 12 + month_difference
+                record.afiliated_time = total
+            else:
+                record.afiliated_time = 0

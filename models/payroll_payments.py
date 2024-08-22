@@ -59,6 +59,9 @@ class PayrollPayments(models.Model):
     register_advanced_payments_ids = fields.Many2one('advance.payments')
     date_pivote = fields.Date(string='Fecha de pivote', default=fields.Datetime.now() - relativedelta(months=1),
                                   tracking=True)
+    number_correlative = fields.Char(string='Numero correlativo')
+    date_register_correlative = fields.Date(string='Fecha de registro')
+    calculate_mandatory_contribution_total = fields.Float(string='Total aporte obligatorio certificado')
 
     account_income_id = fields.Many2one('account.account', string='Ingreso',
                                         default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
@@ -410,21 +413,12 @@ class PayrollPayments(models.Model):
             }
         }
 
+    @api.onchange('date_register_correlative')
+    def onchange_date_register_correlative(self):
+        for rec in self:
+            if rec.mandatory_contribution_certificate != 100:
+                raise ValidationError('El aporte obligatorio no es 100')
+            if rec.date_register_correlative:
+                register = rec.partner_payroll_id.payroll_payments_ids.filtered(lambda x:x.mandatory_contribution_certificate == 100 and x.date_pivote <= rec.date_pivote)
+                rec.calculate_mandatory_contribution_total = sum(register.mapped('mandatory_contribution_certificate'))
 
-
-    # @api.onchange('capital_initial')
-    # def onchange_capital_initial(self):
-    #     for record in self:
-    #         record.regulation_cup = 0
-    #         record.mandatory_contribution_certificate = 0
-    #         record.miscellaneous_income = 0
-
-    # def agroup_payroll_payments(self):
-    #     a = 1
-    #
-    # return {
-    #     'type': 'ir.actions.act_window',
-    #     'res_model': 'wizard.payroll',
-    #     'view_mode': 'form',
-    #     'target': 'new',
-    # }

@@ -111,6 +111,9 @@
                                 <field name="historical_contribution_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
                                 <field name="historical_interest_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
                                 <field name="glosa_contribution_interest" />
+                                <field name="number_correlative"/>
+                                <field name="date_register_correlative"/>
+                                <field name="calculate_mandatory_contribution_total"/>
                             </group>
                         </group>
                         <notebook>
