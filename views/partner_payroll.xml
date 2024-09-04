@@ -68,16 +68,18 @@
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'draft'),('date_burn_partner','!=',False)]}"/>
 
-                        <button name="finalized_payroll" string="Liquidación" type="object"
-                                class="oe_close_button"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
-                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
+
 
                         <button name="wizard_payroll_return" string="Devolucion aportes" type="object"
                                 class="oe_highlight"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'process')]}"
                         />
+                        <button name="finalized_payroll" string="Liquidación"
+                                type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
 
                         <!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
                         <!--                                />-->
@@ -117,6 +119,7 @@
                                 <field name="mandatory_contribution_certificate_total"/>
                                 <!--                                <field name="literal_total_voluntary_contribution"/>-->
                                 <field name="performance_management_total"/>
+                                <field name="other_contribution_total"/>
                                 <field name="contribution_total" readonly="1"/>
                                 <h2 style="color: blue;" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}">Periodo Post mortem</h2>
                                 <field name="payment_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
@@ -183,6 +186,18 @@
                                                 icon="fa-eye"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Liquidacion asociado">
+                                <header>
+                                    <field name="state_finalize" widget="statusbar"/>
+                                </header>
+                                <group string="Datos para la liquidacion">
+                                    <group>
+                                        <field name="type_disengagement"/>
+                                        <field name="gloss_disengagement"/>
+                                    </group>
+                                </group>
+                                <field name="finalize_contributions_id"/>
                             </page>
                             <page string="Debe">
                                 <field name="due_payments_ids"/>

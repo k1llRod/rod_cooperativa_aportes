@@ -46,7 +46,9 @@ class PayrollPayments(models.Model):
          ('contribution_interest', 'Aporte y rendimiento COAA'),
          ('no_contribution', 'Sin aporte'),
          ('capital_initial','Capital inicial'),
-         ('partner_return', 'Devolucion')],
+         ('partner_return', 'Devolucion'),
+         ('other_contribution','Otros aportes'),
+         ('disengagement','Desvinculacion')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')
@@ -375,6 +377,13 @@ class PayrollPayments(models.Model):
     def capital_initial_a(self):
         for record in self:
             record.state = 'capital_initial'
+
+    def other_contributions(self):
+        for record in self:
+            record.state = 'other_contribution'
+    def disengagement(self):
+        for record in self:
+            record.state = 'disengagement'
 
     def agroup_payroll_payments(self):
         payment_date = self[0].payment_date

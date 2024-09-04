@@ -16,7 +16,10 @@ class PartnerPayroll(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Nombre')
-    state = fields.Selection([('draft', 'Borrador'), ('process', 'En proceso'), ('finalized', 'Liquidado')],
+    state = fields.Selection([('draft', 'Borrador'),
+                              ('process', 'En proceso'),
+                              ('process_finalized', 'Proceso liquidacion'),
+                              ('finalized', 'Liquidado')],
                              default='draft')
     partner_id = fields.Many2one('res.partner', string='Socio')
 
@@ -60,7 +63,10 @@ class PartnerPayroll(models.Model):
                                                             compute='compute_count_pay_contributions', store=True)
     mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
                                                             compute='compute_count_pay_contributions', store=True)
+    other_contribution_total = fields.Float(string='Otros aportes', compute='_compute_total',
+                                            store=True)
     contribution_total = fields.Float(string='Aporte total', store=True)
+
     performance_management_total = fields.Float(string='Rendimiento total',
                                                 compute='compute_performance_management_total')
     performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
@@ -111,8 +117,20 @@ class PartnerPayroll(models.Model):
 
     afiliated_time = fields.Integer(string='Tiempo afiliado', compute='_onchange_name')
 
+    gloss_disengagement = fields.Text(string="Observaciones Baja")
+    type_disengagement = fields.Selection([('Fallecimiento','Fallecimiento'),
+                                           ('Retiro voluntario','Retiro voluntario'),
+                                           ('Pase al servicio pasivo','Pase al servicio pasivo')],string="Baja por", store=True)
+    finalize_contributions_id = fields.One2many('finalize.contributions', 'partner_payroll_id',string='Finalizar aportes')
+
+    state_finalize = fields.Selection([('Borrador','Borrador'),
+                                       ('Hecho','Hecho')], default='Borrador', string='Estado de liquidacion')
+
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
+    def _compute_total(self):
+        for record in self:
+            record.total = record.capital_initial + record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + record.other_contribution_total
     @api.depends('since_payment', 'until_payment')
     def compute_difference_year(self):
         for record in self:
@@ -157,6 +175,11 @@ class PartnerPayroll(models.Model):
         vals['name'] = name
         res = super(PartnerPayroll, self).create(vals)
         return res
+
+    # def write(self, vals):
+    #     res = super(PartnerPayroll, self).write(vals)
+    #     self.compute_count_pay_contributions()
+    #     return res
 
     @api.depends('payroll_payments_ids')
     def compute_contributions(self):
@@ -233,7 +256,10 @@ class PartnerPayroll(models.Model):
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
-            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial
+            record.other_contribution_total = sum(
+                record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped(
+                    'voluntary_contribution_certificate'))
+            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total
 
     def return_draft(self):
         self.state = 'draft'
@@ -422,8 +448,41 @@ class PartnerPayroll(models.Model):
 
 
     def finalized_payroll(self):
-        for record in self:
-            record.state = 'finalized'
+        a = 1
+        total_contributions = (self.capital_initial + self.voluntary_contribution_certificate_total +
+                               self.mandatory_contribution_certificate_total + self.performance_management_total + self.other_contribution_total)
+
+        loan_id = self.env['loan.application'].search([('partner_id','=',self.partner_id.id)])
+        total_loan_capital_bolivianos = loan_id.balance_capital * loan_id.value_dolar
+        total_balance_total_interest_month_bolivianos = loan_id.balance_total_interest_month * loan_id.value_dolar
+        context = {
+            'default_partner_payroll_id': self.id,
+            # 'default_capital_initial': self.capital_initial,
+            'default_total_mandatory_contributions_certificate': self.mandatory_contribution_certificate_total,
+            'default_total_voluntary_contributions_certificate': self.voluntary_contribution_certificate_total,
+            'default_total_performance_contributions': self.performance_management_total,
+            'default_total_other_contributions': self.other_contribution_total,
+            'default_total_balance_capital': self.contribution_total,
+            'default_capital_initial': self.capital_initial,
+            'default_total_contributions': total_contributions,
+            'default_loan_application_id': loan_id.id,
+            'default_total_loan_capital': loan_id.balance_capital,
+            'default_total_balance_total_interest_month': loan_id.balance_total_interest_month,
+            'default_default_dolar': loan_id.value_dolar,
+            'default_total_loan_capital_bolivianos': total_loan_capital_bolivianos,
+            'default_total_balance_total_interest_month_bolivianos': total_balance_total_interest_month_bolivianos,
+        }
+
+
+        return {
+            'name': 'Pago de aportes',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.finalized.contributions',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'context': context,
+            'target': 'new',
+        }
 
     # def cron_compute_outstanding_payments(self):
     #     for record in self:

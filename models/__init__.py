@@ -12,6 +12,7 @@ from . import performance_index_log
 from . import dynamic_report_partner_payroll
 from . import due_payments
 from . import report_form
+from . import finalize_contributions
 
 # from . import payroll_payment
 

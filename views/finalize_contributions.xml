@@ -1,0 +1,34 @@
+<odoo>
+    <data>
+        <!-- Vista Árbol de Modelo partner payroll -->
+
+        <record model="ir.ui.view" id="finalize_contributions_tree_id">
+            <field name="name">finalize.contributions.tree</field>
+            <field name="model">finalize.contributions</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="name"/>
+                    <field name="date_finalize" />
+                    <field name="disengagement"/>
+                    <field name="total_mandatory_contributions_certificate"/>
+                    <field name="total_voluntary_contributions_certificate"/>
+                    <field name="total_other_contributions"/>
+                    <field name="total_performance_contributions"/>
+                    <field name="total_loan_capital"/>
+                    <field name="total_loan_capital_bolivianos" optional="hidden"/>
+                    <field name="total_balance_total_interest_month"/>
+                    <field name="total_balance_total_interest_month_bolivianos" optional="hidden"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Accion para visualizar loan.application -->
+
+        <record id="action_finalize_contributions" model="ir.actions.act_window">
+            <field name="name">Baja asociado</field>
+            <field name="res_model">finalize.contributions</field>
+            <field name="view_mode">tree,form,pivot</field>
+        </record>
+
+    </data>
+</odoo>

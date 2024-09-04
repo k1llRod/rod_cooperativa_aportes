@@ -59,28 +59,91 @@
                         <t t-call="rod_cooperativa_aportes.rod_layout_resumen">
                             <div>
                                 <br/>
-                                <center><h3>DETALLE DE CERTIFICADOS DE APORTES Y CREDITO DEL SOCIO</h3></center>
                                 <center><h3>No. /2024</h3></center>
-                                <center>Devolucion de <strong>APORTES y RENDIMIENTOS</strong>, de acuerdo al siguiente detalle:</center>
+                                <center><h3>DEVOLUCION DE CERTIFICACION DE</h3></center>
+                                <center><h3>APORTACIONES Y EXCEDENTES</h3></center>
+                                <P>
+                                    Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a) <strong><span t-field="o.category_partner_id.code_loan"/><span t-field="o.weapon"/> <span t-field="o.name"/></strong>
+                                    Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL "COA - 4 DE DICIEMBRE" R.L.</strong> de acuerdo al siguiente detalle:
+                                </P>
                             </div>
                             <div>
-                                <h3>APORTES</h3>
-                                <br/>
                                 <table class="table table-bordered">
-                                    <thead>
-                                        <th>SOCIO</th>
-                                        <th>C. Aporte Obligatorio Bs.</th>
-                                        <th>C. Aporte Voluntario Bs.</th>
-                                        <th>Excedente percepcion Bs.</th>
-                                        <th>Total</th>
-                                    </thead>
                                     <tbody>
                                         <tr>
-                                            <td><span t-field="o.name"/></td>
-                                            <td><span t-esc="round(o.partner_payroll_ids.mandatory_contribution_certificate_total,2)"/></td>
-                                            <td><span t-esc="round((o.partner_payroll_ids.voluntary_contribution_certificate_total + o.partner_payroll_ids.capital_initial), 2)"/></td>
-                                            <td><span t-esc="round(o.partner_payroll_ids.performance_management_total,2)"/></td>
-                                            <td><span t-esc="round(o.partner_payroll_ids.contribution_total,2)"/></td>
+                                            <td>
+                                                <strong><u>CERTIFICACION DE APORTES OBLIGATORIOS</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                CERTIFICACION DE APORTACION
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.partner_payroll_ids.mandatory_contribution_certificate_total), 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong><u>CERTIFICACION DE APORTES VOLUNTARIOS</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                APORTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.partner_payroll_ids.voluntary_contribution_certificate_total), 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong><u>OTROS APORTES</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                APORTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+<!--                                                <span t-esc="round((o.partner_payroll_ids.voluntary_contribution_certificate_total), 2)"/>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong><u>EXCEDENTE DE PERCEPCION</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                EXCEDENTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.partner_payroll_ids.performance_management_total), 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                TOTAL APORTACIONES Y EXCEDENTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.partner_payroll_ids.contribution_total), 2)"/>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

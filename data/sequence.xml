@@ -20,5 +20,11 @@
             <field name="prefix"></field>
             <field name="padding">6</field>
         </record>
+        <record id="seq_finalize_contributions" model="ir.sequence">
+            <field name="name">Secuencia de liquidacion asociados</field>
+            <field name="code">finalize.contributions</field>
+            <field name="prefix">LIQUID</field>
+            <field name="padding">4</field>
+        </record>
     </data>
 </odoo>

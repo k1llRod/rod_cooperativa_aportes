@@ -77,6 +77,14 @@
                                 class="oe_close_button"
                                 attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
                         />
+                        <button name="other_contributions" string="Otras contribuciones" type="object"
+                                class="oe_close_button"
+                                attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
+                        />
+                        <button name="disengagement" string="Desvinculacion" type="object"
+                                class="oe_close_button"
+                                attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
+                        />
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,transfer,ministry_defense"/>
                     </header>
