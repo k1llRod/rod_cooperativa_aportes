@@ -425,8 +425,8 @@ class PayrollPayments(models.Model):
     @api.onchange('date_register_correlative')
     def onchange_date_register_correlative(self):
         for rec in self:
-            if rec.mandatory_contribution_certificate != 100:
-                raise ValidationError('El aporte obligatorio no es 100')
+            if rec.mandatory_contribution_certificate < 100:
+                raise ValidationError('El aporte obligatorio debe ser mayor a 100')
             if rec.date_register_correlative:
                 register = rec.partner_payroll_id.payroll_payments_ids.filtered(lambda x:x.mandatory_contribution_certificate == 100 and x.date_pivote <= rec.date_pivote)
                 rec.calculate_mandatory_contribution_total = sum(register.mapped('mandatory_contribution_certificate'))
