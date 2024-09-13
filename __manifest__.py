@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','contacts','mail', 'rod_cooperativa','rod_loan_emergency','web_notify','account','web_responsive','web'],
+    'depends': ['base','contacts','mail', 'rod_cooperativa','rod_loan_emergency','web_notify','account','web'],
 
     # always loaded
     'data': [
