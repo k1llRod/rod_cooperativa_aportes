@@ -28,12 +28,26 @@ class PartnerPayroll(models.Model):
                                        ('passive', 'Servicio pasivo'),
                                        ('leave', 'Baja')], string="Situacion general",
                                       related='partner_id.partner_status', store=True)
+    partner_status_historical = fields.Selection([('active', 'Activo'),
+                                       ('active_reserve', 'Reserva activa'),
+                                       ('passive', 'Servicio pasivo'),
+                                       ('leave', 'Baja')], string="Situacion general",
+                                       store=True)
+
     partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
                                                  ('passive_reserve_a', 'Reserva pasivo "A"'),
                                                  ('passive_reserve_b', 'Reserva pasivo "B"'),
                                                  ('leave', 'Baja')], string='Tipo de asociado',
                                                 related='partner_id.partner_status_especific', store=True)
+
+    partner_status_especific_historical = fields.Selection([('active_service', 'Servicio activo'),
+                                                 ('letter_a', 'Letra "A" de disponibilidad'),
+                                                 ('passive_reserve_a', 'Reserva pasivo "A"'),
+                                                 ('passive_reserve_b', 'Reserva pasivo "B"'),
+                                                 ('leave', 'Baja')], string='Tipo de asociado',
+                                                 store=True)
+
     code_contact = fields.Char(string='Código de asociado', related='partner_id.code_contact', store=True)
     vat = fields.Char(string='CI', related='partner_id.vat')
     city = fields.Char(string='Ciudad', related='partner_id.city', store=True)

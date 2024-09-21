@@ -25,7 +25,9 @@ class WizardFinalizedContributions(models.TransientModel):
     total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
 
     def action_confirm(self):
-        a = 1
+        if self.total_loan_capital >= 0:
+            raise UserError(_('Tiene un prestamo vigente, dar de baja el prestamo.'))
+
         name = self.env['ir.sequence'].next_by_code('finalize.contributions')
         vals = {
             'name': name,
