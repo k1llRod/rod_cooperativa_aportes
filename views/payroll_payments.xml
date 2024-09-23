@@ -58,10 +58,10 @@
                         <button name="contribution_interest" string="Aporte y rendimiento COAA" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','=','passive_reserve_b')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
-                        <button name="drawback" string="Reintegro" type="object"
-                                class="oe_highlight"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"
-                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
+<!--                        <button name="drawback" string="Reintegro" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible': [('state', '!=', 'draft')]}"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>-->
                         <button name="no_contribution" string="Sin aporte" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'draft'),('partner_status_especific','=','passive_reserve_b')]}"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator"/>
