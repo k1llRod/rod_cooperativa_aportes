@@ -25,7 +25,7 @@
                     <field name="date_pivote" optional="hide"/>
                     <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="advanced_automata"/>
-                    <field name="drawback" optional="show"/>
+<!--                    <field name="drawback" optional="show"/>-->
                     <field name="state" decoration-info="state == 'contribution_interest'"
                                                decoration-success="state in ['transfer','ministry_defense']"
                                                decoration-warning="state == 'draft'"
@@ -113,7 +113,7 @@
                                 <field name="period_register"/>
                             </group>
                             <group>
-                                <field name="drawback" attrs="{'readonly': [('state','!=','draft')], 'invisible': [('state','=','contribution_interest')] }" />
+<!--                                <field name="drawback" attrs="{'readonly': [('state','!=','draft')], 'invisible': [('state','=','contribution_interest')] }" />-->
                                 <field name="switch_draf" />
                                 <field name="capital_initial"/>
                                 <field name="historical_contribution_coaa" attrs="{'invisible': [('state','!=','contribution_interest')] }"/>
