@@ -43,8 +43,8 @@ class PartnerPayroll(models.Model):
 
     partner_status_especific_historical = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
-                                                 ('passive_reserve_a', 'Reserva pasivo "A"'),
-                                                 ('passive_reserve_b', 'Reserva pasivo "B"'),
+                                                 ('passive_reserve_a', 'Pasivo categoria "A"'),
+                                                 ('passive_reserve_b', 'Pasivo categoria "B"'),
                                                  ('leave', 'Baja')], string='Tipo de asociado',
                                                  store=True)
 
@@ -132,13 +132,13 @@ class PartnerPayroll(models.Model):
     afiliated_time = fields.Integer(string='Tiempo afiliado', compute='_onchange_name')
 
     gloss_disengagement = fields.Text(string="Observaciones Baja")
-    type_disengagement = fields.Selection([('Fallecimiento','Fallecimiento'),
-                                           ('Retiro voluntario','Retiro voluntario'),
-                                           ('Pase al servicio pasivo','Pase al servicio pasivo')],string="Baja por", store=True)
+    type_disengagement = fields.Selection([('fallecimiento','Fallecimiento'),
+                                           ('retiro_voluntario','Retiro voluntario'),
+                                           ('pase_servicio_pasivo','Pase al servicio pasivo')],string="Baja por", store=True)
     finalize_contributions_id = fields.One2many('finalize.contributions', 'partner_payroll_id',string='Finalizar aportes')
 
-    state_finalize = fields.Selection([('Borrador','Borrador'),
-                                       ('Hecho','Hecho')], default='Borrador', string='Estado de liquidacion')
+    state_finalize = fields.Selection([('borrador','Borrador'),
+                                       ('hecho','Hecho')], default='Borrador', string='Estado de liquidacion')
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
@@ -462,11 +462,10 @@ class PartnerPayroll(models.Model):
 
 
     def finalized_payroll(self):
-        a = 1
         total_contributions = (self.capital_initial + self.voluntary_contribution_certificate_total +
                                self.mandatory_contribution_certificate_total + self.performance_management_total + self.other_contribution_total)
 
-        loan_id = self.env['loan.application'].search([('partner_id','=',self.partner_id.id)])
+        loan_id = self.env['loan.application'].search([('partner_id','=',self.partner_id.id),('state','=','progress')])
         total_loan_capital_bolivianos = loan_id.balance_capital * loan_id.value_dolar
         total_balance_total_interest_month_bolivianos = loan_id.balance_total_interest_month * loan_id.value_dolar
         context = {
@@ -486,8 +485,6 @@ class PartnerPayroll(models.Model):
             'default_total_loan_capital_bolivianos': total_loan_capital_bolivianos,
             'default_total_balance_total_interest_month_bolivianos': total_balance_total_interest_month_bolivianos,
         }
-
-
         return {
             'name': 'Pago de aportes',
             'type': 'ir.actions.act_window',

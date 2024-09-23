@@ -21,9 +21,9 @@
             <field name="padding">6</field>
         </record>
         <record id="seq_finalize_contributions" model="ir.sequence">
-            <field name="name">Secuencia de liquidacion asociados</field>
+            <field name="name">Secuencia de liquidacion de aportes asociados</field>
             <field name="code">finalize.contributions</field>
-            <field name="prefix">LIQUID</field>
+            <field name="prefix">LIQAPOR</field>
             <field name="padding">4</field>
         </record>
     </data>

@@ -111,7 +111,9 @@
                             <group>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_status" readonly="1"/>
+                                <field name="partner_status_historical"/>
                                 <field name="partner_status_especific" readonly="1"/>
+                                <field name="partner_status_especific_historical"/>
                                 <field name="city"/>
                                 <field name="partner_state"/>
                                 <field name="capital_initial"/>
@@ -197,7 +199,19 @@
                                         <field name="gloss_disengagement"/>
                                     </group>
                                 </group>
-                                <field name="finalize_contributions_id"/>
+                                <field name="finalize_contributions_id">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="date_finalize"/>
+                                        <field name="disengagement"/>
+                                        <field name="total_mandatory_contributions_certificate"/>
+                                        <field name="total_voluntary_contributions_certificate"/>
+                                        <field name="total_other_contributions"/>
+                                        <field name="total_performance_contributions"/>
+                                        <button name="open_finalize_contributions" type="object" class="oe_highlight"
+                                                icon="fa-eye"/>
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Debe">
                                 <field name="due_payments_ids"/>

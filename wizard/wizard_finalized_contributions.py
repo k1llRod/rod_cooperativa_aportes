@@ -20,17 +20,16 @@ class WizardFinalizedContributions(models.TransientModel):
     total_contributions = fields.Float(string='Total aportes')
     total_loan_capital = fields.Float(string='Total saldo de prestamo $.', required=True)
     total_balance_total_interest_month = fields.Float(string='Total saldo interes mensual', required=True)
-    default_dolar = fields.Float(string='Dolar $')
+    default_dolar = fields.Float(string='Tipo de cambio $')
     total_loan_capital_bolivianos = fields.Float(string='Total saldo prestamo Bs.')
     total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
 
     def action_confirm(self):
-        if self.total_loan_capital >= 0:
+        if self.total_loan_capital > 0:
             raise UserError(_('Tiene un prestamo vigente, dar de baja el prestamo.'))
-
-        name = self.env['ir.sequence'].next_by_code('finalize.contributions')
+        # name = self.env['ir.sequence'].next_by_code('finalize.contributions')
         vals = {
-            'name': name,
+            # 'name': name,
             'partner_payroll_id': self.partner_payroll_id.id,
             'date_finalize': self.date_finalize,
             'disengagement': self.disengagement,
@@ -46,6 +45,6 @@ class WizardFinalizedContributions(models.TransientModel):
         record = self.partner_payroll_id.finalize_contributions_id.create(vals)
         if record:
             self.partner_payroll_id.state = 'process_finalized'
-            self.partner_payroll_id
+            # self.partner_payroll_id
         else:
             raise ValidationError('Error al generar la liquidacion del asociado')
