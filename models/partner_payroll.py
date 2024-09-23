@@ -138,7 +138,7 @@ class PartnerPayroll(models.Model):
     finalize_contributions_id = fields.One2many('finalize.contributions', 'partner_payroll_id',string='Finalizar aportes')
 
     state_finalize = fields.Selection([('borrador','Borrador'),
-                                       ('hecho','Hecho')], default='Borrador', string='Estado de liquidacion')
+                                       ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')
 
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 

@@ -19,9 +19,9 @@ class ResPartner(models.Model):
     def init_partner(self):
         partner_payroll = self.env['partner.payroll'].create({'partner_id': self.id,
                                                               'date_registration': datetime.now(),
-                                                              'total_contribution': 0,
-                                                              'advanced_payments': 0,
-                                                              'state': 'draft'})
+                                                              # 'total_contribution': 0,
+                                                              # 'advanced_payments': 0,
+                                                              })
         view_id = self.env.ref('rod_cooperativa_aportes.action_partner_payroll')
         return {
             'name': 'Detalle del Registro',
