@@ -26,6 +26,7 @@
                             <field name="total_loan_capital_bolivianos" readonly="1"/>
                             <field name="total_balance_total_interest_month" readonly="1"/>
                             <field name="total_balance_total_interest_month_bolivianos" readonly="1"/>
+                            <field name="total"/>
                         </group>
                     </group>
                     <footer>

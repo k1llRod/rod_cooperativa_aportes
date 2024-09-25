@@ -23,6 +23,7 @@ class WizardFinalizedContributions(models.TransientModel):
     default_dolar = fields.Float(string='Tipo de cambio $')
     total_loan_capital_bolivianos = fields.Float(string='Total saldo prestamo Bs.')
     total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
+    total = fields.Float(string='Total saldo Bs.', compute='_compute_total')
 
     def action_confirm(self):
         if self.total_loan_capital > 0:
@@ -41,6 +42,7 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_loan_capital_bolivianos': self.total_loan_capital_bolivianos,
             'total_balance_total_interest_month': self.total_balance_total_interest_month,
             'total_balance_total_interest_month_bolivianos': self.total_balance_total_interest_month_bolivianos,
+
         }
         record = self.partner_payroll_id.finalize_contributions_id.create(vals)
         if record:
@@ -48,3 +50,8 @@ class WizardFinalizedContributions(models.TransientModel):
             # self.partner_payroll_id
         else:
             raise ValidationError('Error al generar la liquidacion del asociado')
+
+    @api.depends('total_loan_capital_bolivianos', 'total_balance_total_interest_month_bolivianos')
+    def _compute_total(self):
+        for record in self:
+            record.total = record.total_loan_capital_bolivianos + record.total_balance_total_interest_month_bolivianos

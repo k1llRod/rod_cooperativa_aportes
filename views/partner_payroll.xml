@@ -208,6 +208,8 @@
                                         <field name="total_voluntary_contributions_certificate"/>
                                         <field name="total_other_contributions"/>
                                         <field name="total_performance_contributions"/>
+                                        <field name="total_loan_capital_bolivianos"/>
+                                        <field name="total_balance_total_interest_month_bolivianos"/>
                                         <button name="open_finalize_contributions" type="object" class="oe_highlight"
                                                 icon="fa-eye"/>
                                     </tree>

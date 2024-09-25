@@ -63,6 +63,7 @@
         'reports/report_paperformat_data.xml',
         'reports/report_res_partner_elections.xml',
         'reports/report_res_partner_resumen.xml',
+        'reports/report_liquidation_partner.xml',
         # 'reports/report_wrd.xml',
     ],
 

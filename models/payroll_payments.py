@@ -42,13 +42,16 @@ class PayrollPayments(models.Model):
     payment_date = fields.Date(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
-        [('draft', 'Borrador'), ('transfer', 'Transferencia bancaria'), ('ministry_defense', 'Ministerio de defensa'),
+        [('draft', 'Borrador'),
+         ('transfer', 'Transferencia bancaria'),
+         ('ministry_defense', 'Ministerio de defensa'),
          ('contribution_interest', 'Aporte y rendimiento COAA'),
          ('no_contribution', 'Sin aporte'),
          ('capital_initial','Capital inicial'),
          ('partner_return', 'Devolucion'),
          ('other_contribution','Otros aportes'),
-         ('disengagement','Desvinculacion')],
+         ('disengagement','Desvinculacion'),
+         ('surpluses','Excedentes')],
         default='draft', tracking=True)
     capital = fields.Float(string='Capital')
     interest = fields.Float(string='Interes')

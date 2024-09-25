@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="rod_layout_liquidation">
+            <div class="header">
+                <div class="row">
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:20%;" rowspan="6">
+                                <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'" style="width:120px;"/>
+                            </td>
+                            <td style="width:60%;"><center>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL</center></td>
+                            <td style="width:20%;">
+                                <strong style="padding-left:15px;">Usuario: </strong><t t-esc="user.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><center>"COA-4 DE DICIEMBRE" R.L.</center></td>
+                            <td>
+                                <strong style="padding-left:15px;">Fecha: </strong><t t-esc="datetime.date.today().strftime('%d-%m-%Y')"/>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td><center>Mezzanine Of. 09 - Telf./Fax: 2420530</center></td>
+
+                        </tr>
+                        <tr>
+
+                            <td><center>Av. Ecuador N 738</center></td>
+
+                        </tr>
+                        <tr>
+
+                            <td><center>La Paz - Bolivia</center></td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+            <div class="article o_report_layout_standard">
+                <t t-out="0"/>
+            </div>
+            <div class="footer o_standard_footer">
+                <div class="row">
+
+                </div>
+            </div>
+        </template>
+        <template id="report_liquidation_partner">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page body">
+                        <t t-call="rod_cooperativa_aportes.rod_layout_liquidation">
+                            <div>
+                                <br/>
+                                <center><h3>No. /2024</h3></center>
+                                <center><h3>DEVOLUCION DE CERTIFICACION DE</h3></center>
+                                <center><h3>APORTACIONES Y EXCEDENTES</h3></center>
+                                <P>
+                                    Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a) <strong><span t-field="o.partner_id.category_partner_id.code_loan"/> <span t-field="o.partner_id.weapon"/> <span t-field="o.partner_id.name"/></strong>
+                                    Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL "COA - 4 DE DICIEMBRE" R.L.</strong> de acuerdo al siguiente detalle:
+                                </P>
+                            </div>
+                            <div>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <strong><u>CERTIFICACION DE APORTES OBLIGATORIOS</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                CERTIFICACION DE APORTACION
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.mandatory_contribution_certificate_total), 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong><u>CERTIFICACION DE APORTES VOLUNTARIOS</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                APORTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.voluntary_contribution_certificate_total) + (o.capital_initial), 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong><u>OTROS APORTES</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                APORTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.other_contribution_total), 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong><u>EXCEDENTE DE PERCEPCION</u></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                EXCEDENTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+<!--                                                <span t-esc="round((o.performance_management_total), 2)"/>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                TOTAL APORTACIONES Y EXCEDENTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round((o.contribution_total), 2)"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br/>
+                                <hr/>
+                                <h4><u>DESCUENTOS</u></h4>
+                                <br/>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                PRESTAMO
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+<!--                                                <span t-esc="round((o.partner_payroll_ids.mandatory_contribution_certificate_total), 2)"/>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                DESVICULACION COOP.
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+<!--                                                <span t-esc="round((o.partner_payroll_ids.voluntary_contribution_certificate_total), 2)"/>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                TOTAL DESCUENTOS
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+<!--                                                <span t-esc="round((o.partner_payroll_ids.contribution_total), 2)"/>-->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th>M. Prestamo $.</th>
+                                        <th>M. Prestamo Bs.</th>
+                                        <th>Meses</th>
+                                        <th>Fecha aprobacion</th>
+                                        <th>Saldo</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+<!--                                            <td><span t-esc="round(o.loan_application_ids.amount_loan_dollars,2)"/></td>-->
+<!--                                            <td><span t-esc="round(o.loan_application_ids.amount_loan,2)"/></td>-->
+<!--                                            <td><span t-esc="o.loan_application_ids.months_quantity"/></td>-->
+<!--                                            <td><span t-esc="o.loan_application_ids.date_approval"/></td>-->
+<!--                                            <td><span t-esc="o.loan_application_ids.balance_capital + o.loan_application_ids.balance_total_interest_month"/></td>-->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="oe_structure"/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
