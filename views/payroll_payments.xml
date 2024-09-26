@@ -81,7 +81,7 @@
                                 class="oe_close_button"
                                 attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
                         />
-                        <button name="disengagement" string="Desvinculacion" type="object"
+                        <button name="surpluses" string="Excedentes" type="object"
                                 class="oe_close_button"
                                 attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
                         />

@@ -12,12 +12,13 @@ class FinalizeContributions(models.Model):
     total_mandatory_contributions_certificate = fields.Float(string='Total de aportes obligatorios', required=True)
     total_voluntary_contributions_certificate = fields.Float(string='Total de aportes voluntarios', required=True)
     total_other_contributions = fields.Float(string='Total de otros aportes', required=True)
+    total_surpluses = fields.Float(string='Total excedentes', required=True)
     total_performance_contributions = fields.Float(string='Total rendimiento de aportes', required=True)
     total_loan_capital = fields.Float(string='Total saldo de prestamo $')
     total_balance_total_interest_month = fields.Float(string='Total saldo interes mensual')
     default_dolar = fields.Float(string='Dolar $')
     total_loan_capital_bolivianos = fields.Float(string='Total saldo prestamo Bs.')
-    total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
+    total_balance_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('done', 'Realizado'),

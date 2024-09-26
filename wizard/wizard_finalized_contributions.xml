@@ -14,7 +14,7 @@
                             <field name="total_voluntary_contributions_certificate" readonly="1"/>
                             <field name="capital_initial" readonly="1"/>
                             <field name="total_other_contributions" readonly="1"/>
-<!--                            <field name="default_dolar" readonly="1"/>-->
+                            <field name="total_surpluses" readonly="1"/>
                             <field name="total_performance_contributions" readonly="1"/>
                             <field name="total_contributions" readonly="1" style="font-color:red;"/>
                         </group>

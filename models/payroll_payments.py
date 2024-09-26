@@ -384,6 +384,9 @@ class PayrollPayments(models.Model):
     def other_contributions(self):
         for record in self:
             record.state = 'other_contribution'
+    def surpluses(self):
+        for record in self:
+            record.state = 'surpluses'
     def disengagement(self):
         for record in self:
             record.state = 'disengagement'

@@ -15,7 +15,8 @@ class WizardFinalizedContributions(models.TransientModel):
     total_mandatory_contributions_certificate = fields.Float(string='Total de aportes obligatorios', required=True)
     total_voluntary_contributions_certificate = fields.Float(string='Total de aportes voluntarios', required=True)
     capital_initial = fields.Float('Total capital inicial')
-    total_other_contributions = fields.Float(string='Total de otros aportes', required=True)
+    total_other_contributions = fields.Float(string='Total otros aportes', required=True)
+    total_surpluses = fields.Float(string='Total excedentes', required=True)
     total_performance_contributions = fields.Float(string='Total rendimiento de aportes', required=True)
     total_contributions = fields.Float(string='Total aportes')
     total_loan_capital = fields.Float(string='Total saldo de prestamo $.', required=True)
@@ -37,11 +38,12 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_mandatory_contributions_certificate': self.total_mandatory_contributions_certificate,
             'total_voluntary_contributions_certificate': self.total_voluntary_contributions_certificate,
             'total_other_contributions': self.total_other_contributions,
+            'total_surpluses': self.total_surpluses,
             'total_performance_contributions': self.total_performance_contributions,
             'total_loan_capital': self.total_loan_capital,
             'total_loan_capital_bolivianos': self.total_loan_capital_bolivianos,
             'total_balance_total_interest_month': self.total_balance_total_interest_month,
-            'total_balance_total_interest_month_bolivianos': self.total_balance_total_interest_month_bolivianos,
+            'total_balance_interest_month_bolivianos': self.total_balance_total_interest_month_bolivianos,
 
         }
         record = self.partner_payroll_id.finalize_contributions_id.create(vals)

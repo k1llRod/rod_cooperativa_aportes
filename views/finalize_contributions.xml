@@ -13,6 +13,7 @@
                     <field name="total_mandatory_contributions_certificate"/>
                     <field name="total_voluntary_contributions_certificate"/>
                     <field name="total_other_contributions"/>
+                    <field name="total_surpluses"/>
                     <field name="total_performance_contributions"/>
 <!--                    <field name="total_loan_capital"/>-->
 <!--                    <field name="total_loan_capital_bolivianos" optional="hidden"/>-->
@@ -46,8 +47,8 @@
                                 <field name="total_mandatory_contributions_certificate"/>
                                 <field name="total_voluntary_contributions_certificate"/>
                                 <field name="total_other_contributions"/>
+                                <field name="total_surpluses"/>
                                 <field name="total_performance_contributions"/>
-
                             </group>
                             <group>
 <!--                                <field name="partner_status_reafiliation"/>-->

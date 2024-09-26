@@ -77,8 +77,9 @@ class PartnerPayroll(models.Model):
                                                             compute='compute_count_pay_contributions', store=True)
     mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
                                                             compute='compute_count_pay_contributions', store=True)
-    other_contribution_total = fields.Float(string='Otros aportes', compute='_compute_total',
+    other_contribution_total = fields.Float(string='Otros aportes',
                                             store=True)
+    surpluses_total = fields.Float(string='Total excedentes', store=True)
     contribution_total = fields.Float(string='Aporte total', store=True)
 
     performance_management_total = fields.Float(string='Rendimiento total',
@@ -272,6 +273,9 @@ class PartnerPayroll(models.Model):
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
             record.other_contribution_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped(
+                    'voluntary_contribution_certificate'))
+            record.surpluses_total = sum(
+                record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
                     'voluntary_contribution_certificate'))
             record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total
 
@@ -478,6 +482,7 @@ class PartnerPayroll(models.Model):
             'default_total_balance_capital': self.contribution_total,
             'default_capital_initial': self.capital_initial,
             'default_total_contributions': total_contributions,
+            'default_total_surpluses': self.surpluses_total,
             'default_loan_application_id': loan_id.id,
             'default_total_loan_capital': loan_id.balance_capital,
             'default_total_balance_total_interest_month': loan_id.balance_total_interest_month,
