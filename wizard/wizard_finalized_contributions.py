@@ -27,8 +27,8 @@ class WizardFinalizedContributions(models.TransientModel):
     total = fields.Float(string='Total saldo Bs.', compute='_compute_total')
 
     def action_confirm(self):
-        if self.total_loan_capital > 0:
-            raise UserError(_('Tiene un prestamo vigente, dar de baja el prestamo.'))
+        if self.total > self.total_contributions:
+            raise UserError(_('Tiene un PRESTAMO mayor a sus APORTES vigente, dar de baja el prestamo.'))
         # name = self.env['ir.sequence'].next_by_code('finalize.contributions')
         vals = {
             # 'name': name,
@@ -40,6 +40,7 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_other_contributions': self.total_other_contributions,
             'total_surpluses': self.total_surpluses,
             'total_performance_contributions': self.total_performance_contributions,
+            'total_capital_initial': self.capital_initial,
             'total_loan_capital': self.total_loan_capital,
             'total_loan_capital_bolivianos': self.total_loan_capital_bolivianos,
             'total_balance_total_interest_month': self.total_balance_total_interest_month,

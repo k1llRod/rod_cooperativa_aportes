@@ -15,10 +15,11 @@
                     <field name="total_other_contributions"/>
                     <field name="total_surpluses"/>
                     <field name="total_performance_contributions"/>
-<!--                    <field name="total_loan_capital"/>-->
-<!--                    <field name="total_loan_capital_bolivianos" optional="hidden"/>-->
-<!--                    <field name="total_balance_total_interest_month"/>-->
-<!--                    <field name="total_balance_total_interest_month_bolivianos" optional="hidden"/>-->
+                    <field name="total_capital_initial"/>
+                    <field name="total_loan_capital"/>
+                    <field name="total_loan_capital_bolivianos" optional="hidden"/>
+                    <field name="total_balance_total_interest_month"/>
+                    <field name="total_balance_total_interest_month_bolivianos" optional="hidden"/>
                 </tree>
             </field>
         </record>
@@ -49,6 +50,7 @@
                                 <field name="total_other_contributions"/>
                                 <field name="total_surpluses"/>
                                 <field name="total_performance_contributions"/>
+
                             </group>
                             <group>
 <!--                                <field name="partner_status_reafiliation"/>-->

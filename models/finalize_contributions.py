@@ -14,6 +14,7 @@ class FinalizeContributions(models.Model):
     total_other_contributions = fields.Float(string='Total de otros aportes', required=True)
     total_surpluses = fields.Float(string='Total excedentes', required=True)
     total_performance_contributions = fields.Float(string='Total rendimiento de aportes', required=True)
+    total_capital_initial = fields.Float('Total capital inicial')
     total_loan_capital = fields.Float(string='Total saldo de prestamo $')
     total_balance_total_interest_month = fields.Float(string='Total saldo interes mensual')
     default_dolar = fields.Float(string='Dolar $')
