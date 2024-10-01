@@ -20,6 +20,8 @@ class FinalizeContributions(models.Model):
     default_dolar = fields.Float(string='Dolar $')
     total_loan_capital_bolivianos = fields.Float(string='Total saldo prestamo Bs.')
     total_balance_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
+    total_contributions = fields.Float(string='Total aportes', compute='_compute_total')
+    total_loan = fields.Float(string='Total prestamo', compute='_compute_total_loan')
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('done', 'Realizado'),
@@ -43,11 +45,6 @@ class FinalizeContributions(models.Model):
                                        ('passive', 'Servicio pasivo'),
                                        ], string="Situacion general",
                                         store=True)
-
-
-
-
-
     @api.model
     def create(self, vals):
         vals['name'] = self.env['ir.sequence'].next_by_code('finalize.contributions')
@@ -94,3 +91,12 @@ class FinalizeContributions(models.Model):
                         record.partner_payroll_id.partner_id.state = 'unsubscribed'
 
 
+    @api.depends('total_mandatory_contributions_certificate', 'total_voluntary_contributions_certificate', 'total_other_contributions', 'total_surpluses', 'total_performance_contributions')
+    def _compute_total(self):
+        for record in self:
+            record.total_contributions = record.total_capital_initial + record.total_mandatory_contributions_certificate + record.total_voluntary_contributions_certificate + record.total_other_contributions + record.total_surpluses + record.total_performance_contributions
+
+    @api.depends('total_loan_capital', 'total_balance_total_interest_month')
+    def _compute_total_loan(self):
+        for record in self:
+            record.total_loan = record.total_loan_capital_bolivianos + record.total_balance_interest_month_bolivianos

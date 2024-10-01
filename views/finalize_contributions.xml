@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <tree create="0">
                     <field name="name"/>
-                    <field name="date_finalize" />
+                    <field name="date_finalize"/>
                     <field name="disengagement"/>
                     <field name="total_mandatory_contributions_certificate"/>
                     <field name="total_voluntary_contributions_certificate"/>
@@ -19,7 +19,7 @@
                     <field name="total_loan_capital"/>
                     <field name="total_loan_capital_bolivianos" optional="hidden"/>
                     <field name="total_balance_total_interest_month"/>
-                    <field name="total_balance_total_interest_month_bolivianos" optional="hidden"/>
+                    <field name="total_balance_interest_month_bolivianos" optional="hidden"/>
                 </tree>
             </field>
         </record>
@@ -35,8 +35,8 @@
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
-                        <group string="Liquidacion de aportes">
-                            <group>
+                        <group>
+                            <group string="Liquidacion de aportes">
                                 <div class="oe_title">
                                     <h1>
                                         <field name="name" string="Nombre" readonly="1"/>
@@ -45,16 +45,27 @@
                                 <field name="partner_payroll_id" readonly="1"/>
                                 <field name="date_finalize"/>
                                 <field name="disengagement"/>
+                                <field name="total_capital_initial"/>
                                 <field name="total_mandatory_contributions_certificate"/>
                                 <field name="total_voluntary_contributions_certificate"/>
                                 <field name="total_other_contributions"/>
                                 <field name="total_surpluses"/>
                                 <field name="total_performance_contributions"/>
-
+                                <field name="total_contributions"/>
                             </group>
                             <group>
-<!--                                <field name="partner_status_reafiliation"/>-->
+                                <!--                                <field name="partner_status_reafiliation"/>-->
                                 <field name="reafiliation"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Prestamos">
+                                <field name="total_loan_capital_bolivianos"/>
+                                <field name="total_balance_interest_month_bolivianos"/>
+                                <field name="total_loan"/>
+                            </group>
+                            <group>
+
                             </group>
                         </group>
                         <notebook>
@@ -70,19 +81,19 @@
                                         <field name="accounting_finalize_contributions_id" readonly="1"/>
                                     </group>
                                 </group>
-<!--                                <group>-->
-<!--                                    <group string="Debe">-->
-<!--                                        <field name="account_loan_id"/>-->
-<!--                                        <field name="amount_account_loan"/>-->
-<!--                                    </group>-->
-<!--                                    <group string="Haber">-->
-<!--                                        <field name="account_regular_loan_amortization"/>-->
-<!--                                        <field name="amount_regular_loan_amortization"/>-->
-<!--                                        <field name="account_other_income"/>-->
-<!--                                        <field name="amount_other_income"/>-->
-<!--                                        <field name="total_payment_bolivianos"/>-->
-<!--                                    </group>-->
-<!--                                </group>-->
+                                <!--                                <group>-->
+                                <!--                                    <group string="Debe">-->
+                                <!--                                        <field name="account_loan_id"/>-->
+                                <!--                                        <field name="amount_account_loan"/>-->
+                                <!--                                    </group>-->
+                                <!--                                    <group string="Haber">-->
+                                <!--                                        <field name="account_regular_loan_amortization"/>-->
+                                <!--                                        <field name="amount_regular_loan_amortization"/>-->
+                                <!--                                        <field name="account_other_income"/>-->
+                                <!--                                        <field name="amount_other_income"/>-->
+                                <!--                                        <field name="total_payment_bolivianos"/>-->
+                                <!--                                    </group>-->
+                                <!--                                </group>-->
                             </page>
                         </notebook>
                     </sheet>

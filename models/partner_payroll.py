@@ -135,7 +135,8 @@ class PartnerPayroll(models.Model):
     gloss_disengagement = fields.Text(string="Observaciones Baja")
     type_disengagement = fields.Selection([('fallecimiento','Fallecimiento'),
                                            ('retiro_voluntario','Retiro voluntario'),
-                                           ('pase_servicio_pasivo','Pase al servicio pasivo')],string="Baja por", store=True)
+                                           ('pase_servicio_pasivo','Pase al servicio pasivo')],
+                                          string="Baja por", store=True)
     finalize_contributions_id = fields.One2many('finalize.contributions', 'partner_payroll_id',string='Finalizar aportes')
 
     state_finalize = fields.Selection([('borrador','Borrador'),

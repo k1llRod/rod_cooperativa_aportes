@@ -45,7 +45,6 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_loan_capital_bolivianos': self.total_loan_capital_bolivianos,
             'total_balance_total_interest_month': self.total_balance_total_interest_month,
             'total_balance_interest_month_bolivianos': self.total_balance_total_interest_month_bolivianos,
-
         }
         record = self.partner_payroll_id.finalize_contributions_id.create(vals)
         if record:

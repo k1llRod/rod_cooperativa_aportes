@@ -205,6 +205,7 @@
                                         <field name="name"/>
                                         <field name="date_finalize"/>
                                         <field name="disengagement"/>
+                                        <field name="total_capital_initial"/>
                                         <field name="total_mandatory_contributions_certificate"/>
                                         <field name="total_voluntary_contributions_certificate"/>
                                         <field name="total_other_contributions"/>
