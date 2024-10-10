@@ -19,7 +19,8 @@ class PartnerPayroll(models.Model):
     state = fields.Selection([('draft', 'Borrador'),
                               ('process', 'En proceso'),
                               ('process_finalized', 'Proceso liquidacion'),
-                              ('finalized', 'Liquidado')],
+                              ('finalized', 'Liquidado'),
+                              ('unassociated','No asociado')],
                              default='draft')
     partner_id = fields.Many2one('res.partner', string='Socio')
 
@@ -81,6 +82,8 @@ class PartnerPayroll(models.Model):
                                             store=True)
     surpluses_total = fields.Float(string='Total excedentes', store=True)
     contribution_total = fields.Float(string='Aporte total', store=True)
+
+    contribution_total_excluded = fields.Float(string='Aporte total excluido', store=True)
 
     performance_management_total = fields.Float(string='Rendimiento total',
                                                 compute='compute_performance_management_total')
@@ -570,3 +573,20 @@ class PartnerPayroll(models.Model):
                 record.afiliated_time = total
             else:
                 record.afiliated_time = 0
+
+    def exclude_contributions(self):
+        for record in self:
+            total = round(sum(record.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense').mapped('income')),2)
+        context = {
+            'default_partner_payroll_id': self.id,
+            'default_total_contributions': total,
+        }
+        return {
+            'name': 'Pago de aportes',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.unassociated',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'context': context,
+            'target': 'new',
+        }

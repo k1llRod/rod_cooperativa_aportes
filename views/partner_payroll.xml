@@ -80,6 +80,11 @@
                                 class="oe_close_button"
                                 groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
                                 attrs="{'invisible': [('state', '!=', 'process')]}"/>
+                        <button name="exclude_contributions" string="No asociado"
+                                type="object"
+                                class="oe_close_button"
+                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"
+                                attrs="{'invisible': [('state', '!=', 'process')]}"/>
 
                         <!--                        <button name="payment_advance" string="Pagos adelantados" type="object"-->
                         <!--                                />-->
@@ -124,6 +129,7 @@
                                 <field name="other_contribution_total" readonly="1"/>
                                 <field name="surpluses_total" readonly="1"/>
                                 <field name="contribution_total" readonly="1"/>
+                                <field name="contribution_total_excluded" readonly="1" attrs="{'invisible': [('state','!=','unassociated')]}"/>
                                 <h2 style="color: blue;" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}">Periodo Post mortem</h2>
                                 <field name="payment_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="amount_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>

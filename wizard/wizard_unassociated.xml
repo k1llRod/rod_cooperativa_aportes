@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="wizard_unassociated_form_id">
+        <field name="name">wizard.unassociated.form</field>
+        <field name="model">wizard.unassociated</field>
+        <field name="arch" type="xml">
+            <form string="Excluir aportes" class="oe_left oe_edit_only oe_form_required" create="0">
+                <sheet>
+                    <group string="Total aportes">
+                        <group>
+                            <field name="partner_payroll_id" readonly="1"/>
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="total_contributions" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="reafiliacion"/>
+                        </group>
+                        <footer>
+                            <button name="exclude_contributions" string="Excluir aportes" type="object" class="oe_highlight"/>
+                            <button string="Cancel" class="oe_link" special="cancel"/>
+                        </footer>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

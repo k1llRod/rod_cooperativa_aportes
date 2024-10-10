@@ -51,6 +51,7 @@
         'wizard/wizard_payroll.xml',
         'wizard/wizard_payroll_return.xml',
         'wizard/wizard_finalized_contributions.xml',
+        'wizard/wizard_unassociated.xml',
         'views/rod_cooperativa_aportes_menuitem.xml',
         'data/month_data.xml',
         'reports/report.xml',
