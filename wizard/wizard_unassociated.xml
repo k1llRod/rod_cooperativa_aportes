@@ -17,7 +17,7 @@
                             <field name="reafiliacion"/>
                         </group>
                         <footer>
-                            <button name="exclude_contributions" string="Excluir aportes" type="object" class="oe_highlight"/>
+                            <button name="exclude_contributions" string="Confirmar" type="object" class="oe_highlight"/>
                             <button string="Cancel" class="oe_link" special="cancel"/>
                         </footer>
                     </group>

@@ -54,6 +54,7 @@ class PartnerPayroll(models.Model):
     city = fields.Char(string='Ciudad', related='partner_id.city', store=True)
     date_registration = fields.Datetime(string='Fecha de registro')
     date_burn_partner = fields.Datetime(string='Fecha de afiliacion')
+    date_finalized = fields.Datetime(string='Fecha de liquidacion')
     total_contribution = fields.Float(string='Total aportado')
     advanced_payments = fields.Float(string='Tasa regulacion Adelantado')
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',

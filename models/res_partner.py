@@ -12,7 +12,8 @@ class ResPartner(models.Model):
                               ('external','Externo'),
                               ('rejected', 'Rechazado'),
                               ('unsubscribe', 'Baja'),
-                              ('deceased','Fallecido')],
+                              ('deceased','Fallecido'),
+                              ('unassociated','No asociado')],
                              string='Estado', default='draft', track_visibility='onchange')
     # date_deceased = fields.Date(string='Fecha de fallecimiento')
 

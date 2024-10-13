@@ -140,6 +140,7 @@
                             </group>
                             <group>
                                 <field name="date_burn_partner" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="date_finalized" readonly="1"/>
                                 <field name="afiliated_time"/>
                                 <field name="date_registration" readonly="1"/>
                                 <!--                                <field name="advanced_payments" />-->

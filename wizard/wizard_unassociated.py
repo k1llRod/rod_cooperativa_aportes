@@ -16,7 +16,7 @@ class WizardUnassociated(models.TransientModel):
     def exclude_contributions(self):
         for record in self:
             if record.reafiliacion == 'passive_reserve_a':
-                payroll_partner = record.env['partner.payroll'].create({
+                partner_payroll = record.env['partner.payroll'].create({
                     'partner_id': record.partner_payroll_id.partner_id.id,
                     'partner_status': 'passive_reserve_a',
                     'date_registration': record.date,
@@ -25,7 +25,7 @@ class WizardUnassociated(models.TransientModel):
             if record.reafiliacion == 'passive_reserve_b':
                 partner_payroll = record.env['partner.payroll'].create({
                     'partner_id': record.partner_payroll_id.partner_id.id,
-                    'partner_status': 'passive_reserve_b',
+                    # 'partner_status': 'passive_reserve_b',
                     'date_registration': record.date,
                     'state': 'draft',
                 })
