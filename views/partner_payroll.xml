@@ -130,6 +130,7 @@
                                 <field name="surpluses_total" readonly="1"/>
                                 <field name="contribution_total" readonly="1"/>
                                 <field name="contribution_total_excluded" readonly="1" attrs="{'invisible': [('state','!=','unassociated')]}"/>
+                                <field name="date_unassociated" readonly="1" attrs="{'invisible': [('state','!=','unassociated')]}"/>
                                 <h2 style="color: blue;" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}">Periodo Post mortem</h2>
                                 <field name="payment_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
                                 <field name="amount_type" attrs="{'invisible': [('partner_status_especific','!=','passive_reserve_b')]}"/>
@@ -165,10 +166,12 @@
 <!--                                        <field name="partner_status_especific" invisible="1"/>-->
                                         <field name="period_register"/>
                                         <field name="income"
-                                               attrs="{'readonly': [('state', '!=', 'draft')], 'column_invisible':[('parent.partner_status', '!=', 'active')]}"
+                                               attrs="{'readonly': [('state', '!=', 'draft')] }"
+                                               optional="show"
                                                sum="Total"/>
                                         <field name="income_passive"
-                                               attrs="{'readonly': [('state', '!=', 'draft')], 'column_invisible': [('parent.partner_status', '!=', 'passive')]}"
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               optional="hide"
                                                sum="Total"/>
                                         <field name="miscellaneous_income"
                                                attrs="{'readonly': [('state', '!=', 'draft')]}"/>

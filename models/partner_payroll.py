@@ -143,6 +143,7 @@ class PartnerPayroll(models.Model):
                                           string="Baja por", store=True)
     finalize_contributions_id = fields.One2many('finalize.contributions', 'partner_payroll_id',string='Finalizar aportes')
 
+    date_unassociated = fields.Date(string='Fecha de no asociado')
     state_finalize = fields.Selection([('borrador','Borrador'),
                                        ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')
 
