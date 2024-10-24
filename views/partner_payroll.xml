@@ -174,7 +174,7 @@
                                                optional="hide"
                                                sum="Total"/>
                                         <field name="miscellaneous_income"
-                                               attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}" sum="Total"/>
                                         <field name="regulation_cup" attrs="{'readonly': [('state', '!=', 'draft')]}"
                                                optional="hide" sum="Total"/>
                                         <field name="mandatory_contribution_certificate"
@@ -185,6 +185,7 @@
                                         <!--                                        <field name="payment_post_mortem"-->
                                         <!--                                               attrs="{'readonly': [('state', '!=', 'draft')]}" optional="show"-->
                                         <!--                                               sum="Total"/>-->
+                                        <field name="other_contribution" sum="Total"/>
                                         <field name="date_pivote" optional="hide"/>
                                         <field name="payment_date" attrs="{'readonly': [('state', '!=', 'draft')]}"
                                                optional="show"/>
@@ -342,6 +343,15 @@
             <field name="state">code</field>
             <field name="code">
                 action = model._init_report_partner_payroll()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_updated_other_contribution">
+            <field name="name">Otras contribuciones</field>
+            <field name="model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="binding_model_id" ref="rod_cooperativa_aportes.model_partner_payroll"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.updated_contributions()
             </field>
         </record>
 

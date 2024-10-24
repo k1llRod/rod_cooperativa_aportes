@@ -592,3 +592,14 @@ class PartnerPayroll(models.Model):
             'context': context,
             'target': 'new',
         }
+
+    def updated_contributions(self):
+        rows = self.payroll_payments_ids.filtered(lambda x:x.state == 'other_contribution' or x.state == 'surpluses')
+        for record in rows:
+            record.other_contribution = record.income
+            record.income = 0
+            record.regulation_cup = 0
+            record.miscellaneous_income = 0
+            record.mandatory_contribution_certificate = 0
+
+
