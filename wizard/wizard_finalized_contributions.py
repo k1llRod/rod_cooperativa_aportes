@@ -25,7 +25,7 @@ class WizardFinalizedContributions(models.TransientModel):
     total_loan_capital_bolivianos = fields.Float(string='Total saldo prestamo Bs.')
     total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
     total = fields.Float(string='Total saldo Bs.', compute='_compute_total')
-
+    partial_devolution = fields.Float(string="Devolucion")
     def action_confirm(self):
         if self.total > self.total_contributions:
             raise UserError(_('Tiene un PRESTAMO mayor a sus APORTES vigente, dar de baja el prestamo.'))
@@ -45,6 +45,8 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_loan_capital_bolivianos': self.total_loan_capital_bolivianos,
             'total_balance_total_interest_month': self.total_balance_total_interest_month,
             'total_balance_interest_month_bolivianos': self.total_balance_total_interest_month_bolivianos,
+            'partial_devolution': self.partial_devolution
+
         }
         record = self.partner_payroll_id.finalize_contributions_id.create(vals)
         if record:
@@ -57,3 +59,9 @@ class WizardFinalizedContributions(models.TransientModel):
     def _compute_total(self):
         for record in self:
             record.total = record.total_loan_capital_bolivianos + record.total_balance_total_interest_month_bolivianos
+
+    @api.onchange('partial_devolution')
+    def onchange_partial_devolution(self):
+        for record in self:
+            if record.partial_devolution > record.total_contributions:
+                raise ValidationError('El monto parcial no puede ser mayor al total')

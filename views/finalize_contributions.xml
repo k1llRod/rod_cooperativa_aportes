@@ -51,6 +51,7 @@
                                 <field name="total_other_contributions"/>
                                 <field name="total_surpluses"/>
                                 <field name="total_performance_contributions"/>
+                                <field name="partial_devolution"/>
                                 <field name="total_contributions"/>
                             </group>
                             <group>
@@ -81,19 +82,23 @@
                                         <field name="accounting_finalize_contributions_id" readonly="1"/>
                                     </group>
                                 </group>
-                                <!--                                <group>-->
-                                <!--                                    <group string="Debe">-->
-                                <!--                                        <field name="account_loan_id"/>-->
-                                <!--                                        <field name="amount_account_loan"/>-->
-                                <!--                                    </group>-->
-                                <!--                                    <group string="Haber">-->
-                                <!--                                        <field name="account_regular_loan_amortization"/>-->
-                                <!--                                        <field name="amount_regular_loan_amortization"/>-->
-                                <!--                                        <field name="account_other_income"/>-->
-                                <!--                                        <field name="amount_other_income"/>-->
-                                <!--                                        <field name="total_payment_bolivianos"/>-->
-                                <!--                                    </group>-->
-                                <!--                                </group>-->
+                                <group>
+                                    <group string="Debe">
+                                        <field name="account_voluntary_contribution_id"/>
+
+                                        <field name="account_mandatory_contribution_id"/>
+                                        <field name="account_other_contribution"/>
+                                        <field name="account_total_surplus" />
+                                    </group>
+                                    <group string="Haber">
+                                        <field name="account_capital_loan"/>
+                                        <field name="account_month_surpluy"/>
+                                        <field name="account_disengagement"/>
+                                        <field name="account_regulation_cup"/>
+                                        <field name="account_devolution_bank"/>
+                                        <field name="account_other_contribution_balance"/>
+                                    </group>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -108,6 +113,13 @@
 
         <!-- Accion para visualizar loan.application -->
 
+        <record id="action_accont_asset_finalize_contribution_id" model="ir.actions.server">
+            <field name="name">Asiento contable liquidacion</field>
+            <field name="model_id" ref="model_finalize_contributions"/>
+            <field name="binding_model_id" ref="model_finalize_contributions"/>
+            <field name="state">code</field>
+            <field name="code">action = records.approve_finalize_contribution()</field>
+        </record>
         <record id="action_finalize_contributions" model="ir.actions.act_window">
             <field name="name">Baja asociado</field>
             <field name="res_model">finalize.contributions</field>

@@ -6,7 +6,7 @@
             <field name="arch" type="xml">
                 <form string="Baja del asociado">
                     <group>
-                        <group string="Datos para baja">
+                        <group string="Datos de aportes">
                             <field name="partner_payroll_id" readonly="1"/>
                             <field name="date_finalize"/>
                             <field name="disengagement" />
@@ -17,6 +17,7 @@
                             <field name="total_surpluses" readonly="1"/>
                             <field name="total_performance_contributions" readonly="1"/>
                             <field name="total_contributions" readonly="1" style="font-color:red;"/>
+                            <field name="partial_devolution"/>
                         </group>
                         <group string="Datos de prestamo">
                             <field name="loan_application_id" readonly="1"/>

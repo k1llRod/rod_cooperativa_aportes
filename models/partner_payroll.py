@@ -495,9 +495,10 @@ class PartnerPayroll(models.Model):
             'default_default_dolar': loan_id.value_dolar,
             'default_total_loan_capital_bolivianos': total_loan_capital_bolivianos,
             'default_total_balance_total_interest_month_bolivianos': total_balance_total_interest_month_bolivianos,
+
         }
         return {
-            'name': 'Pago de aportes',
+            'name': 'Formulario de liquidacion',
             'type': 'ir.actions.act_window',
             'res_model': 'wizard.finalized.contributions',
             'view_mode': 'form',

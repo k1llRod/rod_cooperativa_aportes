@@ -22,6 +22,7 @@ class FinalizeContributions(models.Model):
     total_balance_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
     total_contributions = fields.Float(string='Total aportes', compute='_compute_total')
     total_loan = fields.Float(string='Total prestamo', compute='_compute_total_loan')
+    partial_devolution = fields.Float(string="Devolucion parcial")
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('done', 'Realizado'),
@@ -35,6 +36,17 @@ class FinalizeContributions(models.Model):
         track_visibility='onchange')
     journal_id = fields.Many2one('account.journal', string='Diario')
     account_contributions_id = fields.Many2one('account.account', string='Cuenta de aportes')
+    account_voluntary_contribution_id = fields.Many2one('account.account', string='Cuenta de aporte Voluntario')
+    account_mandatory_contribution_id = fields.Many2one('account.account', string='Cuenta de aporte obligatorio')
+    account_other_contribution = fields.Many2one('account.account', string='Cuenta otras contribuciones')
+    account_total_surplus = fields.Many2one('account.account', string='Cuenta excedentes de percepcion')
+
+    account_capital_loan = fields.Many2one('account.account', string='Cuenta capital prestamo')
+    account_month_surpluy = fields.Many2one('account.account', string='Cuenta dias excedentes')
+    account_disengagement = fields.Many2one('account.account', string='Cuenta de desafiliacion')
+    account_regulation_cup = fields.Many2one('account.account', string='Cuenta de tasa de regulacion')
+    account_devolution_bank = fields.Many2one('account.account', string='Cuenta devolucion')
+    account_other_contribution_balance = fields.Many2one('account.account', string='Cuenta otros aportes saldos')
 
     reafiliation = fields.Selection([
         ('passive_reserve_a','Pasivo categoria "A"'),
@@ -89,6 +101,11 @@ class FinalizeContributions(models.Model):
                         record.partner_payroll_id.partner_id.state = 'deceased'
                     if record.partner_payroll_id.type_disengagement == 'retiro_voluntario':
                         record.partner_payroll_id.partner_id.state = 'unsubscribed'
+            if record.partial_devolution > 0:
+                a =1
+
+
+
 
 
     @api.depends('total_mandatory_contributions_certificate', 'total_voluntary_contributions_certificate', 'total_other_contributions', 'total_surpluses', 'total_performance_contributions')
@@ -100,3 +117,103 @@ class FinalizeContributions(models.Model):
     def _compute_total_loan(self):
         for record in self:
             record.total_loan = record.total_loan_capital_bolivianos + record.total_balance_interest_month_bolivianos
+
+
+    def approve_finalize_contribution(self):
+        val = []
+        for record in self:
+            total_contribution = record.total_capital_initial + record.total_mandatory_contributions_certificate
+            data = (0, 0, {'account_id': record.account_voluntary_contribution_id.id,
+                           'debit': total_contribution, 'credit': 0,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            if record.loan_historical_coaa > 0:
+                amount = record.amount_loan - record.loan_historical_coaa
+                # data = (0, 0, {'account_id': record.account_loan_id.id,
+                #                          'debit': record.amount_loan, 'credit': 0, 'partner_id': record.partner_id.id,
+                #                          'amount_currency': 0
+                #                          })
+                # val.append(data)
+                data = (0, 0, {'account_id': record.account_loan_id.id,
+                               'debit': 0, 'credit': record.loan_historical_coaa, 'partner_id': record.partner_id.id,
+                               'name': 'COAA',
+                               'amount_currency': 0
+                               })
+                val.append(data)
+                data = (0, 0, {'account_id': record.account_loan_id.id,
+                               'debit': 0, 'credit': amount, 'partner_id': record.partner_id.id,
+                               'name': 'BENEFICIARIO',
+                               'amount_currency': 0
+                               })
+                val.append(data)
+            else:
+                if record.refinance_loan_id:
+                    amount_amortizacion = record.amount_loan - record.amount_devolution_bs - record.interest_day_rest_bs
+                    amount_loan = record.amount_loan - (amount_amortizacion + record.interest_day_rest_bs)
+
+                    data = (0, 0, {'account_id': record.account_egreso_id.id,
+                                   'debit': 0, 'credit': amount_loan,
+                                   # 'partner_id': record.partner_id.id,
+                                   'amount_currency': 0
+                                   })
+                    val.append(data)
+                    data = (0, 0, {'account_id': record.account_monto_refinanciamiento.id,
+                                   'debit': 0, 'credit': amount_amortizacion,
+                                   # 'partner_id': record.partner_id.id,
+                                   'amount_currency': 0
+                                   })
+                    val.append(data)
+                    data = (0, 0, {'account_id': record.account_monto_meses_interes.id,
+                                   'debit': 0, 'credit': record.interest_day_rest_bs,
+                                   # 'partner_id': record.partner_id.id,
+                                   'amount_currency': 0
+                                   })
+                    val.append(data)
+                else:
+                    data = (0, 0, {'account_id': record.account_egreso_id.id,
+                                   'debit': 0, 'credit': record.amount_loan,
+                                   # 'partner_id': record.partner_id.id,
+                                   'amount_currency': 0
+                                   })
+                    val.append(data)
+            if record.with_guarantor == 'loan_guarantor':
+                glosa = "P/CONTAB. PREST. AMORT." + " " + record.partner_id.category_partner_id.code_loan + " " + record.partner_id.name + " COD: " + record.partner_id.code_contact + " PREST $US " + str(
+                    record.amount_loan_dollars) + " INT " + str(
+                    round(record.monthly_interest, 2)) + "% " + "F.CONTIGENCIA: " + str(
+                    round(record.contingency_fund, 2)) + "% PLAZO: " + str(
+                    record.months_quantity) + " MESES EXCED " + str(
+                    record.surplus_days) + " DIAS " + "CUOTA FIJA $US: " + str(
+                    round(record.loan_payment_ids[0].amount_total,
+                          2)) + " GARANTES " + record.guarantor_one.category_partner_id.code_loan + " " + record.guarantor_one.name + " " + record.guarantor_two.category_partner_id.code_loan + " " + record.guarantor_two.name
+            else:
+                glosa = "P/CONTAB. PREST. AMORT." + " " + record.partner_id.category_partner_id.code_loan + " " + record.partner_id.name + " COD: " + record.partner_id.code_contact + " PREST $US " + str(
+                    record.amount_loan_dollars) + " INT " + str(
+                    round(record.monthly_interest, 2)) + "% " + "F.CONTIGENCIA: " + str(
+                    round(record.contingency_fund, 2)) + "% PLAZO: " + str(
+                    record.months_quantity) + " MESES EXCED " + str(
+                    record.surplus_days) + " DIAS " + "CUOTA FIJA $US: " + str(
+                    round(record.loan_payment_ids[0].amount_total, 2))
+            move_vals = {
+                "date": record.date_approval,
+                "journal_id": record.journal_id.id,
+                "ref": "PRESTAMOS ASIGNADO AL ASOCIADO" + " " + record.partner_id.name + " EN LA FECHA " + str(
+                    record.date_approval),
+                # "company_id": payment.company_id.id,
+                # "name": "name test",
+                "glosa": glosa,
+                "state": "draft",
+                "line_ids": val,
+            }
+            account_move_id = record.env['account.move'].create(move_vals)
+            record.accounting_entry_id = account_move_id.id
+            account_move_id.loan_application_id = record.id
+        return {
+            'name': 'Pagos de planilla',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'res_id': account_move_id.id,
+            'views': [(False, 'form')],
+        }
