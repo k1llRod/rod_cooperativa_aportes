@@ -116,9 +116,9 @@
                             <group>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_status" readonly="1"/>
-                                <field name="partner_status_historical"/>
+                                <field name="partner_status_historical" invisible="1"/>
                                 <field name="partner_status_especific" readonly="1"/>
-                                <field name="partner_status_especific_historical"/>
+                                <field name="partner_status_especific_historical" invisible="1"/>
                                 <field name="city"/>
                                 <field name="partner_state"/>
                                 <field name="capital_initial"/>
