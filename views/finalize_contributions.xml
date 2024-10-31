@@ -51,12 +51,14 @@
                                 <field name="total_other_contributions"/>
                                 <field name="total_surpluses"/>
                                 <field name="total_performance_contributions"/>
-                                <field name="partial_devolution"/>
+<!--                                <field name="partial_devolution"/>-->
                                 <field name="total_contributions"/>
                             </group>
-                            <group>
+                            <group string="Datos manuales">
                                 <!--                                <field name="partner_status_reafiliation"/>-->
                                 <field name="reafiliation"/>
+                                <field name="partial_devolution"/>
+                                <field name="regulation_cup_manual"/>
                             </group>
                         </group>
                         <group>
@@ -97,6 +99,7 @@
                                         <field name="account_regulation_cup"/>
                                         <field name="account_devolution_bank"/>
                                         <field name="account_other_contribution_balance"/>
+                                        <field name="other_contribution_balance"/>
                                     </group>
                                 </group>
                             </page>
