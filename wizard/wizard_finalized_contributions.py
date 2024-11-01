@@ -26,6 +26,7 @@ class WizardFinalizedContributions(models.TransientModel):
     total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
     total = fields.Float(string='Total saldo Bs.', compute='_compute_total')
     partial_devolution = fields.Float(string="Devolucion")
+    option_liquidation = fields.Boolean(string='Liquidar prestamo')
     def action_confirm(self):
         if self.total > self.total_contributions:
             raise UserError(_('Tiene un PRESTAMO mayor a sus APORTES vigente, dar de baja el prestamo.'))
@@ -45,7 +46,8 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_loan_capital_bolivianos': self.total_loan_capital_bolivianos,
             'total_balance_total_interest_month': self.total_balance_total_interest_month,
             'total_balance_interest_month_bolivianos': self.total_balance_total_interest_month_bolivianos,
-            'partial_devolution': self.partial_devolution
+            'partial_devolution': self.partial_devolution,
+            'option_liquidation_loan': self.option_liquidation,
 
         }
         record = self.partner_payroll_id.finalize_contributions_id.create(vals)

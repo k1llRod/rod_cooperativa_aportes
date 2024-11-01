@@ -28,6 +28,7 @@
                             <field name="total_balance_total_interest_month" readonly="1"/>
                             <field name="total_balance_total_interest_month_bolivianos" readonly="1"/>
                             <field name="total"/>
+                            <field name="option_liquidation"/>
                         </group>
                     </group>
                     <footer>
