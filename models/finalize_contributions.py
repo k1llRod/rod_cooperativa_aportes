@@ -22,6 +22,8 @@ class FinalizeContributions(models.Model):
     total_balance_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
     total_contributions = fields.Float(string='Total aportes', compute='_compute_total')
     total_loan = fields.Float(string='Total prestamo', compute='_compute_total_loan')
+    total_voluntary_capital = fields.Float(string='Aporte voluntario y capital inicial', compute='_compute_voluntary_capital')
+    balance_finalize_contribution = fields.Float(string="Saldo calculado", compute="_compute_balance_finalize")
     partial_devolution = fields.Float(string="Devolucion parcial")
     regulation_cup_manual = fields.Float(string="Devolucion de tasa de regulacion")
     other_contribution_balance = fields.Float(string="Saldos extras")
@@ -29,7 +31,6 @@ class FinalizeContributions(models.Model):
         ('draft', 'Borrador'),
         ('done', 'Realizado'),
     ], string='Estado', default='draft')
-
     accounting_finalize_contributions_id = fields.Many2one('account.move', string='Asiento contable')
     accounting_finalize_contributions_state = fields.Selection([
         ('draft', 'Borrador'),
@@ -47,9 +48,10 @@ class FinalizeContributions(models.Model):
     account_month_surpluy = fields.Many2one('account.account', string='Cuenta dias excedentes')
     account_disengagement = fields.Many2one('account.account', string='Cuenta de desafiliacion')
     account_regulation_cup = fields.Many2one('account.account', string='Cuenta de tasa de regulacion')
-    account_devolution_bank = fields.Many2one('account.account', string='Cuenta devolucion')
+    account_devolution_bank = fields.Many2one('account.account', string='Cuenta Banco')
     account_other_contribution_balance = fields.Many2one('account.account', string='Cuenta otros aportes saldos')
 
+    total_credit = fields.Float(string='Total haber', compute='_compute_total_credit')
     reafiliation = fields.Selection([
         ('passive_reserve_a','Pasivo categoria "A"'),
         ('passive_reserve_b','Pasivo categoria "B"')
@@ -167,7 +169,8 @@ class FinalizeContributions(models.Model):
                                'amount_currency': 0
                                })
                 val.append(data)
-                
+
+
 
 
     @api.depends('total_mandatory_contributions_certificate', 'total_voluntary_contributions_certificate', 'total_other_contributions', 'total_surpluses', 'total_performance_contributions')
@@ -191,55 +194,72 @@ class FinalizeContributions(models.Model):
                            'amount_currency': 0
                            })
             val.append(data)
-            if record.loan_historical_coaa > 0:
-                amount = record.amount_loan - record.loan_historical_coaa
-                # data = (0, 0, {'account_id': record.account_loan_id.id,
-                #                          'debit': record.amount_loan, 'credit': 0, 'partner_id': record.partner_id.id,
-                #                          'amount_currency': 0
-                #                          })
-                # val.append(data)
-                data = (0, 0, {'account_id': record.account_loan_id.id,
-                               'debit': 0, 'credit': record.loan_historical_coaa, 'partner_id': record.partner_id.id,
-                               'name': 'COAA',
-                               'amount_currency': 0
-                               })
-                val.append(data)
-                data = (0, 0, {'account_id': record.account_loan_id.id,
-                               'debit': 0, 'credit': amount, 'partner_id': record.partner_id.id,
-                               'name': 'BENEFICIARIO',
-                               'amount_currency': 0
-                               })
-                val.append(data)
-            else:
-                if record.refinance_loan_id:
-                    amount_amortizacion = record.amount_loan - record.amount_devolution_bs - record.interest_day_rest_bs
-                    amount_loan = record.amount_loan - (amount_amortizacion + record.interest_day_rest_bs)
-
-                    data = (0, 0, {'account_id': record.account_egreso_id.id,
-                                   'debit': 0, 'credit': amount_loan,
-                                   # 'partner_id': record.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_monto_refinanciamiento.id,
-                                   'debit': 0, 'credit': amount_amortizacion,
-                                   # 'partner_id': record.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_monto_meses_interes.id,
-                                   'debit': 0, 'credit': record.interest_day_rest_bs,
-                                   # 'partner_id': record.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                else:
-                    data = (0, 0, {'account_id': record.account_egreso_id.id,
-                                   'debit': 0, 'credit': record.amount_loan,
-                                   # 'partner_id': record.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
+            data = (0, 0, {'account_id': record.account_mandatory_contribution_id.id,
+                           'debit': record.total_mandatory_contributions_certificate, 'credit': 0,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_other_contribution.id,
+                           'debit': record.total_other_contributions, 'credit': 0,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_total_surplus.id,
+                           'debit': record.toal_perfomance_contributions, 'credit': 0,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_capital_loan.id,
+                           'debit': 0, 'credit': record.total_loan_capital_bolivianos,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_month_surpluy.id,
+                           'debit': 0, 'credit': record.total_balance_interest_month_bolivianos,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_disengagement.id,
+                           'debit': 0, 'credit': record.disengagement,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_regulation_cup.id,
+                           'debit': 0, 'credit': record.regulation_cup_manual,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_devolution_bank.id,
+                           'debit': 0, 'credit': record.partial_devolution,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_other_contribution_balance.id,
+                           'debit': 0, 'credit': record.partial_devolution,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_devolution_bank.id,
+                           'debit': 0, 'credit': record.balance_finalize_contribution,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
+            data = (0, 0, {'account_id': record.account_other_contribution_balance.id,
+                           'debit': 0, 'credit': record.other_contribution_balance,
+                           'partner_id': record.partner_id.id,
+                           'amount_currency': 0
+                           })
+            val.append(data)
             if record.with_guarantor == 'loan_guarantor':
                 glosa = "P/CONTAB. PREST. AMORT." + " " + record.partner_id.category_partner_id.code_loan + " " + record.partner_id.name + " COD: " + record.partner_id.code_contact + " PREST $US " + str(
                     record.amount_loan_dollars) + " INT " + str(
@@ -279,3 +299,21 @@ class FinalizeContributions(models.Model):
             'res_id': account_move_id.id,
             'views': [(False, 'form')],
         }
+
+    @api.depends('partial_devolution','regulation_cup_manual')
+    def _compute_balance_finalize(self):
+        for record in self:
+            contribution_total = record.total_capital_initial + record.total_voluntary_contributions_certificate + record.total_other_contributions + record.total_surpluses + record.total_performance_contributions
+            devolution = record.total_loan + record.disengagement + record.regulation_cup_manual + record.partial_devolution + record.other_contribution_balance
+            record.balance_finalize_contribution = contribution_total - devolution
+
+    @api.depends('total_capital_initial','total_voluntary_contributions_certificate')
+    def _compute_voluntary_capital(self):
+        for record in self:
+            record.total_voluntary_capital = record.total_capital_initial + record.total_voluntary_contributions_certificate
+
+
+    @api.depends('total_loan_capital_bolivianos', 'total_balance_interest_month_bolivianos', 'disengagement', 'regulation_cup_manual', 'balance_finalize_contribution')
+    def _compute_total_credit(self):
+        for record in self:
+            record.total_credit = record.total_loan_capital_bolivianos + record.total_balance_interest_month_bolivianos + record.disengagement + record.regulation_cup_manual + record.balance_finalize_contribution
