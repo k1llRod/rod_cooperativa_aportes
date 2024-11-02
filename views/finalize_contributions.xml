@@ -42,6 +42,7 @@
                                         <field name="name" string="Nombre" readonly="1"/>
                                     </h1>
                                 </div>
+
                                 <field name="partner_payroll_id" readonly="1"/>
                                 <field name="date_finalize"/>
                                 <field name="disengagement"/>
@@ -63,6 +64,7 @@
                         </group>
                         <group>
                             <group string="Prestamos">
+                                <field name="option_liquidation"/>
                                 <field name="total_loan_capital_bolivianos"/>
                                 <field name="total_balance_interest_month_bolivianos"/>
                                 <field name="total_loan"/>

@@ -25,17 +25,12 @@ class FinalizeContributions(models.Model):
     total_voluntary_capital = fields.Float(string='Aporte voluntario y capital inicial', compute='_compute_voluntary_capital')
     balance_finalize_contribution = fields.Float(string="Saldo calculado", compute="_compute_balance_finalize")
     partial_devolution = fields.Float(string="Devolucion parcial")
-<<<<<<< Updated upstream
     regulation_cup_manual = fields.Float(string="Devolucion de tasa de regulacion")
     other_contribution_balance = fields.Float(string="Saldos extras")
-=======
-<<<<<<< HEAD
     option_liquidation_loan = fields.Boolean(string="Liquidar prestamo")
-=======
     regulation_cup_manual = fields.Float(string="Devolucion de tasa de regulacion")
     other_contribution_balance = fields.Float(string="Saldos extras")
->>>>>>> origin/dev
->>>>>>> Stashed changes
+    option_liquidation = fields.Boolean(string='Liquidar prestamo')
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('done', 'Realizado'),
