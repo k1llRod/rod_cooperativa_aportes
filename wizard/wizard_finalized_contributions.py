@@ -30,15 +30,18 @@ class WizardFinalizedContributions(models.TransientModel):
     option_liquidation_contributions = fields.Boolean(string="Liquidar aportes")
     def action_confirm(self):
         vals = {
-            'partner_payroll_id': self.partner_payroll_id.id,
-            'date_finalize': self.date_finalize,
-            'total_voluntary_contributions_certificate': self.total_voluntary_contributions_certificate,
+            'disengagement': self.disengagement,
+            'partner_payroll_ids': self.partner_payroll_id.id,
+            'date_proccess': self.date_finalize,
+            'total_voluntary_contributions': self.total_voluntary_contributions_certificate,
             'total_capital_initial': self.capital_initial,
         }
-        if self.option_liquidation == True:
-            vals['total_loan_capital_bolivianos'] = self.total_loan_capital_bolivianos
-            vals['total_balance_interest_month_bolivianos'] = self.total_balance_total_interest_month_bolivianos
-        record = self.partner_payroll_id.finalize_contributions_id.create(vals)
+        total_contribution = self.total_voluntary_contributions_certificate + self.capital_initial
+        total_loan = self.total_loan_capital_bolivianos + self.total_balance_total_interest_month_bolivianos
+        if self.option_liquidation == True and total_contribution >= total_loan:
+            vals['loan_capital_bolivianos'] = self.total_loan_capital_bolivianos
+            vals['balance_interest_month_bolivianos'] = self.total_balance_total_interest_month_bolivianos
+        record = self.env['finalize.contributions'].create(vals)
         if not record:
             raise UserError(_('Error al liquidar prestamo.'))
 
@@ -54,3 +57,16 @@ class WizardFinalizedContributions(models.TransientModel):
         for record in self:
             if record.partial_devolution > record.total_contributions:
                 raise ValidationError('El monto parcial no puede ser mayor al total')
+
+    @api.onchange('option_liquidation')
+    def onchange_option_liquidation(self):
+        for record in self:
+            record.disengagement = 0
+
+    @api.onchange('option_liquidation_contributions')
+    def onchange_option_liquidation_contributions(self):
+        for record in self:
+            if record.option_liquidation_contributions == True:
+                record.disengagement = 10
+            else:
+                record.disengagement = 0

@@ -141,12 +141,12 @@ class PartnerPayroll(models.Model):
                                            ('retiro_voluntario','Retiro voluntario'),
                                            ('pase_servicio_pasivo','Pase al servicio pasivo')],
                                           string="Baja por", store=True)
-    finalize_contributions_id = fields.One2many('finalize.contributions', 'partner_payroll_id',string='Finalizar aportes')
 
     date_unassociated = fields.Date(string='Fecha de no asociado')
     state_finalize = fields.Selection([('borrador','Borrador'),
                                        ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')
 
+    finalize_contributions_ids = fields.One2many('finalize.contributions' , 'partner_payroll_ids', string='Liquidaciones')
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     def _compute_total(self):

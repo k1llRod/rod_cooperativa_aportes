@@ -211,19 +211,20 @@
                                         <field name="gloss_disengagement"/>
                                     </group>
                                 </group>
-                                <field name="finalize_contributions_id">
+<!--                                <field name="finalize_contributions_ids"/>-->
+                                <field name="finalize_contributions_ids">
                                     <tree editable="bottom">
                                         <field name="name"/>
-                                        <field name="date_finalize"/>
+                                        <field name="date_proccess"/>
                                         <field name="disengagement"/>
                                         <field name="total_capital_initial"/>
-                                        <field name="total_mandatory_contributions_certificate"/>
-                                        <field name="total_voluntary_contributions_certificate"/>
-                                        <field name="total_other_contributions"/>
-                                        <field name="total_surpluses"/>
-                                        <field name="total_performance_contributions"/>
-                                        <field name="total_loan_capital_bolivianos"/>
-                                        <field name="total_balance_interest_month_bolivianos"/>
+                                        <field name="total_mandatory_contributions"/>
+                                        <field name="total_voluntary_contributions"/>
+<!--                                        <field name="total_other_contributions"/>-->
+<!--                                        <field name="total_surpluses"/>-->
+<!--                                        <field name="total_performance_contributions"/>-->
+                                        <field name="loan_capital_bolivianos"/>
+                                        <field name="balance_interest_month_bolivianos"/>
                                         <button name="open_finalize_contributions" type="object" class="oe_highlight"
                                                 icon="fa-eye"/>
                                     </tree>
@@ -265,6 +266,7 @@
                 </form>
             </field>
         </record>
+
         <record id="partner_payroll_view_search_cooperativa" model="ir.ui.view">
             <field name="name">partner_payroll.view.search.cooperativa</field>
             <field name="model">partner.payroll</field>

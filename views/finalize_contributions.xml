@@ -1,115 +1,81 @@
 <odoo>
     <data>
-        <!-- Vista Árbol de Modelo partner payroll -->
-
         <record model="ir.ui.view" id="finalize_contributions_tree_id">
             <field name="name">finalize.contributions.tree</field>
             <field name="model">finalize.contributions</field>
             <field name="arch" type="xml">
                 <tree create="0">
-                    <field name="name"/>
-                    <field name="date_finalize"/>
+                    <header>
+<!--                        <button name="import_payroll" string="Conciliar" class="oe_highlight" type="object"/>-->
+<!--                        <button name="assign_performance" string="Asignar rendimiento" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
+<!--                        />-->
+                    </header>
+                    <field name="name" />
+                    <field name="partner_payroll_ids" readonly="1"/>
                     <field name="disengagement"/>
-                    <field name="total_mandatory_contributions_certificate"/>
-                    <field name="total_voluntary_contributions_certificate"/>
-                    <field name="total_other_contributions"/>
-                    <field name="total_surpluses"/>
-                    <field name="total_performance_contributions"/>
+                    <field name="total_mandatory_contributions"/>
+                    <field name="total_voluntary_contributions"/>
                     <field name="total_capital_initial"/>
-                    <field name="total_loan_capital"/>
-                    <field name="total_loan_capital_bolivianos" optional="hidden"/>
-                    <field name="total_balance_total_interest_month"/>
-                    <field name="total_balance_interest_month_bolivianos" optional="hidden"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="finalize_contributions_form">
+        <record model="ir.ui.view" id="finalize_contributions_form_id">
             <field name="name">finalize.contributions.form</field>
             <field name="model">finalize.contributions</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion de aportes">
+                <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required" create="0">
                     <header>
-                        <button name="action_confirm" string="Confirmar" class="oe_highlight" type="object"/>
-                        <button name="action_draft" string="Borrador" type="object"/>
-                        <field name="state" widget="statusbar"/>
+<!--                        <button name="exclude_contributions" string="No asociado"-->
+<!--                                type="object"-->
+<!--                                class="oe_close_button"-->
+<!--                                groups="rod_cooperativa_aportes.group_rod_cooperativa_aportes_operator"-->
+<!--                                attrs="{'invisible': [('state', '!=', 'process')]}"/>-->
+<!--                        <field name="state" widget="statusbar"/>-->
                     </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" string="Nombre"/>
+                            </h1>
+                        </div>
                         <group>
-                            <group string="Liquidacion de aportes">
-                                <div class="oe_title">
-                                    <h1>
-                                        <field name="name" string="Nombre" readonly="1"/>
-                                    </h1>
-                                </div>
-
-                                <field name="partner_payroll_id" readonly="1"/>
-                                <field name="date_finalize"/>
+                            <group string="Aportes">
+                                <field name="name" />
+                                <field name="partner_payroll_ids" readonly="1"/>
                                 <field name="disengagement"/>
+                                <field name="total_mandatory_contributions"/>
+                                <field name="total_voluntary_contributions"/>
                                 <field name="total_capital_initial"/>
-                                <field name="total_mandatory_contributions_certificate"/>
-                                <field name="total_voluntary_contributions_certificate"/>
-                                <field name="total_other_contributions"/>
-                                <field name="total_surpluses"/>
-                                <field name="total_performance_contributions"/>
-<!--                                <field name="partial_devolution"/>-->
-                                <field name="total_contributions"/>
-                            </group>
-                            <group string="Datos manuales">
-                                <!--                                <field name="partner_status_reafiliation"/>-->
-                                <field name="reafiliation"/>
-                                <field name="partial_devolution"/>
-                                <field name="regulation_cup_manual"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Prestamos">
-                                <field name="option_liquidation"/>
-                                <field name="total_loan_capital_bolivianos"/>
-                                <field name="total_balance_interest_month_bolivianos"/>
-                                <field name="total_loan"/>
                             </group>
                             <group>
 
                             </group>
                         </group>
+                        <group>
+                            <group string="Prestamo">
+                                <field name="loan_capital_bolivianos"/>
+                                <field name="balance_interest_month_bolivianos"/>
+                            </group>
+                        </group>
                         <notebook>
                             <page string="Contabilidad">
-                                <header>
-                                    <field name="accounting_finalize_contributions_state" widget="statusbar"/>
-                                </header>
-                                <group string="Contabilidad">
-                                    <group>
-                                        <field name="journal_id"/>
-                                    </group>
-                                    <group>
-                                        <field name="accounting_finalize_contributions_id" readonly="1"/>
-                                    </group>
-                                </group>
                                 <group>
                                     <group string="Debe">
-                                        <field name="account_voluntary_contribution_id"/>
-                                        <field name="total_voluntary_capital"/>
-                                        <field name="account_mandatory_contribution_id"/>
-                                        <field name="account_other_contribution"/>
-                                        <field name="account_total_surplus" />
-
+                                        <field name="account_voluntary_contributions"/>
+                                        <field name="total_voluntary"/>
                                     </group>
                                     <group string="Haber">
                                         <field name="account_capital_loan"/>
-                                        <field name="total_loan_capital_bolivianos"/>
-                                        <field name="account_month_surpluy"/>
-                                        <field name="total_balance_interest_month_bolivianos"/>
-                                        <field name="account_disengagement"/>
-                                        <field name="disengagement"/>
-                                        <field name="account_regulation_cup"/>
-                                        <field name="regulation_cup_manual"/>
-                                        <field name="account_devolution_bank"/>
-                                        <field name="balance_finalize_contribution"/>
-                                        <field name="account_other_contribution_balance"/>
-                                        <field name="other_contribution_balance"/>
-                                        <field name="total_credit"/>
+                                        <field name="total_capital_initial"/>
+                                        <field name="account_capital_loan"/>
+                                        <field name="loan_capital_bolivianos" readonly="1"/>
+                                        <field name="account_interest_month"/>
+                                        <field name="balance_interest_month_bolivianos" readonly="1"/>
                                     </group>
+
                                 </group>
                             </page>
                         </notebook>
@@ -123,20 +89,6 @@
             </field>
         </record>
 
-        <!-- Accion para visualizar loan.application -->
-
-        <record id="action_accont_asset_finalize_contribution_id" model="ir.actions.server">
-            <field name="name">Asiento contable liquidacion</field>
-            <field name="model_id" ref="model_finalize_contributions"/>
-            <field name="binding_model_id" ref="model_finalize_contributions"/>
-            <field name="state">code</field>
-            <field name="code">action = records.approve_finalize_contribution()</field>
-        </record>
-        <record id="action_finalize_contributions" model="ir.actions.act_window">
-            <field name="name">Baja asociado</field>
-            <field name="res_model">finalize.contributions</field>
-            <field name="view_mode">tree,form,pivot</field>
-        </record>
 
     </data>
 </odoo>
