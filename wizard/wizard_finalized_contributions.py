@@ -39,6 +39,8 @@ class WizardFinalizedContributions(models.TransientModel):
         total_contribution = self.total_voluntary_contributions_certificate + self.capital_initial
         total_loan = self.total_loan_capital_bolivianos + self.total_balance_total_interest_month_bolivianos
         if self.option_liquidation == True and total_contribution >= total_loan:
+            vals['loan_application_ids'] = self.loan_application_id.id
+            vals['discount_contribution'] = total_loan
             vals['loan_capital_bolivianos'] = self.total_loan_capital_bolivianos
             vals['balance_interest_month_bolivianos'] = self.total_balance_total_interest_month_bolivianos
         record = self.env['finalize.contributions'].create(vals)

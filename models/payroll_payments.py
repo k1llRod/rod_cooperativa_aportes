@@ -125,8 +125,8 @@ class PayrollPayments(models.Model):
         #         res.partner_payroll_id.state = 'process'
         if vals_list['income'] > 0:
             res.partner_payroll_id.message_post(body="Pago creado: " + vals_list['name'])
-        else:
-            res.partner_payroll_id.message_post(body="Devolucion creada: " + vals_list['name'])
+        # else:
+        #     res.partner_payroll_id.message_post(body="Devolucion creada: " + vals_list['name'])
 
         return res
 
@@ -438,3 +438,6 @@ class PayrollPayments(models.Model):
                 register = rec.partner_payroll_id.payroll_payments_ids.filtered(lambda x:x.mandatory_contribution_certificate == 100 and x.date_pivote <= rec.date_pivote)
                 rec.calculate_mandatory_contribution_total = sum(register.mapped('mandatory_contribution_certificate'))
 
+    def partner_devolution(self):
+        for record in self:
+            record.state = 'partner_return'

@@ -85,6 +85,9 @@
                                 class="oe_close_button"
                                 attrs="{'invisible':['|',('state','!=','draft'),('partner_status_especific','=','passive_reserve_b')]}"
                         />
+                        <button name="partner_devolution" string="Devolucion" type="object"
+                                class="oe_close_button"
+                        />
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,transfer,ministry_defense"/>
                     </header>
