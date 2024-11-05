@@ -39,10 +39,23 @@ class WizardFinalizedContributions(models.TransientModel):
         total_contribution = self.total_voluntary_contributions_certificate + self.capital_initial
         total_loan = self.total_loan_capital_bolivianos + self.total_balance_total_interest_month_bolivianos
         if self.option_liquidation == True and total_contribution >= total_loan:
+            vals['liquidation'] = self.option_liquidation
             vals['loan_application_ids'] = self.loan_application_id.id
             vals['discount_contribution'] = total_loan
             vals['loan_capital_bolivianos'] = self.total_loan_capital_bolivianos
             vals['balance_interest_month_bolivianos'] = self.total_balance_total_interest_month_bolivianos
+
+        if self.option_liquidation_contributions == True:
+            vals['liquidation_contributions'] = self.option_liquidation_contributions
+            vals['total_mandatory_contributions'] = self.total_mandatory_contributions_certificate
+            vals['other_contributions'] = self.total_other_contributions
+            vals['surpluses'] = self.total_surpluses
+            vals['perfomance_contributions'] = self.total_performance_contributions
+
+        if self.partial_devolution > 0:
+            vals['total_partial_devolution'] = self.partial_devolution
+            vals['discount_contribution'] = self.partial_devolution
+
         record = self.env['finalize.contributions'].create(vals)
         if not record:
             raise UserError(_('Error al liquidar prestamo.'))
@@ -70,5 +83,6 @@ class WizardFinalizedContributions(models.TransientModel):
         for record in self:
             if record.option_liquidation_contributions == True:
                 record.disengagement = 10
+                record.partial_devolution = 0
             else:
                 record.disengagement = 0

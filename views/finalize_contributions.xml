@@ -47,6 +47,7 @@
                         </div>
                         <group>
                             <group string="Aportes">
+                                <field name="liquidation_contributions" invisible="1"/>
                                 <field name="name" readonly="1"/>
                                 <field name="date_proccess"/>
                                 <field name="partner_payroll_ids" readonly="1"/>
@@ -54,6 +55,10 @@
                                 <field name="total_mandatory_contributions"/>
                                 <field name="total_voluntary_contributions"/>
                                 <field name="total_capital_initial"/>
+                                <field name="other_contributions"/>
+                                <field name="surpluses"/>
+                                <field name="perfomance_contributions"/>
+                                <field name="total_partial_devolution"/>
                             </group>
                             <group>
 
@@ -61,6 +66,7 @@
                         </group>
                         <group>
                             <group string="Prestamo">
+                                <field name="liquidation" invisible="1"/>
                                 <field name="loan_application_ids"/>
                                 <field name="loan_capital_bolivianos"/>
                                 <field name="balance_interest_month_bolivianos"/>
@@ -81,6 +87,15 @@
                                         <field name="account_voluntary_contributions"/>
                                         <field name="discount_contribution"/>
                                         <field name="total_voluntary"/>
+                                        <field name="account_mandatory_contributions"/>
+                                        <field name="total_mandatory_contributions"/>
+                                        <field name="account_other_contributions"/>
+                                        <field name="other_contributions"/>
+                                        <field name="account_surpluses"/>
+                                        <field name="surpluses"/>
+                                        <field name="account_performance_contributions"/>
+                                        <field name="perfomance_contributions"/>
+                                        <field name="total_amount"/>
                                     </group>
                                     <group string="Haber">
                                         <field name="account_capital_loan"/>
@@ -89,6 +104,15 @@
                                         <field name="balance_interest_month_bolivianos"/>
                                         <field name="account_bank_rest"/>
                                         <field name="total_diference_contribution_loan"/>
+
+                                        <h3 style="color:blue;">Cuentas Aportes</h3>
+                                        <field name="account_disengagement"/>
+                                        <field name="disengagement"/>
+                                        <field name="account_regulation_cup"/>
+                                        <field name="manual_regulation_cup"/>
+                                        <field name="account_bank_rest_contributions"/>
+                                        <field name="rest_contributions"/>
+                                        <field name="total_amount_credit"/>
                                     </group>
 
                                 </group>
