@@ -279,10 +279,10 @@ class PartnerPayroll(models.Model):
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
             record.other_contribution_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped(
-                    'voluntary_contribution_certificate'))
+                    'other_contribution'))
             record.surpluses_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
-                    'voluntary_contribution_certificate'))
+                    'other_contribution'))
             record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total
 
     def return_draft(self):
