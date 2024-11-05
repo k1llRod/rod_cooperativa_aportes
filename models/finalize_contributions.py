@@ -375,7 +375,7 @@ class FinalizeContributions(models.Model):
                             'views': [(False, 'form')],
                         }
 
-                if record.total_partial_devolution > 0:
+                if record.total_partial_devolution > 0 and record.liquidation == False:
                     vals = {
                         'partner_payroll_id': record.partner_payroll_ids.id,
                         'income': 0,
@@ -430,7 +430,92 @@ class FinalizeContributions(models.Model):
                             'views': [(False, 'form')],
                         }
 
+                if record.total_partial_devolution > 0 and record.liquidation == True:
+                    vals = {
+                        'partner_payroll_id': record.partner_payroll_ids.id,
+                        'income': 0,
+                        'income_passive': 0,
+                        'miscellaneous_income': 0,
+                        'regulation_cup': 0,
+                        'mandatory_contribution_certificate': 0,
+                        'voluntary_contribution_certificate': record.total_partial_devolution,
+                        'other_contribution': 0,
+                        'payment_date': record.date_proccess,
+                        'date_pivote': record.date_proccess,
+                    }
+                    payroll = self.env['payroll.payments'].create(vals)
+                    payroll.write({
+                        'voluntary_contribution_certificate': -(record.discount_contribution),
+                    })
+                    payroll.partner_devolution()
+                    if payroll:
+                        val = []
+                        data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
+                                       'debit': record.discount_contribution, 'credit': 0,
+                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       'amount_currency': 0
+                                       })
+                        val.append(data)
+                        data = (0, 0, {'account_id': record.account_capital_loan.id,
+                                       'debit': 0, 'credit': record.loan_capital_bolivianos,
+                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       'amount_currency': 0
+                                       })
+                        val.append(data)
+                        data = (0, 0, {'account_id': record.account_interest_month.id,
+                                       'debit': 0, 'credit': record.balance_interest_month_bolivianos,
+                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       'amount_currency': 0
+                                       })
+                        val.append(data)
+                        data = (0, 0, {'account_id': record.account_bank_rest.id,
+                                       'debit': 0, 'credit': record.total_diference_contribution_loan,
+                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       'amount_currency': 0
+                                       })
+                        val.append(data)
+                        move_vals = {
+                            "date": record.date_proccess,
+                            "journal_id": record.journal_id.id,
+                            "ref": "",
+                            # "company_id": payment.company_id.id,
+                            # "name": "name test",
+                            "glosa": '',
+                            "state": "draft",
+                            "line_ids": val,
+                        }
+                        account_move_id = record.env['account.move'].create(move_vals)
+                        record.account_move_id = account_move_id.id
+                        payroll.account_move_id = account_move_id.id
+                        account_move_id.finalize_contributions_id = record.id
 
+                        finalized_loan = self.env['finalized.loan'].create({
+                            'loan_application_id': self.loan_application_ids.id,
+                            'date_finalize': self.date_proccess,
+                            'amount_loan_dollars_initial': record.loan_application_ids.amount_loan_dollars,
+                            'amount_loan_initial': record.loan_application_ids.amount_loan,
+                            'payment_count': record.loan_application_ids.total_payments_confirm,
+                            'balance_capital_dollar': record.loan_application_ids.balance_capital,
+                            'balance_capital_bolivianos': record.loan_capital_bolivianos,
+                            'balance_total_interest_month': record.loan_application_ids.balance_total_interest_month,
+                            'balance_total_interest_month_bolivianos': record.balance_interest_month_bolivianos,
+                            'state': 'draft'
+                        })
+                        if finalized_loan:
+                            record.loan_application_ids.state = 'liquidation_process'
+                            finalized_loan.action_confirm()
+                            finalized_loan.accounting_finalized_loan_id = account_move_id.id
+                            record.loan_application_ids.loan_payment_ids.filtered(
+                                lambda x: x.name == 'LIQUID 1').account_move_id = account_move_id.id
+
+                        return {
+                            'name': 'Pagos de planilla',
+                            'type': 'ir.actions.act_window',
+                            'res_model': 'account.move',
+                            'view_mode': 'form',
+                            'res_id': account_move_id.id,
+                            'views': [(False, 'form')],
+                        }
 
 
 
