@@ -115,10 +115,10 @@
                         <group>
                             <group>
                                 <field name="partner_id" readonly="1"/>
-                                <field name="partner_status" readonly="1"/>
-                                <field name="partner_status_historical" invisible="1"/>
-                                <field name="partner_status_especific" readonly="1"/>
-                                <field name="partner_status_especific_historical" invisible="1"/>
+                                <field name="partner_status" />
+                                <field name="partner_status_historical" />
+                                <field name="partner_status_especific" />
+                                <field name="partner_status_especific_historical" />
                                 <field name="city"/>
                                 <field name="partner_state"/>
                                 <field name="capital_initial"/>
@@ -205,10 +205,14 @@
                                 <header>
                                     <field name="state_finalize" widget="statusbar"/>
                                 </header>
-                                <group string="Datos para la liquidacion">
-                                    <group>
-                                        <field name="type_disengagement"/>
+                                <group >
+                                    <group string="Datos para la liquidacion">
+                                        <field name="type_disengagements"/>
                                         <field name="gloss_disengagement"/>
+                                        <button name="process_partner_status" string="Procesar asociado" class="oe_highlight" type="object"/>
+                                    </group>
+                                    <group string="Categoria de asociado">
+                                        <field name="partner_status_especific_reorder"/>
                                     </group>
                                 </group>
 <!--                                <field name="finalize_contributions_ids"/>-->

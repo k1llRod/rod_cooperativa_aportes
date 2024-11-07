@@ -21,33 +21,33 @@ class PartnerPayroll(models.Model):
                               ('process_finalized', 'Proceso liquidacion'),
                               ('finalized', 'Liquidado'),
                               ('unassociated','No asociado')],
-                             default='draft')
+                             default='draft', track_visibility='always')
     partner_id = fields.Many2one('res.partner', string='Socio')
 
     partner_status = fields.Selection([('active', 'Activo'),
                                        ('active_reserve', 'Reserva activa'),
                                        ('passive', 'Servicio pasivo'),
                                        ('leave', 'Baja')], string="Situacion general",
-                                      related='partner_id.partner_status', store=True)
+                                      related='partner_id.partner_status', store=True, track_visibility="always")
     partner_status_historical = fields.Selection([('active', 'Activo'),
                                        ('active_reserve', 'Reserva activa'),
                                        ('passive', 'Servicio pasivo'),
-                                       ('leave', 'Baja')], string="Situacion general",
-                                       store=True)
+                                       ('leave', 'Baja')], string="Situacion general historico",
+                                       store=True, track_visibility="always")
 
     partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
                                                  ('passive_reserve_a', 'Reserva pasivo "A"'),
                                                  ('passive_reserve_b', 'Reserva pasivo "B"'),
                                                  ('leave', 'Baja')], string='Tipo de asociado',
-                                                related='partner_id.partner_status_especific', store=True)
+                                                related='partner_id.partner_status_especific', store=True, track_visibility="always")
 
     partner_status_especific_historical = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
                                                  ('passive_reserve_a', 'Pasivo categoria "A"'),
                                                  ('passive_reserve_b', 'Pasivo categoria "B"'),
-                                                 ('leave', 'Baja')], string='Tipo de asociado',
-                                                 store=True)
+                                                 ('leave', 'Baja')], string='Tipo de asociado historico',
+                                                 store=True, track_visibility="always")
 
     code_contact = fields.Char(string='Código de asociado', related='partner_id.code_contact', store=True)
     vat = fields.Char(string='CI', related='partner_id.vat')
@@ -137,7 +137,7 @@ class PartnerPayroll(models.Model):
     afiliated_time = fields.Integer(string='Tiempo afiliado', compute='_onchange_name')
 
     gloss_disengagement = fields.Text(string="Observaciones Baja")
-    type_disengagement = fields.Selection([('fallecimiento','Fallecimiento'),
+    type_disengagements = fields.Selection([('fallecimiento','Fallecimiento'),
                                            ('retiro_voluntario','Retiro voluntario'),
                                            ('pase_servicio_pasivo','Pase al servicio pasivo')],
                                           string="Baja por", store=True)
@@ -147,6 +147,9 @@ class PartnerPayroll(models.Model):
                                        ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')
 
     finalize_contributions_ids = fields.One2many('finalize.contributions' , 'partner_payroll_ids', string='Liquidaciones')
+    partner_status_especific_reorder = fields.Selection([('passive_reserve_a', 'Reserva pasivo "A"'),
+                                                 ('passive_reserve_b', 'Reserva pasivo "B"'),
+                                                 ], string='Tipo de asociado')
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     def _compute_total(self):
@@ -602,5 +605,29 @@ class PartnerPayroll(models.Model):
             record.regulation_cup = 0
             record.miscellaneous_income = 0
             record.mandatory_contribution_certificate = 0
+
+    def process_partner_status(self):
+        for record in self:
+            if record.type_disengagements == 'fallecimiento':
+                record.partner_id.state = 'deceased'
+                record.partner_id.glosa = record.gloss_disengagement
+                record.partner_id.date_deceased = 
+            if record.type_disengagements == 'retiro_voluntario':
+                record.partner_id.state = 'unsubscribe'
+            if record.type_disengagements == 'pase_servicio_pasivo':
+                record.partner_status_especific_historical = record.partner_id.partner_status_especific
+                if record.partner_status_especific_reorder == 'passive_reserve_a':
+                    record.partner_status_especific_historical = record.partner_id.partner_status_especific
+                    record.partner_status_historical = record.partner_id.partner_status
+                    record.partner_id.partner_status_especific = record.partner_status_especific_reorder
+                    record.state = 'finalized'
+                    record.partner_id.init_partner()
+
+
+
+
+
+
+
 
 

@@ -375,6 +375,7 @@ class FinalizeContributions(models.Model):
                             'views': [(False, 'form')],
                         }
 
+
                 if record.total_partial_devolution > 0 and record.liquidation == False:
                     vals = {
                         'partner_payroll_id': record.partner_payroll_ids.id,
