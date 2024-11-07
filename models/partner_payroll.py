@@ -608,12 +608,18 @@ class PartnerPayroll(models.Model):
 
     def process_partner_status(self):
         for record in self:
+            if record.state == 'process':
+                raise ValidationError(_('La planilla de aportes debe estar en un estaod "PROCESO DE LIQUIDACION"'))
             if record.type_disengagements == 'fallecimiento':
                 record.partner_id.state = 'deceased'
+                record.state = 'finalized'
                 record.partner_id.glosa = record.gloss_disengagement
-                record.partner_id.date_deceased = 
+                record.partner_id.date_deceased = datetime.now().year
+                record.state_finalize = 'hecho'
             if record.type_disengagements == 'retiro_voluntario':
                 record.partner_id.state = 'unsubscribe'
+                record.state = 'finalized'
+                record.state_finalize = 'hecho'
             if record.type_disengagements == 'pase_servicio_pasivo':
                 record.partner_status_especific_historical = record.partner_id.partner_status_especific
                 if record.partner_status_especific_reorder == 'passive_reserve_a':
@@ -621,10 +627,14 @@ class PartnerPayroll(models.Model):
                     record.partner_status_historical = record.partner_id.partner_status
                     record.partner_id.partner_status_especific = record.partner_status_especific_reorder
                     record.state = 'finalized'
+                    record.state_finalize = 'hecho'
                     record.partner_id.init_partner()
 
-
-
+    @api.onchange('type_disengagements')
+    def onchange_type_disengagements(self):
+        for record in self:
+            if record.type_disengagements == 'fallecimiento':
+                record.partner_status_especific_reorder = ''
 
 
 

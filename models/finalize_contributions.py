@@ -366,6 +366,7 @@ class FinalizeContributions(models.Model):
                             record.loan_application_ids.loan_payment_ids.filtered(
                                 lambda x: x.name == 'LIQUID 1').account_move_id = account_move_id.id
                             record.partner_payroll_ids.state = 'process_finalized'
+                            record.state = 'done'
                         return {
                             'name': 'Pagos de planilla',
                             'type': 'ir.actions.act_window',
@@ -422,6 +423,7 @@ class FinalizeContributions(models.Model):
                         record.account_move_id = account_move_id.id
                         payroll.account_move_id = account_move_id.id
                         account_move_id.finalize_contributions_id = record.id
+                        record.state = 'done'
                         return {
                             'name': 'Pagos de planilla',
                             'type': 'ir.actions.act_window',
@@ -508,6 +510,7 @@ class FinalizeContributions(models.Model):
                             finalized_loan.accounting_finalized_loan_id = account_move_id.id
                             record.loan_application_ids.loan_payment_ids.filtered(
                                 lambda x: x.name == 'LIQUID 1').account_move_id = account_move_id.id
+                            record.state = 'done'
 
                         return {
                             'name': 'Pagos de planilla',
