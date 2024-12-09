@@ -80,7 +80,7 @@ class PartnerPayroll(models.Model):
     mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
                                                             compute='compute_count_pay_contributions', store=True)
     other_contribution_total = fields.Float(string='Otros aportes',
-                                            store=True)
+                                            store=True, digits=(16, 2))
     surpluses_total = fields.Float(string='Total excedentes', store=True)
     contribution_total = fields.Float(string='Aporte total', store=True)
 
@@ -280,9 +280,7 @@ class PartnerPayroll(models.Model):
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
-            record.other_contribution_total = sum(
-                record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped(
-                    'other_contribution'))
+            record.other_contribution_total = sum(round(c,2)for c in record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped('other_contribution'))
             record.surpluses_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
                     'other_contribution'))

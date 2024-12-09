@@ -92,7 +92,7 @@ class PayrollPayments(models.Model):
     capital_initial = fields.Float(string='Capital inicial')
     state_account = fields.Selection([('draft', 'Borrador'), ('posted', 'Contabilizado'), ('cancel', 'Cancelado')], default='draft', related='account_move_id.state', store=True)
     other = fields.Float(string='Otros')
-    other_contribution = fields.Float(string='OTROS APORTES')
+    other_contribution = fields.Float(string='OTROS APORTES', digits=(16, 2))
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
     #     for record in self:
