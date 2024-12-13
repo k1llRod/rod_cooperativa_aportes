@@ -142,6 +142,7 @@ class PartnerPayroll(models.Model):
                                            ('pase_servicio_pasivo','Pase al servicio pasivo')],
                                           string="Baja por", store=True)
 
+
     date_unassociated = fields.Date(string='Fecha de no asociado')
     state_finalize = fields.Selection([('borrador','Borrador'),
                                        ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')
@@ -612,7 +613,7 @@ class PartnerPayroll(models.Model):
                 record.partner_id.state = 'deceased'
                 record.state = 'finalized'
                 record.partner_id.glosa = record.gloss_disengagement
-                record.partner_id.date_deceased = datetime.now().year
+                record.partner_id.date_deceased = datetime.now()
                 record.state_finalize = 'hecho'
             if record.type_disengagements == 'retiro_voluntario':
                 record.partner_id.state = 'unsubscribe'
