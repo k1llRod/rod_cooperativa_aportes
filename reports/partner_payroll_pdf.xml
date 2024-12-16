@@ -320,10 +320,13 @@
                                         <tr>
                                             <td colspan="3"></td>
                                             <td>
-                                                <t t-if="p.income">
+                                                <t t-if="o.partner_status_especific == 'active_service'">
                                                     <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>
                                                 </t>
-                                                <t t-if="p.income_passive">
+                                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">
+                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income_passive')),2)"/>
+                                                </t>
+                                                <t t-if="o.partner_status_especific == 'passive_reserve_a'">
                                                     <span t-esc="round(sum(o.payroll_payments_ids.mapped('income_passive')),2)"/>
                                                 </t>
                                             </td>
