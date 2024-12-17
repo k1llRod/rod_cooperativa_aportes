@@ -38,8 +38,32 @@ class WizardUnassociated(models.TransientModel):
                     'state': 'draft',
                 })
             if record.reafiliacion == 'unassociated':
+                total_income = 0
+                total_miscellaneous_income = 0
+                total_regulation_cup = 0
+                total_mandatory_contribution_certificate = 0
+                total_voluntary_contribution_certificate = 0
+                total_other_contribution = 0
+                for rec in record.partner_payroll_id.payroll_payments_ids.filtered(lambda x:x.state != 'no_contribution' and x.state != 'draft'):
+                    total_income += rec.income
+                    total_miscellaneous_income += rec.miscellaneous_income
+                    total_regulation_cup += rec.regulation_cup
+                    total_mandatory_contribution_certificate += rec.mandatory_contribution_certificate
+                    total_voluntary_contribution_certificate += rec.voluntary_contribution_certificate
+                    total_other_contribution += rec.other_contribution
+                create_payroll = record.partner_payroll_id.payroll_payments_ids.create({
+                    'income': -(total_income),
+                    'income_passive': 0,
+                    'miscellaneous_income': -(total_miscellaneous_income),
+                    'regulation_cup': -(total_regulation_cup),
+                    'mandatory_contribution_certificate': -(total_mandatory_contribution_certificate),
+                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
+                    'other_contribution': -(total_other_contribution),
+                    'state': 'partner_return'
+                })
                 record.partner_payroll_id.partner_id.state = record.reafiliacion
                 partner_payroll = True
+
 
             if partner_payroll:
                 record.partner_payroll_id.write({

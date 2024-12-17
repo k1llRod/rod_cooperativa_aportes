@@ -92,7 +92,7 @@
                                 </p>
                             </div>
                             <div>
-                                <t t-foreach="o.finalize_contributions_id" t-as="l">
+                                <t t-foreach="o.finalize_contributions_ids" t-as="l">
                                     <table class="table table-bordered">
                                         <tbody>
                                             <tr>
@@ -198,7 +198,7 @@
                                                 Bs.
                                             </td>
                                             <td>
-                                                <span t-esc="round((o.partner_payroll_ids.mandatory_contribution_certificate_total), 2)"/>
+<!--                                                <span t-esc="round((o.partner_payroll_ids.mandatory_contribution_certificate_total), 2)"/>-->
                                             </td>
                                         </tr>
                                         <tr>
@@ -209,7 +209,7 @@
                                                 Bs.
                                             </td>
                                             <td>
-                                                <span t-esc="round((l.disengagement), 2)"/>
+<!--                                                <span t-esc="round((l.disengagement), 2)"/>-->
                                             </td>
                                         </tr>
                                         <tr>
@@ -220,7 +220,7 @@
                                                 Bs.
                                             </td>
                                             <td>
-                                                <span t-esc="round((l.total_loan), 2)"/>
+<!--                                                <span t-esc="round((l.total_loan), 2)"/>-->
                                             </td>
                                         </tr>
                                     </tbody>
