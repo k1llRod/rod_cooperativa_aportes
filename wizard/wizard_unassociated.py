@@ -41,9 +41,12 @@ class WizardUnassociated(models.TransientModel):
                     'miscellaneous_income': -(total_miscellaneous_income),
                     'regulation_cup': -(total_regulation_cup),
                     'mandatory_contribution_certificate': -(total_mandatory_contribution_certificate),
-                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
+                    # 'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
                     'other_contribution': -(total_other_contribution),
                     'state': 'partner_return'
+                })
+                create_payroll.write({
+                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
                 })
                 partner_payroll = record.env['partner.payroll'].create({
                     'partner_id': record.partner_payroll_id.partner_id.id,
@@ -54,7 +57,7 @@ class WizardUnassociated(models.TransientModel):
             if record.reafiliacion == 'passive_reserve_b':
                 record.partner_payroll_id.partner_status_historical = record.partner_payroll_id.partner_id.partner_status
                 record.partner_payroll_id.partner_status_especific_historical = record.partner_payroll_id.partner_id.partner_status_especific
-                record.partner_payroll_id.partner_id.partner_status_especific = 'passive_reserve_a'
+                record.partner_payroll_id.partner_id.partner_status_especific = 'passive_reserve_b'
                 total_income = 0
                 total_miscellaneous_income = 0
                 total_regulation_cup = 0
@@ -75,9 +78,12 @@ class WizardUnassociated(models.TransientModel):
                     'miscellaneous_income': -(total_miscellaneous_income),
                     'regulation_cup': -(total_regulation_cup),
                     'mandatory_contribution_certificate': -(total_mandatory_contribution_certificate),
-                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
+                    # 'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
                     'other_contribution': -(total_other_contribution),
                     'state': 'partner_return'
+                })
+                create_payroll.write({
+                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
                 })
                 partner_payroll = record.env['partner.payroll'].create({
                     'partner_id': record.partner_payroll_id.partner_id.id,
@@ -105,9 +111,12 @@ class WizardUnassociated(models.TransientModel):
                     'miscellaneous_income': -(total_miscellaneous_income),
                     'regulation_cup': -(total_regulation_cup),
                     'mandatory_contribution_certificate': -(total_mandatory_contribution_certificate),
-                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
+                    # 'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
                     'other_contribution': -(total_other_contribution),
                     'state': 'partner_return'
+                })
+                create_payroll.write({
+                    'voluntary_contribution_certificate': -(total_voluntary_contribution_certificate),
                 })
                 record.partner_payroll_id.partner_id.state = record.reafiliacion
                 partner_payroll = True
