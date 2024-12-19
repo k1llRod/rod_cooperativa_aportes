@@ -597,8 +597,11 @@ class PartnerPayroll(models.Model):
         }
 
     def updated_contributions(self):
-        rows = self.payroll_payments_ids.filtered(lambda x:x.state == 'other_contribution' or x.state == 'surpluses')
-        for record in rows:
+        for rec in self:
+            verificate = rec.payroll_payments_ids.filtered(
+                lambda x: x.state == 'other_contribution' or x.state == 'surpluses')
+        # verificate = self.payroll_payments_ids.filtered(lambda x:x.state == 'other_contribution' or x.state == 'surpluses')
+        for record in verificate:
             record.other_contribution = record.income
             record.income = 0
             record.regulation_cup = 0

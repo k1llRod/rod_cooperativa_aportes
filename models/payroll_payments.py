@@ -349,11 +349,33 @@ class PayrollPayments(models.Model):
                                          'amount_currency': 0
                                          })
                 move_line.append(data)
-                data = (0, 0, {'account_id': voluntary_contribution.id,
-                                          'debit': 0, 'credit': rec.voluntary_contribution_certificate, 'partner_id': rec.partner_payroll_id.partner_id.id,
-                                         'amount_currency': 0
-                                         })
-                move_line.append(data)
+                data = (0, 0, {
+                    'account_id': inscription.id if inscription.id != False else rec.partner_payroll_id.account_inscription_id.id,
+                    'debit': 0, 'credit': rec.miscellaneous_income, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                    'amount_currency': 0
+                    })
+                if not (rec.miscellaneous_income == 0): move_line.append(data)
+                data = (0, 0, {
+                    'account_id': regulation_cup.id if regulation_cup.id != False else rec.partner_payroll_id.account_regulation_cup_id.id,
+                    'debit': 0, 'credit': rec.regulation_cup, 'partner_id': rec.partner_payroll_id.partner_id.id,
+                    'amount_currency': 0
+                    })
+
+                if not (rec.regulation_cup == 0): move_line.append(data)
+                data = (0, 0, {
+                    'account_id': mandatory_contribution.id if mandatory_contribution.id != False else rec.partner_payroll_id.account_mandatory_contribution_id.id,
+                    'debit': 0, 'credit': rec.mandatory_contribution_certificate,
+                    'partner_id': rec.partner_payroll_id.partner_id.id,
+                    'amount_currency': 0
+                    })
+                if not (rec.mandatory_contribution_certificate == 0): move_line.append(data)
+                data = (0, 0, {
+                    'account_id': voluntary_contribution.id if voluntary_contribution.id != False else rec.partner_payroll_id.account_voluntary_contribution_id.id,
+                    'debit': 0, 'credit': rec.voluntary_contribution_certificate,
+                    'partner_id': rec.partner_payroll_id.partner_id.id,
+                    'amount_currency': 0
+                    })
+                if not (rec.voluntary_contribution_certificate == 0): move_line.append(data)
             move_vals = {
                 "date": rec.payment_date,
                 "journal_id": journal_id if journal_id != False else rec.partner_payroll_id.journal_id.id,
