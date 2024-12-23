@@ -306,7 +306,8 @@ class PayrollPayments(models.Model):
             if not income:
                 income = rec.account_income_id
             if not income_passive:
-                income_passive = rec.account_income_id if rec.income == False else rec.partner_payroll_id.income
+                income_passive = rec.account_income_id
+                # income_passive = rec.account_income_id if rec.income == False else rec.partner_payroll_id.income
             if not inscription:
                 inscription = rec.account_inscription_id
             if not regulation_cup:
