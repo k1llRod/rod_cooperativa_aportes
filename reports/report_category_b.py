@@ -65,7 +65,8 @@ class ReportCategoryB(models.AbstractModel):
         # sheet.write(row, c, 'Ciudad', border_format)
         sheet.write(row, c, '2023', border_format)
         sheet.write(row, d, '2024', border_format)
-        sheet.write(row, e, 'OBSERVACIONES', border_format)
+        sheet.write(row, e, '2025', border_format)
+        sheet.write(row, f, 'OBSERVACIONES', border_format)
 
         for partner in partner_payroll:
             partner.compute_updated_partner()
