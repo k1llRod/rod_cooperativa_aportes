@@ -109,16 +109,16 @@
                         </div>
                         <div class="oe_title">
                             <h1>
-                                <field name="name" string="Nombre"/>
+                                <field name="name" string="Nombre" attrs="{'readonly': [('state','!=','draft')]}"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_status" />
-                                <field name="partner_status_historical" />
+                                <field name="partner_status_historical" attrs="{'invisible': [('partner_status_historical','=',False)], 'readonly': [('state','!=','draft')]}" />
                                 <field name="partner_status_especific" />
-                                <field name="partner_status_especific_historical" />
+                                <field name="partner_status_especific_historical" attrs="{'invisible': [('partner_status_historical','=',False)], 'readonly': [('state','!=','draft')]}" />
                                 <field name="city"/>
                                 <field name="partner_state"/>
                                 <field name="capital_initial"/>
@@ -166,11 +166,11 @@
 <!--                                        <field name="partner_status_especific" invisible="1"/>-->
                                         <field name="period_register"/>
                                         <field name="income"
-                                               attrs="{'readonly': [('state', '!=', 'draft')] }"
+                                               attrs="{'readonly': [('state', '!=', 'draft')], 'column_invisible': [('parent.partner_status_especific','!=','active_service')]}"
                                                optional="show"
                                                sum="Total"/>
                                         <field name="income_passive"
-                                               attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               attrs="{'readonly': [('state', '!=', 'draft')], 'column_invisible': [('parent.partner_status_especific','!=','passive_reserve_b'),('parent.partner_status_especific','!=','passive_reserve_a')]}"
                                                optional="hide"
                                                sum="Total"/>
                                         <field name="miscellaneous_income"
@@ -292,7 +292,8 @@
                             domain="[('partner_status_especific', '=', 'active_service')]"/>
                     <filter name="partner_passive_reserve_a"
                             string="Asociados Pasivo categoria 'A'"
-                            domain="[('partner_status_especific','=','passive_reserve_a')]"/>
+                            domain="[('partner_status_especific','=','passive_reserve_a'),
+                                    ('state','!=','unassociated')]"/>
                     <filter name="partner_passive_reserve_b"
                             string="Asociados Pasivo categoria 'B'"
                             domain="[('partner_status_especific','=','passive_reserve_b')]"/>

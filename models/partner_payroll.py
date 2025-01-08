@@ -273,7 +273,7 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_count_pay_contributions(self):
         for record in self:
-            record.count_pay_contributions = len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft'))
+            record.count_pay_contributions = len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.state != 'no_contribution'))
             record.mandatory_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'mandatory_contribution_certificate'))
@@ -303,7 +303,7 @@ class PartnerPayroll(models.Model):
         count_payments = 0
         for record in self:
             if record.date_burn_partner:
-                if record.partner_status_especific == 'passive_reserve_a' or record.partner_status_especific == 'passive_reserve_b':
+                if record.partner_status_especific == 'passive_reserve_b':
                     # record.due_payments_ids.unlink()
                     self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
                     gestion_ini = 0
@@ -321,6 +321,7 @@ class PartnerPayroll(models.Model):
                     post_mortem = 167.28
                     period_reg = []
                     sw = 0
+                    i = 2023
                     for i in range(n):
                         try:
                             periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
