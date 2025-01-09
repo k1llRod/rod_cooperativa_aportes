@@ -1,47 +1,57 @@
 <odoo>
     <data>
+
         <template id="report_payment_note">
             <t t-call="web.html_container">
-                <t t-foreach="docs" t-as="o">
-                    <t t-if="not o" t-set="o" t-value="doc"/>
-                    <t t-if="not company">
-                        <!-- Multicompany -->
-                        <t t-if="company_id">
-                            <t t-set="company" t-value="company_id" style="font-size:8px;"/>
-                        </t>
-                        <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
-                            <t t-set="company" t-value="o.company_id.sudo()" style="font-size:8px;"/>
-                        </t>
-                        <t t-else="else">
-                            <t t-set="company" t-value="res_company" style="font-size:8px;"/>
-                        </t>
-                    </t>
-                    <t t-call="web.external_layout_standard">
+                <t t-call="rod_account_coa.custom_mayor_book_layout">
+                    <t t-foreach="docs" t-as="o">
                         <div class="page">
                             <div class="body">
-                                <center><h2>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-B)</h2></center>
-                                <center><h4>DETALLE DE PAGO</h4></center>
+                                <hr/>
+                                <center>
+                                    <h3>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-B)</h3>
+                                </center>
+                                <center>
+                                    <h4>DETALLE DE PAGO</h4>
+                                </center>
                                 <br/>
                                 <table style="font-family:Arial;">
                                     <tbody>
                                         <tr>
                                             <td style="width: 220px;font-weight:bold;">GRADO</td>
-                                            <td><span t-field="o.partner_id.category_partner_id"/></td>
+                                            <td>
+                                                <span t-field="o.partner_id.category_partner_id"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>NOMBRE(S):</strong></td>
-                                            <td><span t-field="o.partner_id.name_contact"/></td>
+                                            <td>
+                                                <strong>NOMBRE(S):</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.partner_id.name_contact"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>APELLIDO(S):</strong></td>
-                                            <td><span t-field="o.partner_id.paternal_surname"/> <span t-field="o.partner_id.maternal_surname"/></td>
+                                            <td>
+                                                <strong>APELLIDO(S):</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.partner_id.paternal_surname"/>
+                                                <span t-field="o.partner_id.maternal_surname"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>PROMOCION:</strong></td>
-                                            <td><span t-field="o.partner_id.graduation_year"/></td>
+                                            <td>
+                                                <strong>PROMOCION:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.partner_id.graduation_year"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>TIPO DE APORTE: </strong></td>
+                                            <td>
+                                                <strong>TIPO DE APORTE:</strong>
+                                            </td>
                                             <td>
                                                 <t t-if="o.payment_type == 'cossmil_discount'">
                                                     DESCUENTO COSSMIL
@@ -57,160 +67,197 @@
 
                                         </tr>
                                         <tr>
-                                            <td><strong>MONTO: </strong></td>
-                                            <td><span t-field="o.amount_type"/></td>
+                                            <td>
+                                                <strong>MONTO:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.amount_type"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>DESDE: </strong></td>
-                                            <td><span t-field="o.since_payment"/></td>
+                                            <td>
+                                                <strong>DESDE:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.since_payment"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>HASTA: </strong></td>
-                                            <td><span t-field="o.until_payment"/></td>
+                                            <td>
+                                                <strong>HASTA:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.until_payment"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>CELULAR: </strong></td>
-                                            <td><span t-field="o.partner_id.mobile"/></td>
+                                            <td>
+                                                <strong>CELULAR:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.partner_id.mobile"/>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
-
-
-                                <div>
-                                    <t t-foreach="o.due_payments_ids" t-as="p">
-                                        <t t-set="cero" t-value="0"/>
-                                        <t t-set="total" t-value="cero"/>
-                                        <center style="font-size:12px;"><h3>OBLIGACIONES CON LA AFCOOP. <span t-field="p.gestion"/></h3></center>
-                                        <table class="table table-striped" style="font-size:12px;">
-                                            <thead>
+                                <t t-foreach="o.due_payments_ids" t-as="p">
+                                    <t t-set="cero" t-value="0"/>
+                                    <t t-set="total" t-value="cero"/>
+                                    <center style="font-size:12px;">
+                                        <h3>OBLIGACIONES CON LA AFCOOP.
+                                            <span t-field="p.gestion"/>
+                                        </h3>
+                                    </center>
+                                    <table class="table table-striped" style="font-size:12px;">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <center>
+                                                        <strong>APORTES</strong>
+                                                    </center>
+                                                </td>
+                                                <td>
+                                                    <strong>MENSUAL</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>SEMESTRAL</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>ANUAL</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>DEBE</strong>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="p.d_miscellaneous_income > 0">
                                                 <tr>
+                                                    <td>INSCRIPCION ASOCIADO AFCOOP</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     <td>
-                                                        <center>
-                                                            <strong>APORTES</strong>
-                                                        </center>
+                                                        <span t-field="p.d_miscellaneous_income"/>
+                                                        Bs.
+                                                    </td>
+
+                                                </tr>
+                                            </t>
+                                            <t t-if="p.d_mandatory_contribution > 0">
+                                                <tr>
+                                                    <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
+                                                    <td></td>
+                                                    <td>
+                                                        100.00 Bs.
                                                     </td>
                                                     <td>
-                                                        <strong>MENSUAL</strong>
+                                                        200.00 Bs.
                                                     </td>
                                                     <td>
-                                                        <strong>SEMESTRAL</strong>
-                                                    </td>
-                                                    <td>
-                                                        <strong>ANUAL</strong>
-                                                    </td>
-                                                    <td>
-                                                        <strong>DEBE</strong>
+                                                        <span t-field="p.d_mandatory_contribution"/>
+                                                        Bs.
                                                     </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                <t t-if="p.d_miscellaneous_income > 0">
-                                                    <tr>
-                                                        <td>INSCRIPCION ASOCIADO AFCOOP</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td><span t-field="p.d_miscellaneous_income"/> Bs.</td>
-
-                                                    </tr>
-                                                </t>
-                                                <t t-if="p.d_mandatory_contribution > 0">
-                                                    <tr>
-                                                        <td>APORTES OBLIGATORIOS (CERT. DE APORTACIONES)</td>
-                                                        <td></td>
-                                                        <td>
-                                                            100.00 Bs.
-                                                        </td>
-                                                        <td>
-                                                            200.00 Bs.
-                                                        </td>
-                                                        <td>
-                                                            <span t-field="p.d_mandatory_contribution"/>
-                                                            Bs.
-                                                        </td>
-                                                    </tr>
-                                                </t>
-                                                <t t-if="p.d_regulation_cup > 0">
-                                                    <tr>
-                                                        <td>APORTES AFCOOP. (TASA REGULACION)</td>
-                                                        <td>0.50 ctvos.</td>
-                                                        <td></td>
-                                                        <td>6.00 Bs.</td>
-                                                        <td>
-                                                            <span t-field="p.d_regulation_cup"/>
-                                                            Bs.
-                                                        </td>
-                                                    </tr>
-                                                </t>
-
-                                                <t t-if="p.d_post_mortem > 0">
-                                                    <tr>
-                                                        <td>APORTE POST MORTEM</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td>167.28 Bs.</td>
-                                                        <td>
-                                                            <span t-field="p.d_post_mortem"/>
-                                                            Bs.
-                                                        </td>
-                                                    </tr>
-                                                </t>
+                                            </t>
+                                            <t t-if="p.d_regulation_cup > 0">
                                                 <tr>
+                                                    <td>APORTES AFCOOP. (TASA REGULACION)</td>
+                                                    <td>0.50 ctvos.</td>
+                                                    <td></td>
+                                                    <td>6.00 Bs.</td>
                                                     <td>
-                                                        <strong>TOTAL A PAGAR GESTION <span t-field="p.gestion"/></strong>
-                                                    </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>
-                                                        <t t-set="total" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem + p.d_miscellaneous_income,2)"/>
-                                                        <t t-set="total_sum" t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem + p.d_miscellaneous_income,2)"/>
-                                                        <t t-if="total > 0">
-                                                            <span t-esc="total"/> Bs.
-                                                        </t>
-                                                        <t t-else="else">
-                                                            0.00 Bs
-                                                        </t>
-
+                                                        <span t-field="p.d_regulation_cup"/>
+                                                        Bs.
                                                     </td>
                                                 </tr>
-                                            </tbody>
-                                        </table>
-                                    </t>
-<!--                                    <h3>TOTAL A DEPOSITAR <span t-esc="total_sum"/></h3>-->
-                                    <ul>
-                                        <li><strong>CUENTA CORRIENTE M/N</strong> 10000046662082</li>
-                                        <li>BANCO UNION</li>
-                                        <li><strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL COA-4 DIC. R.L.</strong></li>
-                                        <li><strong>EL DEPOSITO DEBE LLEVAR EL NOMBRE DEL INTERESADO (ASOCIADO).</strong></li>
-                                        <li>EL DEPOSITO DEBE SER ENVIADO EN FORMATO PDF AL SIGUIENTE NUMERO <strong>68212344.</strong></li>
-                                    </ul>
+                                            </t>
 
-                                    <h2>NOTA.-</h2>
-                                    <p>
-                                        A PARTIR DE LA GESTION <strong><span t-field="o.difference_year"/></strong> DEBE DEPOSITAR EL APORTE POST MORTEM (24$US. ANUALES) <strong>APORTE POST MORTEM</strong>
-                                    </p>
-                                    <h3>APORTE POST MORTEM</h3>
-                                    <table style="width: 40%;">
-                                        <tr>
-                                            <td></td>
-                                            <td>ANUAL</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Bs.</td>
-                                            <td>167.28</td>
-                                            <td></td>
-                                        </tr>
+                                            <t t-if="p.d_post_mortem > 0">
+                                                <tr>
+                                                    <td>APORTE POST MORTEM</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>167.28 Bs.</td>
+                                                    <td>
+                                                        <span t-field="p.d_post_mortem"/>
+                                                        Bs.
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <tr>
+                                                <td>
+                                                    <strong>TOTAL A PAGAR GESTION
+                                                        <span t-field="p.gestion"/>
+                                                    </strong>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <t t-set="total"
+                                                       t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem + p.d_miscellaneous_income,2)"/>
+                                                    <t t-set="total_sum"
+                                                       t-value="round(p.d_regulation_cup + p.d_mandatory_contribution + p.d_post_mortem + p.d_miscellaneous_income,2)"/>
+                                                    <t t-if="total > 0">
+                                                        <span t-esc="total"/>
+                                                        Bs.
+                                                    </t>
+                                                    <t t-else="else">
+                                                        0.00 Bs
+                                                    </t>
 
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
+                                </t>
+                                <!--                                    <h3>TOTAL A DEPOSITAR <span t-esc="total_sum"/></h3>-->
+                                <ul>
+                                    <li>
+                                        <strong>CUENTA CORRIENTE M/N</strong>
+                                        10000046662082
+                                    </li>
+                                    <li>BANCO UNION</li>
+                                    <li>
+                                        <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL COA-4 DIC. R.L.
+                                        </strong>
+                                    </li>
+                                    <li>
+                                        <strong>EL DEPOSITO DEBE LLEVAR EL NOMBRE DEL INTERESADO (ASOCIADO).</strong>
+                                    </li>
+                                    <li>EL DEPOSITO DEBE SER ENVIADO EN FORMATO PDF AL SIGUIENTE NUMERO
+                                        <strong>68212344.</strong>
+                                    </li>
+                                </ul>
 
-                                </div>
+                                <h2>NOTA.-</h2>
+                                <p>
+                                    A PARTIR DE LA GESTION
+                                    <strong>
+                                        <span t-field="o.difference_year"/>
+                                    </strong>
+                                    DEBE DEPOSITAR EL APORTE POST MORTEM (24$US. ANUALES)
+                                    <strong>APORTE POST MORTEM</strong>
+                                </p>
+                                <h3>APORTE POST MORTEM</h3>
+                                <table style="width: 40%;">
+                                    <tr>
+                                        <td></td>
+                                        <td>ANUAL</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bs.</td>
+                                        <td>167.28</td>
+                                        <td></td>
+                                    </tr>
+
+                                </table>
                             </div>
                         </div>
                     </t>
-
-
                 </t>
+
             </t>
         </template>
     </data>
