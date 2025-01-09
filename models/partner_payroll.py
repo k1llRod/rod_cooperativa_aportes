@@ -373,7 +373,7 @@ class PartnerPayroll(models.Model):
                             lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
-                self.env.user.notify_success(message='Planilla de aportes actualizado'.format(record.partner_id.name),
+                self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
                                              title='Verificado')
                 record.outstanding_payments = 0
                 record.must_regulation_rate = 0
@@ -386,7 +386,7 @@ class PartnerPayroll(models.Model):
                 record.must_gestion = count_payments / 12
                 record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
                 self.env.user.notify_warning(
-                    message='Planilla de aportes desactualizada'.format(record.partner_id.name))
+                    message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
 
     def print_report_total(self):
         return {
