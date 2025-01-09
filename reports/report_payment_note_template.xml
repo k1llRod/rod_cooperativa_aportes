@@ -7,13 +7,13 @@
                     <t t-if="not company">
                         <!-- Multicompany -->
                         <t t-if="company_id">
-                            <t t-set="company" t-value="company_id" style="font-size:10px;"/>
+                            <t t-set="company" t-value="company_id" style="font-size:8px;"/>
                         </t>
                         <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
-                            <t t-set="company" t-value="o.company_id.sudo()" style="font-size:10px;"/>
+                            <t t-set="company" t-value="o.company_id.sudo()" style="font-size:8px;"/>
                         </t>
                         <t t-else="else">
-                            <t t-set="company" t-value="res_company" style="font-size:10px;"/>
+                            <t t-set="company" t-value="res_company" style="font-size:8px;"/>
                         </t>
                     </t>
                     <t t-call="web.external_layout_standard">
@@ -80,8 +80,8 @@
                                     <t t-foreach="o.due_payments_ids" t-as="p">
                                         <t t-set="cero" t-value="0"/>
                                         <t t-set="total" t-value="cero"/>
-                                        <center><h2>OBLIGACIONES CON LA AFCOOP. <span t-field="p.gestion"/></h2></center>
-                                        <table class="table table-striped">
+                                        <center style="font-size:12px;"><h3>OBLIGACIONES CON LA AFCOOP. <span t-field="p.gestion"/></h3></center>
+                                        <table class="table table-striped" style="font-size:12px;">
                                             <thead>
                                                 <tr>
                                                     <td>

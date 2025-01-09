@@ -139,7 +139,7 @@
                                         <field name="journal_id"/>
                                     </group>
                                     <group>
-                                        <field name="account_move_id" readonly="1"/>
+                                        <field name="account_move_id" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     </group>
                                 </group>
                                 <group>
