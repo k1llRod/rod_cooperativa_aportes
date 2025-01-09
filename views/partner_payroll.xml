@@ -197,7 +197,6 @@
                                                decoration-danger="state == 'no_contribution'"
                                                widget="badge"
                                                optional="hide"/>
-                                        />
                                         <field name="state_account"
                                                decoration-success="state in ['posted']"
                                                decoration-warning="state == 'draft'"
