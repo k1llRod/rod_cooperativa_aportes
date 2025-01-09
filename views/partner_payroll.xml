@@ -196,12 +196,13 @@
                                                decoration-warning="state == 'draft'"
                                                decoration-danger="state == 'no_contribution'"
                                                widget="badge"
-                                               optional="hide"/>
+                                               />
                                         <field name="state_account"
                                                decoration-success="state in ['posted']"
                                                decoration-warning="state == 'draft'"
                                                decoration-danger="state == 'cancel'"
-                                               widget="badge"/>
+                                               widget="badge"
+                                                optional="hide"/>
                                         <button name="open_one2many_line" type="object" class="oe_highlight"
                                                 icon="fa-eye"/>
                                     </tree>
