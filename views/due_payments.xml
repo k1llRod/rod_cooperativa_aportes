@@ -8,6 +8,7 @@
                 <tree editable="bottom">
                     <field name="name" decoration-info="True"/>
                     <field name="gestion" decoration-info="True"/>
+                    <field name="due_partner_payroll_id"/>
                     <field name="d_miscellaneous_income" sum="Total" decoration-info="True"/>
                     <field name="d_regulation_cup" sum="Total" decoration-info="True"/>
                     <field name="d_mandatory_contribution" sum="Total" decoration-info="True"/>
