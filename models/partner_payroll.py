@@ -74,6 +74,7 @@ class PartnerPayroll(models.Model):
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
     tree_updated_partner = fields.Boolean(string='Actualizado', related='updated_partner')
     outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_updated_partner", store=True)
+    outstanding = fields.Integer(string='Pagos pendientes', compute="calculate_month_difference")
 
     voluntary_contribution_certificate_total = fields.Float(string='Cert. Aport. Vol. Total',
                                                             compute='compute_count_pay_contributions', store=True)
@@ -373,8 +374,8 @@ class PartnerPayroll(models.Model):
                             lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
-                self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
-                                             title='Verificado')
+                # self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
+                #                              title='Verificado')
                 record.outstanding_payments = 0
                 record.must_regulation_rate = 0
                 record.must_mandatory_contribution = 0
@@ -385,8 +386,8 @@ class PartnerPayroll(models.Model):
                 record.must_mandatory_contribution = (record.outstanding_payments/6) * mandatory_contribution
                 record.must_gestion = count_payments / 12
                 record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
-                self.env.user.notify_warning(
-                    message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
+                # self.env.user.notify_warning(
+                #     message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
 
     def print_report_total(self):
         return {
@@ -410,14 +411,39 @@ class PartnerPayroll(models.Model):
     #         record.outstanding_payments = make_register - round(len(record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
 
 
+    @api.depends('payroll_payments_ids')
     def calculate_month_difference(self):
         for record in self:
-            if record.date_burn_partner:
-                diff = relativedelta(datetime.now(), record.date_burn_partner)
-                diff_months = diff.years * 12 + diff.months
+            diff = relativedelta(datetime.now(), record.date_burn_partner)
+            diff_months = diff.years * 12 + diff.months
+            if record.partner_status_especific == 'active_service':
+                count_payments = len(
+                    record.payroll_payments_ids.filtered(
+                        lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
+                record.outstanding = diff_months - count_payments
+            if record.partner_status_especific == 'passive_reserve_a':
+                count_payments = len(
+                    record.payroll_payments_ids.filtered(
+                        lambda x: (x.state == 'transfer') and x.drawback == False))
+                record.outstanding = diff_months - count_payments
+            if record.partner_status_especific == 'passive_reserve_b':
+                count_payments = len(record.due_payments_ids.filtered(lambda x: x.d_total > 0))
+                record.outstanding = count_payments
+                diff_months = 0 if count_payments == 0 else diff_months
+            if count_payments >= diff_months and record.state != 'draft':
+                record.updated_partner = True
+                self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
+                                             title='Verificado')
+                record.outstanding = 0
             else:
-                diff_months = 0
-        return diff_months
+                if record.partner_status_especific == 'passive_reserve_b':
+                    record.updated_partner = False
+                    record.outstanding = count_payments
+                else:
+                    record.outstanding = diff_months - count_payments
+                self.env.user.notify_warning(
+                    message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
+
 
     def select_init_partner_payroll(self):
         for record in self:

@@ -26,7 +26,8 @@
                     <field name="date_burn_partner" optional="hide"/>
                     <field name="advanced_payments" optional="hide"/>
                     <field name="count_pay_contributions" optional="hide"/>
-                    <field name="outstanding_payments" optional="hide"/>
+<!--                    <field name="outstanding_payments" optional="hide"/>-->
+                    <field name="outstanding"/>
                     <field name="voluntary_contribution_certificate_total" optional="hide"/>
                     <field name="mandatory_contribution_certificate_total" optional="hide"/>
                     <field name="performance_management_total"/>
@@ -95,16 +96,16 @@
                     <sheet>
                         <widget name="web_ribbon" text="Liquidado" attrs="{'invisible': [('state','!=','finalized')]}"/>
                         <div class="alert alert-warning text-center o_form_header" role="alert"
-                             attrs="{'invisible': [('outstanding_payments','=',0)]}">
+                             attrs="{'invisible': [('outstanding','=',0)]}">
                             <a class="close" data-dismiss="alert" href="#">x</a>
                             <div>
                                 <strong>Planilla de aportes</strong>
                             </div>
-                            <div attrs="{'invisible': [('outstanding_payments','&lt;','0')]}">Pagos pendientes
-                                <field name="outstanding_payments" required="0" readonly="1"/>
+                            <div attrs="{'invisible': [('outstanding','&lt;','0')]}">Pagos pendientes
+                                <field name="outstanding" required="0" readonly="1"/>
                             </div>
-                            <div attrs="{'invisible': [('outstanding_payments','>','0')]}">Pagos adelantados
-                                <field name="outstanding_payments" required="0" readonly="1"/>
+                            <div attrs="{'invisible': [('outstanding','>','0')]}">Pagos adelantados
+                                <field name="outstanding" required="0" readonly="1"/>
                             </div>
                         </div>
                         <div class="oe_title">
@@ -296,14 +297,16 @@
                     <separator />
                     <filter name="partner_active_service"
                             string="Asociados servicio activo"
-                            domain="[('partner_status_especific', '=', 'active_service')]"/>
+                            domain="[('partner_status_especific', '=', 'active_service'),
+                                    ('state','=','process')]"/>
                     <filter name="partner_passive_reserve_a"
                             string="Asociados Pasivo categoria 'A'"
                             domain="[('partner_status_especific','=','passive_reserve_a'),
                                     ('state','!=','unassociated')]"/>
                     <filter name="partner_passive_reserve_b"
                             string="Asociados Pasivo categoria 'B'"
-                            domain="[('partner_status_especific','=','passive_reserve_b')]"/>
+                            domain="[('partner_status_especific','=','passive_reserve_b'),
+                                    ('state','=','process')]"/>
 
 
                     <group expand="0" string="Group By">
