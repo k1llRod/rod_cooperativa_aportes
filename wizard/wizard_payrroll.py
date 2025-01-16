@@ -38,15 +38,23 @@ class WizardPayroll(models.TransientModel):
         reference = 'APORTES ' + self.period + self.val[0].partner_name
         for record in self:
             journal_id = record.account_journal_id
-            for rec in self.val:
-                total_income = rec.income if rec.income != 0 else rec.income_passive
-                data = (0, 0,{
-                    'account_id': record.account_income_id.id,
-                    'name': rec.name,
-                    'debit': total_income if total_income > 0 else 0,
-                    'credit': 0
-                })
-                if not (record.total_income == 0): move_line.append(data)
+            # for rec in self.val:
+            #     total_income = rec.income if rec.income != 0 else rec.income_passive
+            #     data = (0, 0,{
+            #         'account_id': record.account_income_id.id,
+            #         'name': rec.name,
+            #         'debit': total_income if total_income > 0 else 0,
+            #         'credit': 0
+            #     })
+            #     if not (record.total_income == 0): move_line.append(data)
+            total_income = record.total_income
+            data = (0, 0, {
+                'account_id': record.account_income_id.id,
+                'name': record.name,
+                'debit': total_income if total_income > 0 else 0,
+                'credit': 0
+            })
+            if not (record.total_income == 0): move_line.append(data)
             # data = (0, 0,{
             #         'account_id': record.account_income_id.id,
             #         'name': record.name,
@@ -92,6 +100,7 @@ class WizardPayroll(models.TransientModel):
             "line_ids": move_line,
         }
         account_move_id = record.env['account.move'].create(move_vals)
+        account_move_id.payroll_payment_ids = record.val
         self.account_move_id.unlink()
         search_payments = self.val
         for payment in search_payments:
