@@ -9,11 +9,11 @@ class DuePayments(models.Model):
     _description = 'Due Payments'
 
     name = fields.Char(string='Periodo')
-    d_miscellaneous_income = fields.Integer(string='D. inscripcion')
-    d_regulation_cup = fields.Float(string='D. tasa de regulacion')
-    d_mandatory_contribution = fields.Float(string='D. aporte obligatorio')
-    d_voluntary_contribution = fields.Float(string='Aporte voluntario')
-    d_post_mortem = fields.Float(string='D. post morte')
+    d_miscellaneous_income = fields.Integer(string='D. inscripcion', digits=(12, 2))
+    d_regulation_cup = fields.Float(string='D. tasa de regulacion', digits=(12, 2))
+    d_mandatory_contribution = fields.Float(string='D. aporte obligatorio', digits=(12, 2))
+    d_voluntary_contribution = fields.Float(string='Aporte voluntario', digits=(12, 2))
+    d_post_mortem = fields.Float(string='D. post morte', digits=(12, 2))
     gestion = fields.Integer(string='Gestion')
-    d_total = fields.Float(string='Total debe')
+    d_total = fields.Float(string='Total debe', digits=(12, 2))
     due_partner_payroll_id = fields.Many2one('partner.payroll', string='Pagos adelantados')

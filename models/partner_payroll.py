@@ -354,7 +354,7 @@ class PartnerPayroll(models.Model):
                                 'd_mandatory_contribution': cal_mandatory,
                                 'd_voluntary_contribution': sum_voluntary,
                                 'd_post_mortem': cal_post_mortem,
-                                'd_total': d_total,
+                                'd_total': round(d_total, 2),
                                 'due_partner_payroll_id': record.id,
                                 'gestion': gestion_process
                             })
