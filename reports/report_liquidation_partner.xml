@@ -110,7 +110,7 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_mandatory_contributions_certificate), 2)"/>
+                                                    <span t-esc="round((l.total_mandatory_contributions), 2)"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -128,7 +128,7 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_voluntary_contributions_certificate) + (l.total_capital_initial), 2)"/>
+                                                    <span t-esc="round((l.total_voluntary_contributions) + (l.total_capital_initial), 2)"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -146,7 +146,7 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_other_contributions), 2)"/>
+                                                    <span t-esc="round((l.other_contributions), 2)"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -164,10 +164,10 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_surpluses), 2)"/>
+                                                    <span t-esc="round((l.surpluses), 2)"/>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr style="font-weight:bold;">
                                                 <td>
                                                     TOTAL APORTACIONES Y EXCEDENTES
                                                 </td>
@@ -175,19 +175,16 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_contributions), 2)"/>
+                                                    <span t-esc="round((l.total_amount), 2)"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </t>
-
-                                <br/>
                                 <hr/>
                                 <h4>
                                     <u>DESCUENTOS</u>
                                 </h4>
-                                <br/>
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
@@ -198,7 +195,18 @@
                                                 Bs.
                                             </td>
                                             <td>
-<!--                                                <span t-esc="round((o.partner_payroll_ids.mandatory_contribution_certificate_total), 2)"/>-->
+                                                <span t-esc="round(l.loan_capital_bolivianos, 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                DIAS EXCEDENTES
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(l.balance_interest_month_bolivianos, 2)"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -209,18 +217,29 @@
                                                 Bs.
                                             </td>
                                             <td>
-<!--                                                <span t-esc="round((l.disengagement), 2)"/>-->
+                                                <span t-esc="round((l.disengagement), 2) * (-1)"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
+                                            <td style="font-weight:bold;">
                                                 TOTAL DESCUENTOS
                                             </td>
-                                            <td>
+                                            <td style="font-weight:bold;">
                                                 Bs.
                                             </td>
-                                            <td>
-<!--                                                <span t-esc="round((l.total_loan), 2)"/>-->
+                                            <td style="font-weight:bold;">
+                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos - l.disengagement, 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">
+                                                TOTAL DEVOLUCION
+                                            </td>
+                                            <td style="font-weight:bold;">
+                                                Bs.
+                                            </td>
+                                            <td style="font-weight:bold;">
+                                                <span t-esc="round(l.rest_contributions, 2)"/>
                                             </td>
                                         </tr>
                                     </tbody>
