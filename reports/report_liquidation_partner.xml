@@ -70,14 +70,14 @@
                     <div class="page body">
                         <t t-call="rod_cooperativa_aportes.rod_layout_liquidation">
                             <div>
+<!--                                <center>-->
+<!--                                    <h3>No. /2024</h3>-->
+<!--                                </center>-->
                                 <center>
-                                    <h3>No. /2024</h3>
+                                    DEVOLUCION DE CERTIFICACION DE
                                 </center>
                                 <center>
-                                    <h3>DEVOLUCION DE CERTIFICACION DE</h3>
-                                </center>
-                                <center>
-                                    <h3>APORTACIONES Y EXCEDENTES</h3>
+                                    APORTACIONES Y EXCEDENTES
                                 </center>
                                 <p>
                                     Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
