@@ -429,6 +429,8 @@ class PayrollPayments(models.Model):
         if sw == 1:
             raise ValidationError('No se pueden validar pagos con fechas diferentes')
         total_income = round(sum(self.mapped('income')),2) if sum(self.mapped('income')) > 0 else round(sum(self.mapped('income_passive')),2)
+        if self.historical_contribution_coaa > 0 and self.historical_interest_coaa > 0:
+            total_income = self.historical_contribution_coaa + self.historical_interest_coaa
         total_miscellaneous_income = sum(self.mapped('miscellaneous_income'))
         total_regulation_cup = sum(self.mapped('regulation_cup'))
         total_mandatory_contribution = sum(self.mapped('mandatory_contribution_certificate'))
