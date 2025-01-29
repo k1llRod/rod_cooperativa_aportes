@@ -234,7 +234,7 @@
                                         <tr t-set="acumulador" t-value="0"/>
                                         <tr t-set="acumulador1" t-value="0"/>
                                         <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['date_pivote'])" t-as="p">
-                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial' or p.state=='partner_return'">
+                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial' or p.state=='partner_return' or p.state=='other_contribution' or p.state=='surpluses'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
                                                     <td class="align-middle">
@@ -290,9 +290,9 @@
                                                            t-value="acumulador1 + round(p.voluntary_contribution_certificate, 2)"/>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <span t-esc="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
+                                                        <span t-esc="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate + p.other_contribution,2)"/>
                                                         <t t-set="acumulador"
-                                                           t-value="acumulador + round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate,2)"/>
+                                                           t-value="acumulador + round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate + p.other_contribution,2)"/>
                                                     </td>
                                                     <td class="align-middle">
                                                         <t t-if="p.state == 'transfer'">
@@ -310,7 +310,12 @@
                                                         <t t-elif="p.state == 'partner_return'">
                                                             <span>Devolucion</span>
                                                         </t>
-
+                                                        <t t-elif="p.state == 'other_contribution'">
+                                                            <span>Otros aportes</span>
+                                                        </t>
+                                                        <t t-elif="p.state == 'surpluses'">
+                                                            <span>Excedentes</span>
+                                                        </t>
                                                     </td>
                                                 </tr>
                                             </t>
