@@ -402,7 +402,18 @@
                                             <strong>Total aportes voluntarios:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')), 2)"/>
+                                            <span t-esc="round(acumulador1,2)"/>
+<!--                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='ministry_defense').mapped('voluntary_contribution_certificate')),2)"/>-->
+<!--                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')), 2)"/>-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Total otros aportes:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='other_contribution' or x.state=='surpluses').mapped('other_contribution')),2)"/>
+<!--                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')), 2)"/>-->
                                         </td>
                                     </tr>
                                     <tr>
