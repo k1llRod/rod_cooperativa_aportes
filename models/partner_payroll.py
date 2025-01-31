@@ -414,6 +414,7 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def calculate_month_difference(self):
         for record in self:
+            count_payments = 0
             diff = relativedelta(datetime.now(), record.date_burn_partner)
             diff_months = diff.years * 12 + diff.months
             if record.partner_status_especific == 'active_service':
