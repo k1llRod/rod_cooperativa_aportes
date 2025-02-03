@@ -428,13 +428,17 @@ class PayrollPayments(models.Model):
                 sw = 1
         if sw == 1:
             raise ValidationError('No se pueden validar pagos con fechas diferentes')
-        total_income = round(sum(self.mapped('income')),2) if sum(self.mapped('income')) > 0 else round(sum(self.mapped('income_passive')),2)
+        other_contribution = len(self.filtered(lambda x:x.state == 'other_contribution' or x.state == 'surpluses'))
+        if other_contribution > 0:
+            total_income = round(sum(self.mapped('other_contribution')),2)
+        else:
+            total_income = round(sum(self.mapped('income')),2) if sum(self.mapped('income')) > 0 else round(sum(self.mapped('income_passive')),2)
         if round(sum(self.mapped('historical_contribution_coaa')),2) > 0 and sum(self.mapped('historical_interest_coaa')) > 0:
             total_income = round(sum(self.mapped('voluntary_contribution_certificate')),2)
         total_miscellaneous_income = sum(self.mapped('miscellaneous_income'))
         total_regulation_cup = sum(self.mapped('regulation_cup'))
         total_mandatory_contribution = sum(self.mapped('mandatory_contribution_certificate'))
-        total_voluntary_contribution = sum(self.mapped('voluntary_contribution_certificate'))
+        total_voluntary_contribution = sum(self.mapped('voluntary_contribution_certificate')) if other_contribution == 0 else sum(self.mapped('other_contribution'))
         amount_total = total_miscellaneous_income + total_regulation_cup + total_mandatory_contribution + total_voluntary_contribution
         return {
             'type': 'ir.actions.act_window',
