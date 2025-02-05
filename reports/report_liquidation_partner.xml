@@ -77,8 +77,6 @@
                                     DEVOLUCION DE CERTIFICACION DE
                                 </center>
                                 <center>
-
-
                                     APORTACIONES Y EXCEDENTES
                                 </center>
                                 <p>
@@ -95,7 +93,8 @@
                             </div>
                             <div>
                                 <t t-foreach="o.finalize_contributions_ids" t-as="l">
-                                    <table class="table table-bordered">
+                                    <center>
+                                        <table class="table table-sm" style="width:90%;">
                                         <tbody>
                                             <tr>
                                                 <td>
@@ -103,15 +102,17 @@
                                                         <u>CERTIFICACION DE APORTES OBLIGATORIOS</u>
                                                     </strong>
                                                 </td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td >
                                                     CERTIFICACION DE APORTACION
                                                 </td>
                                                 <td>
                                                     Bs.
                                                 </td>
-                                                <td>
+                                                <td >
                                                     <span t-esc="round((l.total_mandatory_contributions), 2)"/>
                                                 </td>
                                             </tr>
@@ -121,6 +122,8 @@
                                                         <u>CERTIFICACION DE APORTES VOLUNTARIOS</u>
                                                     </strong>
                                                 </td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -139,6 +142,8 @@
                                                         <u>OTROS APORTES</u>
                                                     </strong>
                                                 </td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -157,6 +162,8 @@
                                                         <u>EXCEDENTE DE PERCEPCION</u>
                                                     </strong>
                                                 </td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -182,12 +189,15 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    </center>
+
                                 </t>
                                 <hr/>
                                 <h4>
                                     <u>DESCUENTOS</u>
                                 </h4>
-                                <table class="table table-bordered">
+                                <center>
+                                    <table class="table table-sm" style="width:90%;">
                                     <tbody>
                                         <tr>
                                             <td>
@@ -197,20 +207,10 @@
                                                 Bs.
                                             </td>
                                             <td>
-                                                <span t-esc="round(l.loan_capital_bolivianos, 2)"/>
+                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos, 2) "/>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>
-                                                DIAS EXCEDENTES
-                                            </td>
-                                            <td>
-                                                Bs.
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(l.balance_interest_month_bolivianos, 2)"/>
-                                            </td>
-                                        </tr>
+
                                         <tr>
                                             <td>
                                                 DESVICULACION COOP.
@@ -223,6 +223,17 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>
+                                                TASA DE REGULACION
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(l.manual_regulation_cup, 2) * (-1)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td style="font-weight:bold;">
                                                 TOTAL DESCUENTOS
                                             </td>
@@ -230,7 +241,7 @@
                                                 Bs.
                                             </td>
                                             <td style="font-weight:bold;">
-                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos - l.disengagement, 2)"/>
+                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos - l.disengagement -l.manual_regulation_cup, 2)"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -246,6 +257,8 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                </center>
+
                             </div>
                             <div class="oe_structure"/>
                         </t>

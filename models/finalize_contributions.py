@@ -12,6 +12,7 @@ class FinalizeContributions(models.Model):
     partner_payroll_ids = fields.Many2one('partner.payroll', string='Aportes')
     loan_application_ids = fields.Many2one('loan.application', string='Prestamo')
     disengagement = fields.Float('Desvinculacion')
+    regulation_cup = fields.Float('Tasa de regulacion')
     total_mandatory_contributions = fields.Float(string='Total de aportes obligatorios', digits=(16, 2))
     total_voluntary_contributions = fields.Float(string='Total de aportes voluntarios', digits=(16, 2))
     total_capital_initial = fields.Float('Total capital inicial', digits=(16, 2))

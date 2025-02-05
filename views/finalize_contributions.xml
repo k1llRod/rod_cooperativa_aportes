@@ -52,6 +52,7 @@
                                 <field name="date_proccess"/>
                                 <field name="partner_payroll_ids" readonly="1"/>
                                 <field name="disengagement"/>
+                                <field name="regulation_cup"/>
                                 <field name="total_mandatory_contributions"/>
                                 <field name="total_voluntary_contributions"/>
                                 <field name="total_capital_initial"/>

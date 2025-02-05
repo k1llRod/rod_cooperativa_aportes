@@ -26,11 +26,13 @@ class WizardFinalizedContributions(models.TransientModel):
     total_balance_total_interest_month_bolivianos = fields.Float(string='Total saldo interes mensual Bs.')
     total = fields.Float(string='Total saldo Bs.', compute='_compute_total')
     partial_devolution = fields.Float(string="Devolucion")
+    regulation_cup = fields.Float(string='Tasa de regulacion', default=0)
     option_liquidation = fields.Boolean(string='Liquidar prestamo')
     option_liquidation_contributions = fields.Boolean(string="Liquidar aportes")
     def action_confirm(self):
         vals = {
             'disengagement': self.disengagement,
+            'regulation_cup': self.regulation_cup,
             'partner_payroll_ids': self.partner_payroll_id.id,
             'date_proccess': self.date_finalize,
             'total_voluntary_contributions': self.total_voluntary_contributions_certificate,

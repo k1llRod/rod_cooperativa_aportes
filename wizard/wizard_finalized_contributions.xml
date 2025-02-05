@@ -10,6 +10,7 @@
                             <field name="partner_payroll_id" readonly="1"/>
                             <field name="date_finalize"/>
                             <field name="disengagement" />
+                            <field name="regulation_cup"/>
                             <field name="total_mandatory_contributions_certificate" readonly="1"/>
                             <field name="total_voluntary_contributions_certificate" readonly="1"/>
                             <field name="capital_initial" readonly="1"/>
