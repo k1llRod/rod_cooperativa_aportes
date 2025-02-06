@@ -7,7 +7,7 @@
                     <table style="width:100%;font-size:12px;">
                         <tr>
                             <td style="width:20%;" rowspan="6">
-                                <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'" style="width:120px;"/>
+                                <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'" style="width:80px;"/>
                             </td>
                             <td style="width:60%;">
                                 <center>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL</center>
@@ -70,30 +70,26 @@
                     <div class="page body">
                         <t t-call="rod_cooperativa_aportes.rod_layout_liquidation">
                             <div>
-<!--                                <center>-->
-<!--                                    <h3>No. /2024</h3>-->
-<!--                                </center>-->
-                                <center>
+                                <center style="font-size:14px;">
                                     DEVOLUCION DE CERTIFICACION DE
                                 </center>
-                                <center>
+                                <center style="font-size:14px;">
                                     APORTACIONES Y EXCEDENTES
                                 </center>
-                                <justify style="margin-left:58px;">
-                                    <p style="text-align:justify;font-size:12px;">
-                                        Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
-                                        <strong>
-                                            <span t-field="o.partner_id.category_partner_id.code_loan"/>
-                                            <span t-field="o.partner_id.weapon"/>
-                                            <span t-field="o.partner_id.name"/>
-                                        </strong>
-                                        Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL
-                                        "COA -
-                                        4 DE DICIEMBRE" R.L.
-                                    </strong> de acuerdo al siguiente detalle:
-                                    </p>
-                                </justify>
-
+                                <br/>
+                                <div style="text-align:justify;font-size:12px;">
+                                    Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
+                                    <strong>
+                                        <span t-field="o.partner_id.category_partner_id.code_loan"/>
+                                        <span t-field="o.partner_id.weapon"/>
+                                        <span t-field="o.partner_id.name"/>
+                                    </strong>
+                                    Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL
+                                    "COA -
+                                    4 DE DICIEMBRE" R.L.
+                                </strong> de acuerdo al siguiente detalle:
+                                </div>
+                                <br/>
                             </div>
                             <div>
                                 <t t-foreach="o.finalize_contributions_ids" t-as="l">
