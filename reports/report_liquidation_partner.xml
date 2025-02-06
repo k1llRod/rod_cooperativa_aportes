@@ -71,13 +71,13 @@
                         <t t-call="rod_cooperativa_aportes.rod_layout_liquidation">
                             <div>
                                 <center style="font-size:14px;">
-                                    DEVOLUCION DE CERTIFICACION DE
+                                    <strong>DEVOLUCION DE CERTIFICACION DE</strong>
                                 </center>
                                 <center style="font-size:14px;">
-                                    APORTACIONES Y EXCEDENTES
+                                    <strong>APORTACIONES Y EXCEDENTES</strong>
                                 </center>
                                 <br/>
-                                <div style="text-align:justify;font-size:12px;">
+                                <div style="text-align:justify;font-size:14px;">
                                     Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
                                     <strong>
                                         <span t-field="o.partner_id.category_partner_id.code_loan"/>
@@ -312,7 +312,7 @@
                                             style="text-align: center; vertical-align: top; padding-top:20px;">
                                             <div style="height:80px; width:40%; margin: 0 auto;"></div>
                                             <div style="margin-top:5px; font-size: 14px;">Cnl. DAEN. Dante Saúl Navarro Rivera</div>
-                                            <div style="margin-top:5px; font-size: 14px;"><strong>PRESIDENTE CIRCULO OFICIALES DEL ARMA DE ARTILLERIA</strong></div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>PRESIDENTE DEL CONSEJO DE ADMINISTRACION</strong></div>
                                         </td>
                                     </tr>
                                 </table>
