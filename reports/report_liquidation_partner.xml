@@ -4,7 +4,7 @@
         <template id="rod_layout_liquidation">
             <div class="header">
                 <div class="row">
-                    <table style="width:100%;">
+                    <table style="width:100%;font-size:12px;">
                         <tr>
                             <td style="width:20%;" rowspan="6">
                                 <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'" style="width:120px;"/>
