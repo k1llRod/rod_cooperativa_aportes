@@ -55,6 +55,8 @@ class FinalizeContributions(models.Model):
     account_disengagement = fields.Many2one('account.account', string='Cuenta de desvinculacion')
     account_regulation_cup = fields.Many2one('account.account', string='Cuenta tasa de regulacion')
     account_bank_rest_contributions = fields.Many2one('account.account', string='Cuenta Banco aportes restantes')
+    account_manual_post_mortem = fields.Many2one('account.account', string='Cuenta Post mortem manual')
+    account_manual_aporte_obligatorio = fields.Many2one('account.account', string='Cuenta Aporte obligatorio manual')
 
     @api.depends('total_voluntary_contributions', 'total_capital_initial')
     def calculate_total_voluntary(self):
@@ -285,25 +287,25 @@ class FinalizeContributions(models.Model):
                         val = []
                         data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
                                        'debit': record.total_voluntary, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
                                        'amount_currency': 0
                                        })
                         val.append(data)
                         data = (0, 0, {'account_id': record.account_capital_loan.id,
                                        'debit': record.total_mandatory_contributions, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
                                        'amount_currency': 0
                                        })
                         val.append(data)
                         data = (0, 0, {'account_id': record.account_other_contributions.id,
                                        'debit': record.other_contributions, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
                                        'amount_currency': 0
                                        })
                         val.append(data)
                         data = (0, 0, {'account_id': record.account_surpluses.id,
                                        'debit': record.surpluses, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
                                        'amount_currency': 0
                                        })
                         val.append(data)
@@ -331,12 +333,26 @@ class FinalizeContributions(models.Model):
                                        'amount_currency': 0
                                        })
                         val.append(data)
+                        data = (0, 0, {'account_id': record.account_manual_aporte_obligatorio.id,
+                                       'debit': 0, 'credit': record.manual_aporte_obligatorio,
+                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       'amount_currency': 0
+                                       })
+                        val.append(data)
+                        data = (0, 0, {'account_id': record.account_manual_post_mortem.id,
+                                       'debit': 0, 'credit': record.manual_post_mortem,
+                                       'partner_id': record.partner_payroll_ids.partner_id.id,
+                                       'amount_currency': 0
+                                       })
+                        val.append(data)
+
                         data = (0, 0, {'account_id': record.account_bank_rest_contributions.id,
                                        'debit': 0, 'credit': record.rest_contributions,
                                        'partner_id': record.partner_payroll_ids.partner_id.id,
                                        'amount_currency': 0
                                        })
                         val.append(data)
+
                         move_vals = {
                             "date": record.date_proccess,
                             "journal_id": record.journal_id.id,
