@@ -219,7 +219,7 @@
                                                 Bs.
                                             </td>
                                             <td>
-                                                <span t-esc="round((l.disengagement), 2) * (-1)"/>
+                                                <span t-esc="round((l.disengagement), 2)"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -230,7 +230,29 @@
                                                 Bs.
                                             </td>
                                             <td>
-                                                <span t-esc="round(l.manual_regulation_cup, 2) * (-1)"/>
+                                                <span t-esc="round(l.manual_regulation_cup, 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                POST MORTEM
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(l.manual_post_mortem, 2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                APORTE OBLIGATORIO
+                                            </td>
+                                            <td>
+                                                Bs.
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -241,7 +263,7 @@
                                                 Bs.
                                             </td>
                                             <td style="font-weight:bold;">
-                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos - l.disengagement -l.manual_regulation_cup, 2)"/>
+                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>
                                             </td>
                                         </tr>
                                         <tr>
