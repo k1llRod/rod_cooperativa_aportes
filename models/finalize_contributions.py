@@ -20,6 +20,8 @@ class FinalizeContributions(models.Model):
     total_amount = fields.Float(string='Total Debe', compute='calculate_total_amount', digits=(16, 2))
     total_amount_credit = fields.Float(string='Total Haber', compute='calculate_amount_credit', digits=(16, 2))
     manual_regulation_cup = fields.Float(string="Tasa de regulacion manual", digits=(16, 2))
+    manual_post_mortem = fields.Float(string="Post mortem manual", digits=(16, 2))
+    manual_aporte_obligatorio = fields.Float(string="Aporte obligatorio manual", digits=(16, 2))
     rest_contributions = fields.Float(string="Monto restante aportes", compute='calculate_rest_contributions',
                                       digits=(16, 2))
     other_contributions = fields.Float('Total otros aportes', digits=(16, 2))
@@ -36,6 +38,7 @@ class FinalizeContributions(models.Model):
     loan_capital_bolivianos = fields.Float(string='Total capital prestamo', digits=(16, 2))
     balance_interest_month_bolivianos = fields.Float(string='Total dias de interes', digits=(16, 2))
     discount_contribution = fields.Float(string='Descuento aporte', digits=(16, 2))
+
 
     journal_id = fields.Many2one('account.journal', string='Diario')
     account_move_id = fields.Many2one('account.move', string='Asiento contable')
@@ -96,15 +99,15 @@ class FinalizeContributions(models.Model):
     @api.depends('disengagement', 'manual_regulation_cup', 'rest_contributions')
     def calculate_amount_credit(self):
         for record in self:
-            record.total_amount_credit = record.disengagement + record.manual_regulation_cup + record.rest_contributions + record.loan_capital_bolivianos + record.balance_interest_month_bolivianos
+            record.total_amount_credit = record.disengagement + record.manual_regulation_cup + record.rest_contributions + record.loan_capital_bolivianos + record.balance_interest_month_bolivianos + record.manual_post_mortem + record.manual_aporte_obligatorio
 
-    @api.depends('manual_regulation_cup', 'disengagement')
+    @api.depends('manual_regulation_cup', 'disengagement','manual_post_mortem', 'manual_aporte_obligatorio')
     def calculate_rest_contributions(self):
         for record in self:
             if record.total_partial_devolution > 0:
                 record.rest_contributions = record.total_partial_devolution
             else:
-                record.rest_contributions = record.total_amount - record.disengagement - record.manual_regulation_cup - record.loan_capital_bolivianos - record.balance_interest_month_bolivianos
+                record.rest_contributions = record.total_amount - record.disengagement - record.manual_regulation_cup - record.loan_capital_bolivianos - record.balance_interest_month_bolivianos - record.manual_post_mortem - record.manual_aporte_obligatorio
 
     def action_confirm(self):
         for record in self:

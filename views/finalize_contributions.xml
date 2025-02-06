@@ -112,6 +112,8 @@
                                         <field name="account_regulation_cup"/>
                                         <field name="manual_regulation_cup"/>
                                         <field name="account_bank_rest_contributions"/>
+                                        <field name="manual_post_mortem"/>
+                                        <field name="manual_aporte_obligatorio"/>
                                         <field name="rest_contributions"/>
                                         <field name="total_amount_credit"/>
                                     </group>
