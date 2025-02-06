@@ -79,22 +79,26 @@
                                 <center>
                                     APORTACIONES Y EXCEDENTES
                                 </center>
-                                <p>
-                                    Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
-                                    <strong>
-                                        <span t-field="o.partner_id.category_partner_id.code_loan"/>
-                                        <span t-field="o.partner_id.weapon"/>
-                                        <span t-field="o.partner_id.name"/>
-                                    </strong>
-                                    Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL "COA -
-                                    4 DE DICIEMBRE" R.L.
-                                </strong> de acuerdo al siguiente detalle:
-                                </p>
+                                <justify style="margin-left:58px;">
+                                    <p style="text-align:justify;">
+                                        Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
+                                        <strong>
+                                            <span t-field="o.partner_id.category_partner_id.code_loan"/>
+                                            <span t-field="o.partner_id.weapon"/>
+                                            <span t-field="o.partner_id.name"/>
+                                        </strong>
+                                        Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL
+                                        "COA -
+                                        4 DE DICIEMBRE" R.L.
+                                    </strong> de acuerdo al siguiente detalle:
+                                    </p>
+                                </justify>
+
                             </div>
                             <div>
                                 <t t-foreach="o.finalize_contributions_ids" t-as="l">
                                     <center>
-                                        <table class="table table-sm" style="width:90%;">
+                                        <table class="table table-sm">
                                         <tbody>
                                             <tr>
                                                 <td>
@@ -192,12 +196,13 @@
                                     </center>
 
                                 </t>
-                                <hr/>
-                                <h4>
+                                <h4 style="margin-left:58px;">
                                     <u>DESCUENTOS</u>
                                 </h4>
                                 <center>
-                                    <table class="table table-sm" style="width:90%;">
+
+                                    <br/>
+                                    <table class="table table-sm">
                                     <tbody>
                                         <tr>
                                             <td>
@@ -281,6 +286,41 @@
                                 </table>
                                 </center>
 
+                            </div>
+                            <div class="signature-container" style="margin-top:50px;">
+                                <!-- Usamos una tabla para alinear los cuadros de firma -->
+                                <table style="width:100%; border-collapse: collapse;">
+                                    <!-- Primera fila: Dos cuadros de firma -->
+                                    <tr>
+                                        <td style="width:50%; text-align: center; vertical-align: top;">
+                                            <div style="height:80px; width:80%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;">Elia Monica Zacari Villca</div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>RESPONSABLE DE APORTES</strong></div>
+                                        </td>
+                                        <td style="width:50%; text-align: center; vertical-align: top;">
+                                            <div style="height:80px; width:80%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;"><span t-field="o.partner_id.weapon"/> <span t-field="o.partner_id.name"/></div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>OFICIAL DE EJERCITO</strong></div>
+                                        </td>
+                                    </tr>
+                                    <!-- Segunda fila: Un cuadro de firma centrado -->
+                                    <tr>
+                                        <td colspan="2"
+                                            style="text-align: center; vertical-align: top; padding-top:20px;">
+                                            <div style="height:80px; width:40%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;">Cnl. DAEN. Cristhian Fernando Jimenez Vargas</div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>TESORERO</strong></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"
+                                            style="text-align: center; vertical-align: top; padding-top:20px;">
+                                            <div style="height:80px; width:40%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;">Cnl. DAEN. Dante Saúl Navarro Rivera</div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>PRESIDENTE CIRCULO OFICIALES DEL ARMA DE ARTILLERIA</strong></div>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                             <div class="oe_structure"/>
                         </t>
