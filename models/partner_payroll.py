@@ -23,6 +23,7 @@ class PartnerPayroll(models.Model):
                               ('unassociated','No asociado')],
                              default='draft', track_visibility='always')
     partner_id = fields.Many2one('res.partner', string='Socio')
+    partner_name = fields.Char(string='Nombre firma', compute='_compute_formatted_name')
 
     partner_status = fields.Selection([('active', 'Activo'),
                                        ('active_reserve', 'Reserva activa'),
@@ -666,7 +667,11 @@ class PartnerPayroll(models.Model):
             if record.type_disengagements == 'fallecimiento':
                 record.partner_status_especific_reorder = ''
 
-
+    @api.depends('partner_id')
+    def _compute_formatted_name(self):
+        for rec in self:
+            rec.partner_name = " ".join(word.capitalize() for word in rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.name else ""
+            rec.partner_name = rec.partner_name + " " + " ".join(word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
 
 
 

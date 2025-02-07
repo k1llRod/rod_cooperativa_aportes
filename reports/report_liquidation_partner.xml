@@ -70,6 +70,7 @@
                     <div class="page body">
                         <t t-call="rod_cooperativa_aportes.rod_layout_liquidation">
                             <div>
+                                <hr/>
                                 <center style="font-size:14px;">
                                     <strong>DEVOLUCION DE CERTIFICACION DE</strong>
                                 </center>
@@ -94,16 +95,16 @@
                             <div>
                                 <t t-foreach="o.finalize_contributions_ids" t-as="l">
                                     <center>
-                                        <table class="table table-sm" style="font-size:12px;">
+                                        <table class="table table-sm" style="font-size:14px;width:70%;">
                                         <tbody>
                                             <tr>
-                                                <td>
+                                                <td style="width:80%;">
                                                     <strong>
                                                         <u>CERTIFICACION DE APORTES OBLIGATORIOS</u>
                                                     </strong>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
+                                                <td style="width:10%;"></td>
+                                                <td style="width:10%;"></td>
                                             </tr>
                                             <tr>
                                                 <td >
@@ -192,93 +193,93 @@
                                     </center>
 
                                 </t>
-                                <div>
+                                <center>
                                     <strong><u>DESCUENTOS</u></strong>
-                                </div>
+                                </center>
                                 <center>
                                     <br/>
-                                    <table class="table table-sm" style="font-size:12px;">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                PRESTAMO
-                                            </td>
-                                            <td>
-                                                Bs.
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos, 2) "/>
-                                            </td>
-                                        </tr>
+                                    <table class="table table-sm" style="font-size:14px;width:70%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width:80%;">
+                                                    PRESTAMO
+                                                </td>
+                                                <td style="width:10%;">
+                                                    Bs.
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos, 2) "/>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>
-                                                DESVICULACION COOP.
-                                            </td>
-                                            <td>
-                                                Bs.
-                                            </td>
-                                            <td>
-                                                <span t-esc="round((l.disengagement), 2)"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                TASA DE REGULACION
-                                            </td>
-                                            <td>
-                                                Bs.
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(l.manual_regulation_cup, 2)"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                POST MORTEM
-                                            </td>
-                                            <td>
-                                                Bs.
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(l.manual_post_mortem, 2)"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                APORTE OBLIGATORIO
-                                            </td>
-                                            <td>
-                                                Bs.
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight:bold;">
-                                                TOTAL DESCUENTOS
-                                            </td>
-                                            <td style="font-weight:bold;">
-                                                Bs.
-                                            </td>
-                                            <td style="font-weight:bold;">
-                                                <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight:bold;">
-                                                TOTAL DEVOLUCION
-                                            </td>
-                                            <td style="font-weight:bold;">
-                                                Bs.
-                                            </td>
-                                            <td style="font-weight:bold;">
-                                                <span t-esc="round(l.rest_contributions, 2)"/>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            <tr>
+                                                <td>
+                                                    DESVICULACION COOP.
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round((l.disengagement), 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    TASA DE REGULACION
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round(l.manual_regulation_cup, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    POST MORTEM
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round(l.manual_post_mortem, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    APORTE OBLIGATORIO
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">
+                                                    TOTAL DESCUENTOS
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    Bs.
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">
+                                                    TOTAL DEVOLUCION
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    Bs.
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    <span t-esc="round(l.rest_contributions, 2)"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </center>
 
                             </div>
@@ -294,7 +295,7 @@
                                         </td>
                                         <td style="width:50%; text-align: center; vertical-align: top;">
                                             <div style="height:80px; width:80%; margin: 0 auto;"></div>
-                                            <div style="margin-top:5px; font-size: 14px;"><span t-field="o.partner_id.category_partner_id.code_loan"/> <span t-field="o.partner_id.name"/></div>
+                                            <div style="margin-top:5px; font-size: 14px;"><span t-field="o.partner_name"/></div>
                                             <div style="margin-top:5px; font-size: 14px;"><strong>OFICIAL DE EJERCITO</strong></div>
                                         </td>
                                     </tr>

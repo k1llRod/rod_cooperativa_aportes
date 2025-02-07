@@ -116,6 +116,7 @@
                         <group>
                             <group>
                                 <field name="partner_id" readonly="1"/>
+                                <field name="partner_name" invisible="1"/>
                                 <field name="partner_status" />
                                 <field name="partner_status_historical" attrs="{'invisible': [('partner_status_historical','=',False)], 'readonly': [('state','!=','draft')]}" />
                                 <field name="partner_status_especific" />
