@@ -239,6 +239,18 @@ class FinalizeContributions(models.Model):
                                    'amount_currency': 0
                                    })
                     val.append(data)
+                    data = (0, 0, {'account_id': record.account_manual_aporte_obligatorio.id,
+                                   'debit': 0, 'credit': record.manual_aporte_obligatorio,
+                                   'partner_id': record.partner_payroll_ids.partner_id.id,
+                                   'amount_currency': 0
+                                   })
+                    val.append(data)
+                    data = (0, 0, {'account_id': record.account_manual_post_mortem.id,
+                                   'debit': 0, 'credit': record.manual_post_mortem,
+                                   'partner_id': record.partner_payroll_ids.partner_id.id,
+                                   'amount_currency': 0
+                                   })
+                    val.append(data)
                     move_vals = {
                         "date": record.date_proccess,
                         "journal_id": record.journal_id.id,
