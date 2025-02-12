@@ -669,10 +669,12 @@ class PartnerPayroll(models.Model):
 
     @api.depends('partner_id')
     def _compute_formatted_name(self):
-        for rec in self:
-            rec.partner_name = " ".join(word.capitalize() for word in rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.name else ""
-            rec.partner_name = rec.partner_name + " " + " ".join(word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
-
+        try:
+            for rec in self:
+                rec.partner_name = " ".join(word.capitalize() for word in rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.name else ""
+                rec.partner_name = rec.partner_name + " " + " ".join(word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
+        except:
+            rec.partner_name = ""
 
 
 
