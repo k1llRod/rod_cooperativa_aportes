@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+        <!-- Vista del wizard -->
+        <record id="wizard_report_all_form" model="ir.ui.view">
+            <field name="name">Formulario de reportes</field>
+            <field name="model">wizard.report.all</field>
+            <field name="arch" type="xml">
+                <form string="Your Wizard">
+                    <group>
+                        <group>
+                            <field name="date_start" />
+                            <field name="date_end"/>
+                            <field name="type_report"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_generate_report" string="Buscar" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_wizard_account_report_all_id">
+            <field name="name">Formulario de reportes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.report.all</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_report_all_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
