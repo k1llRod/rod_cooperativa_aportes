@@ -434,8 +434,8 @@ class PartnerPayroll(models.Model):
                 diff_months = 0 if count_payments == 0 else diff_months
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
-                self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
-                                             title='Verificado')
+                # self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
+                #                              title='Verificado')
                 record.outstanding = 0
             else:
                 if record.partner_status_especific == 'passive_reserve_b':
@@ -443,8 +443,8 @@ class PartnerPayroll(models.Model):
                     record.outstanding = count_payments
                 else:
                     record.outstanding = diff_months - count_payments
-                self.env.user.notify_warning(
-                    message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
+                # self.env.user.notify_warning(
+                #     message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
 
 
     def select_init_partner_payroll(self):
