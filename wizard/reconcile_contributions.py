@@ -61,7 +61,7 @@ class ReconcileContributions(models.TransientModel):
             [('period_process', '=', period), ('state', '=', 'draft')])
         partner_payroll_ids = self.env['partner.payroll'].search(
             [('partner_status_especific', '=', 'active_service')])
-        payroll_payments_ids = self.env['payroll.payments']
+        # payroll_payments_ids = self.env['payroll.payments']
         if self.drawback == True:
             status_dinamic = 'drawback'
         for partner in partner_payroll_ids:
@@ -87,7 +87,7 @@ class ReconcileContributions(models.TransientModel):
                 partner_id.city = search_partner.distribution
                 if self.drawback == True: mo.onchange_drawback()
                 mo.ministry_defense()
-                mo.onchange_income()
+                # mo.onchange_income()
                 if self.drawback == True:
                     list = ''
                     for rec in self.months:
@@ -117,6 +117,7 @@ class ReconcileContributions(models.TransientModel):
 
         context = {'default_message': 'Se han conciliado ' + str(
             len(filing_cabinet_ids) - no_reconciled) + ' registros de ' + str(len(filing_cabinet_ids))}
+
         return {
             'name': 'Registros conciliados',
             'type': 'ir.actions.act_window',
@@ -126,6 +127,7 @@ class ReconcileContributions(models.TransientModel):
             'target': 'new',
             'context': context,
         }
+
     def compute_reconcile_records(self):
         for record in self:
             record.correct_registry = len(record.env['nominal.relationship.mindef.contributions'].search(
