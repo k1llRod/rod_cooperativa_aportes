@@ -287,7 +287,7 @@ class PartnerPayroll(models.Model):
             record.surpluses_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
                     'other_contribution'))
-            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total
+            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total + record.surpluses_total
 
     def return_draft(self):
         self.state = 'draft'
