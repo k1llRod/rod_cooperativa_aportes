@@ -280,7 +280,7 @@ class PartnerPayroll(models.Model):
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'mandatory_contribution_certificate'))
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or x.state == 'partner_return').mapped(
+                lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or (x.state == 'partner_return' and x.switch_draf==False)).mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
             record.other_contribution_total = sum(round(c,2)for c in record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped('other_contribution'))
