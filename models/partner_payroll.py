@@ -280,7 +280,7 @@ class PartnerPayroll(models.Model):
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'mandatory_contribution_certificate'))
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
+                lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or x.state == 'partner_return').mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
             record.other_contribution_total = sum(round(c,2)for c in record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped('other_contribution'))
@@ -368,11 +368,13 @@ class PartnerPayroll(models.Model):
                             pass
 
                 else:
+                    record.compute_count_pay_contributions()
                     diff = relativedelta(datetime.now(), record.date_burn_partner)
                     diff_months = diff.years * 12 + diff.months
                     count_payments = len(
                         record.payroll_payments_ids.filtered(
                             lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
+
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
                 # self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
