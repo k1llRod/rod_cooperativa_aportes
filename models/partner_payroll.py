@@ -212,7 +212,7 @@ class PartnerPayroll(models.Model):
     def compute_contributions(self):
         for record in self:
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense')).mapped(
+                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense' or (x.state == 'partner_return' and x.switch_draf==False))).mapped(
                 'voluntary_contribution_certificate'))
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
@@ -506,7 +506,8 @@ class PartnerPayroll(models.Model):
 
     def finalized_payroll(self):
         total_contributions = (self.capital_initial + self.voluntary_contribution_certificate_total +
-                               self.mandatory_contribution_certificate_total + self.performance_management_total + self.other_contribution_total + self.surpluses_total)
+                               self.mandatory_contribution_certificate_total + self.performance_management_total +
+                               self.other_contribution_total + self.surpluses_total)
 
         loan_id = self.env['loan.application'].search([('partner_id','=',self.partner_id.id),('state','=','progress')])
         total_loan_capital_bolivianos = loan_id.balance_capital * loan_id.value_dolar
