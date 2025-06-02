@@ -155,6 +155,8 @@ class PartnerPayroll(models.Model):
                                                  ], string='Tipo de asociado')
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
+    mount_passive_a = fields.Float(string='Monto Categoria A')
+
     def _compute_total(self):
         for record in self:
             record.total = record.capital_initial + record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + record.other_contribution_total
@@ -296,6 +298,17 @@ class PartnerPayroll(models.Model):
         # else:
         #     raise ValidationError(_('No se puede regresar a borrador si ya se han realizado pagos'))
 
+    def get_month_starts(self, start_date, end_date):
+        result = []
+        current = start_date.replace(day=1)
+        while current <= end_date:
+            result.append(current)
+            # Avanza al primer día del mes siguiente
+            if current.month == 12:
+                current = current.replace(year=current.year + 1, month=1)
+            else:
+                current = current.replace(month=current.month + 1)
+        return result
     @api.depends('payroll_payments_ids')
     def compute_updated_partner(self):
         regulation_cup = float(self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
@@ -360,6 +373,39 @@ class PartnerPayroll(models.Model):
                                 'gestion': gestion_process
                             })
                             gestion_process += 1
+                            count_payments = 0
+                            d_total = 0
+                        except:
+                            count_payments = 0
+                            d_total = 0
+                            pass
+
+                if record.partner_status_especific == 'passive_reserve_a':
+                    self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
+                    n = record.outstanding
+                    sw = 0
+                    latest_payment = record.payroll_payments_ids.sorted('date_pivote', reverse=True)[
+                                     :1].date_pivote + relativedelta(months=1)
+                    months = record.get_month_starts(latest_payment, datetime.now().date())
+                    for i in range(len(months)):
+                        try:
+                            cal_miscellaneous = 0
+                            cal_regulation_cup = 0
+                            cal_mandatory = 0
+                            sum_voluntary = 0
+                            sum_voluntary = 0
+                            d_total = self.mount_passive_a
+                            # record.due_payments_ids.unlink()
+                            loan = self.env['due.payments'].create({
+                                'name': months[i].strftime('%m/%Y'),
+                                'd_miscellaneous_income': cal_miscellaneous,
+                                'd_regulation_cup': cal_regulation_cup,
+                                'd_mandatory_contribution': cal_mandatory,
+                                'd_voluntary_contribution': sum_voluntary,
+                                'd_total': round(d_total, 2),
+                                'due_partner_payroll_id': record.id,
+                                'gestion': months[i].year,
+                            })
                             count_payments = 0
                             d_total = 0
                         except:

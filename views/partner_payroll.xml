@@ -157,6 +157,7 @@
                                 <field name="count_mandatory_contribution_certificate"/>
 
                                 <field name="count_pay_contributions"/>
+                                <field name="mount_passive_a"/>
                                 <field name="updated_partner" invisible="1"/>
                             </group>
                         </group>

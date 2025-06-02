@@ -9,7 +9,12 @@
                             <div class="body">
                                 <hr/>
                                 <center>
-                                    <h3>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-B)</h3>
+                                    <t t-if="o.partner_status_especific == 'passive_reserve_a'">
+                                        <h3>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-A)</h3>
+                                    </t>
+                                    <t t-if="o.partner_status_especific == 'passive_reserve_b'">
+                                        <h3>OFICIALES DEL SERVICIO PASIVO (CATEGORIA-B)</h3>
+                                    </t>
                                 </center>
                                 <center>
                                     <h4>DETALLE DE PAGO</h4>
@@ -100,7 +105,8 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <t t-foreach="o.due_payments_ids" t-as="p">
+                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">
+                                    <t t-foreach="o.due_payments_ids" t-as="p">
                                     <t t-set="cero" t-value="0"/>
                                     <t t-set="total" t-value="cero"/>
                                     <center style="font-size:12px;">
@@ -212,7 +218,30 @@
                                         </tbody>
                                     </table>
                                 </t>
+
+                                </t>
+
                                 <!--                                    <h3>TOTAL A DEPOSITAR <span t-esc="total_sum"/></h3>-->
+                                <t t-if="o.partner_status_especific == 'passive_reserve_a'">
+                                    <br/>
+                                    <table class="table table-striped" style="font-size:12px;">
+                                        <thead>
+                                            <tr>
+                                                <td>PERIODO</td>
+                                                <td>APORTE</td>
+                                                <td>DEBE</td>
+                                            </tr>
+                                        </thead>
+                                        <t t-foreach="o.due_payments_ids" t-as="q">
+                                            <tr>
+                                                <td><span t-field="q.name"/></td>
+                                                <td><span t-field="q.d_total"/></td>
+                                                <td><strong><span t-field="q.d_total"/></strong></td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </t>
+                                <br/>
                                 <ul>
                                     <li>
                                         <strong>CUENTA CORRIENTE M/N</strong>
@@ -231,28 +260,30 @@
                                     </li>
                                 </ul>
 
-                                <h2>NOTA.-</h2>
-                                <p>
-                                    A PARTIR DE LA GESTION
-                                    <strong>
-                                        <span t-field="o.difference_year"/>
-                                    </strong>
-                                    DEBE DEPOSITAR EL APORTE POST MORTEM (24$US. ANUALES)
-                                    <strong>APORTE POST MORTEM</strong>
-                                </p>
-                                <h3>APORTE POST MORTEM</h3>
-                                <table style="width: 40%;">
-                                    <tr>
-                                        <td></td>
-                                        <td>ANUAL</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bs.</td>
-                                        <td>167.28</td>
-                                        <td></td>
-                                    </tr>
+                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">
+                                    <h2>NOTA.-</h2>
+                                    <p>
+                                        A PARTIR DE LA GESTION
+                                        <strong>
+                                            <span t-field="o.difference_year"/>
+                                        </strong>
+                                        DEBE DEPOSITAR EL APORTE POST MORTEM (24$US. ANUALES)
+                                        <strong>APORTE POST MORTEM</strong>
+                                    </p>
+                                    <h3>APORTE POST MORTEM</h3>
+                                    <table style="width: 40%;">
+                                        <tr>
+                                            <td></td>
+                                            <td>ANUAL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bs.</td>
+                                            <td>167.28</td>
+                                            <td></td>
+                                        </tr>
 
-                                </table>
+                                    </table>
+                                </t>
                             </div>
                         </div>
                     </t>
