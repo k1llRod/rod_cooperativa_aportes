@@ -34,6 +34,7 @@
         # 'views/payroll_payment.xml',
         'views/month.xml',
         'views/performance_management.xml',
+        'views/report_res_partner.xml',
         'data/sequence.xml',
         'views/performance_index_log.xml',
         'views/advance_payments.xml',

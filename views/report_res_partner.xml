@@ -1,0 +1,38 @@
+<odoo>
+    <data>
+        <record id="view_partner_payroll_tree_custom" model="ir.ui.view">
+            <field name="name">partner.payroll.tree.custom</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <tree string="Socios que solicitaron su desvinculacion">
+                    <field name="category_partner"/>
+                    <field name="partner_id"/>
+                    <field name="code_contact"/>
+                    <field name="vat"/>
+                    <field name="partner_state"/>
+                    <field name="capital_initial"/>
+                    <field name="partner_status_especific"/>
+                    <field name="date_registration" optional="hide"/>
+                    <field name="date_burn_partner" optional="hide"/>
+                    <field name="advanced_payments" optional="hide"/>
+                    <field name="count_pay_contributions" optional="hide"/>
+<!--                    <field name="outstanding_payments" optional="hide"/>-->
+                    <field name="outstanding"/>
+                    <field name="voluntary_contribution_certificate_total" optional="hide"/>
+                    <field name="mandatory_contribution_certificate_total" optional="hide"/>
+                    <field name="performance_management_total"/>
+                    <field name="contribution_total"/>
+                    <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_partner_payroll_custom" model="ir.actions.act_window">
+            <field name="name">Reporte de socios que solicitaron su desvinculacion</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type_disengagements', '=', 'retiro_voluntario')]</field>
+            <field name="help">Este reporte muestra a los socios que solicitaron su desvinculacion.</field>
+            <field name="view_id" ref="view_partner_payroll_tree_custom"/>
+        </record>
+    </data>
+</odoo>

@@ -49,7 +49,7 @@ class PartnerPayroll(models.Model):
                                                  ('passive_reserve_b', 'Pasivo categoria "B"'),
                                                  ('leave', 'Baja')], string='Tipo de asociado historico',
                                                  store=True, track_visibility="always")
-
+    category_partner = fields.Char(string='Grado', related='partner_id.category_partner_id.name', store=True)
     code_contact = fields.Char(string='Código de asociado', related='partner_id.code_contact', store=True)
     vat = fields.Char(string='CI', related='partner_id.vat')
     city = fields.Char(string='Ciudad', related='partner_id.city', store=True)
