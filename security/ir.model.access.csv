@@ -54,3 +54,5 @@ access_wizard_finalized_contributions,wizard.finalized.contributions,model_wizar
 access_wizard_unassociated,wizard.unassociated,model_wizard_unassociated,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
 
 access_finale_contributions,finalize.contributions,model_finalize_contributions,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
+
+access_partner_payroll_portal,access.partner.payroll.portal,model_partner_payroll,base.group_portal,1,0,0,0

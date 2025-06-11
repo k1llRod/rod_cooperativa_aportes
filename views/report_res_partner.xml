@@ -34,5 +34,37 @@
             <field name="help">Este reporte muestra a los socios que solicitaron su desvinculacion.</field>
             <field name="view_id" ref="view_partner_payroll_tree_custom"/>
         </record>
+        <record id="view_partner_payroll_tree_custom_a_b" model="ir.ui.view">
+            <field name="name">partner.payroll.tree.custom</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <tree string="Socios que solicitaron su desvinculacion">
+                    <field name="category_partner"/>
+                    <field name="partner_id"/>
+                    <field name="mandatory_contribution_certificate_total"/>
+                    <field name="voluntary_contribution_certificate_total"/>
+                    <field name="other_contribution_total"/>
+                    <field name="surpluses_total"/>
+                    <field name="contribution_total"/>
+                    <field name="state" optional="hidden"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_partner_payroll_custom_total_a" model="ir.actions.act_window">
+            <field name="name">Reporte de socios categoria A</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_status_especific', '=', 'passive_reserve_a'),('state','=','process')]</field>
+            <field name="help">Este reporte muestra a los socios con aportes de la categoria A.</field>
+            <field name="view_id" ref="view_partner_payroll_tree_custom_a_b"/>
+        </record>
+        <record id="action_partner_payroll_custom_total_b" model="ir.actions.act_window">
+            <field name="name">Reporte de socios categoria B</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_status_especific', '=', 'passive_reserve_b'),('state','=','process')]</field>
+            <field name="help">Este reporte muestra a los socios con aportes de la categoria B.</field>
+            <field name="view_id" ref="view_partner_payroll_tree_custom_a_b"/>
+        </record>
     </data>
 </odoo>
