@@ -84,7 +84,9 @@ class ReconcileContributions(models.TransientModel):
                            'drawback': self.drawback}
                 mo = self.env['payroll.payments'].create(val)
                 partner_id = self.env['res.partner'].search([('id', '=', partner.partner_id.id)])
+                category_change = self.env['partner.category'].search([('grade_sheet','=',search_partner.degree)])
                 partner_id.city = search_partner.distribution
+                partner_id.category_partner_id = category_change.id
                 if self.drawback == True: mo.onchange_drawback()
                 mo.ministry_defense()
                 # mo.onchange_income()
