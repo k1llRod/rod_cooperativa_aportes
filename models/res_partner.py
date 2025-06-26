@@ -13,7 +13,9 @@ class ResPartner(models.Model):
                               ('rejected', 'Rechazado'),
                               ('unsubscribe', 'Baja'),
                               ('deceased','Fallecido'),
-                              ('unassociated','No asociado')],
+                              ('unassociated','No asociado'),
+                              ('expelled','Expulsion'),
+                              ('abandonment','Abandono')],
                              string='Estado', default='draft', track_visibility='onchange')
     # date_deceased = fields.Date(string='Fecha de fallecimiento')
 
@@ -41,6 +43,14 @@ class ResPartner(models.Model):
 
     partner_payroll_ids = fields.Many2one('partner.payroll', string='Aportes', compute='compute_contributions_count', store=True)
     loan_application_ids = fields.Many2one('loan.application', string='Préstamos', compute='compute_contributions_count', store=True)
+
+    type_disengagements = fields.Selection([('fallecimiento', 'Fallecimiento'),
+                                            ('retiro_voluntario', 'Retiro voluntario'),
+                                            ('pase_servicio_pasivo', 'Pase al servicio pasivo'),
+                                            ('abandono', 'Abandono'),
+                                            ('expulsion', 'Expulsion')],
+                                           string="Baja por", related='partner_payroll_ids.type_disengagements', store=True)
+
     def compute_contributions_count(self):
         for record in self:
             contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))

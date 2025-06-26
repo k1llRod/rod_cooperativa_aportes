@@ -259,7 +259,7 @@
                                                         <t t-if="p.income_passive">
                                                             <t t-esc="p.income_passive"/>
                                                         </t>
-                                                        <t t-else="p.income and p.income_passive">
+                                                        <t t-else="p.income > 0 and p.income_passive > 0">
                                                             0
                                                         </t>
                                                         <!--                                                    <span t-field="p.income"/>-->

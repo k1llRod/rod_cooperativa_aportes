@@ -141,9 +141,10 @@ class PartnerPayroll(models.Model):
     gloss_disengagement = fields.Text(string="Observaciones Baja")
     type_disengagements = fields.Selection([('fallecimiento','Fallecimiento'),
                                            ('retiro_voluntario','Retiro voluntario'),
-                                           ('pase_servicio_pasivo','Pase al servicio pasivo')],
+                                           ('pase_servicio_pasivo','Pase al servicio pasivo'),
+                                            ('abandono','Abandono'),
+                                            ('expulsion','Expulsion')],
                                           string="Baja por", store=True)
-
 
     date_unassociated = fields.Date(string='Fecha de no asociado')
     state_finalize = fields.Selection([('borrador','Borrador'),
@@ -689,7 +690,7 @@ class PartnerPayroll(models.Model):
     def process_partner_status(self):
         for record in self:
             if record.state == 'process':
-                raise ValidationError(_('La planilla de aportes debe estar en un estaod "PROCESO DE LIQUIDACION"'))
+                raise ValidationError(_('La planilla de aportes debe estar en un estado "PROCESO DE LIQUIDACION"'))
             if record.type_disengagements == 'fallecimiento':
                 record.partner_id.state = 'deceased'
                 record.state = 'finalized'
@@ -700,6 +701,15 @@ class PartnerPayroll(models.Model):
                 record.partner_id.state = 'unsubscribe'
                 record.state = 'finalized'
                 record.state_finalize = 'hecho'
+            if record.type_disengagements == 'abandono':
+                record.partner_id.state = 'unsubscribe'
+                record.state = 'finalized'
+                record.state_finalize = 'hecho'
+            if record.type_disengagements == 'expulsion':
+                record.partner_id.state = 'unsubscribe'
+                record.state = 'finalized'
+                record.state_finalize = 'hecho'
+
             if record.type_disengagements == 'pase_servicio_pasivo':
                 record.partner_status_especific_historical = record.partner_id.partner_status_especific
                 if record.partner_status_especific_reorder == 'passive_reserve_a':
@@ -724,6 +734,41 @@ class PartnerPayroll(models.Model):
                 rec.partner_name = rec.partner_name + " " + " ".join(word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
         except:
             rec.partner_name = ""
+
+    def reconcile_contributions(self, data):
+        month = data.get('month')
+        year = data.get('year')
+        drawback = data.get('drawback')
+        date_payment = data.get('date_payment')
+        date_field_select = data.get('date_field_select')
+        months = data.get('months', [])
+        period = f"{month}/{year}"
+
+        # Recuperar los recordsets a partir de los IDs
+        filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].browse(
+            data.get('filing_cabinet_ids', []))
+        partner_payroll_ids = self.env['partner.payroll'].browse(data.get('partner_payroll_ids', []))
+
+        # Aquí colocas toda la lógica optimizada, como en la versión que ya trabajamos
+        # Por ejemplo:
+        filing_map = {rec.eit_item: rec for rec in filing_cabinet_ids}
+        reconciled = 0
+
+        for partner in partner_payroll_ids:
+            search_partner = filing_map.get(partner.partner_id.code_contact)
+            if search_partner:
+                # lógica simplificada
+                reconciled += 1
+                search_partner.write({
+                    'state': 'reconciled',
+                    'date_process': date_field_select,
+                    'period_process': period,
+                })
+
+        return {
+            'message': f'Se conciliaron {reconciled} registros del periodo {period}.'
+        }
+
 
 
 

@@ -12,7 +12,7 @@
                 </xpath>
                 <xpath expr="//sheet" position="before">
                     <header>
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,verificate,activate"/>
                         <button name="init_partner" string="Iniciar aportes" type="object"
                                 attrs="{'invisible': ['|',('state', '!=', 'verificate'),('contributions_count','>','0')]}"/>
                         <button name="init_loan" string="Iniciar prestamo" type="object"
@@ -87,6 +87,7 @@
                             <group string="Saldos">
                                 <field name="balance_post_mortem"/>
                                 <field name="balance_longevity"/>
+
 <!--                                <field name="Saldo post mortem"/>-->
                             </group>
                         </group>
@@ -120,6 +121,18 @@
                 </xpath>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="res_partner_fields_drop">
+            <field name="name">res.partner.fields.drop</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="rod_cooperativa.res_partner_form_inh"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_deceased']" position="after">
+                    <field name="type_disengagements" attrs="{'invisible': [('state', '!=', 'unsubscribe')]}"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="action_init_massive_payment" model="ir.actions.server">
             <field name="name">Iniciar Aportes</field>
             <field name="model_id" ref="model_res_partner"/>

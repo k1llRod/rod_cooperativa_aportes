@@ -107,7 +107,7 @@
                                                     <span t-field="p.period_register"></span>
                                                 </td>
                                                 <td style="border: 1px solid gray;">
-                                                    <span t-field="p.income"/>
+                                                    <span t-field="round(p.income,2)"/>
                                                 </td>
                                                 <td style="border: 1px solid gray;">
 
