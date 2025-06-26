@@ -55,10 +55,12 @@
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <tree string="Socios dados de baja">
+                    <field name="date_disengagements"/>
                     <field name="name"/>
                     <field name="vat"/>
                     <field name="street"/>
                     <field name="type_disengagements"/>
+                    <field name="gloss_disengagement"/>
                 </tree>
             </field>
         </record>

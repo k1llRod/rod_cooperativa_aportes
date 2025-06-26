@@ -50,6 +50,8 @@ class ResPartner(models.Model):
                                             ('abandono', 'Abandono'),
                                             ('expulsion', 'Expulsion')],
                                            string="Baja por", related='partner_payroll_ids.type_disengagements', store=True)
+    date_disengagements = fields.Date(string='Fecha de baja', related='partner_payroll_ids.date_disengagements', store=True)
+    gloss_disengagement = fields.Text(string='Glosa de baja', related='partner_payroll_ids.gloss_disengagement', store=True)
 
     def compute_contributions_count(self):
         for record in self:

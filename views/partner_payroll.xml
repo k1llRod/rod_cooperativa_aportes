@@ -218,6 +218,7 @@
                                 <group >
                                     <group string="Datos para la liquidacion">
                                         <field name="type_disengagements"/>
+                                        <field name="date_disengagements"/>
                                         <field name="gloss_disengagement"/>
                                         <button name="process_partner_status" string="Procesar asociado" class="oe_highlight" type="object"/>
                                     </group>

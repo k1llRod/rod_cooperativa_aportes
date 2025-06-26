@@ -5,6 +5,8 @@ from odoo.exceptions import ValidationError
 from itertools import groupby
 import numpy as np
 import re
+from email.policy import default
+
 
 # import inflect
 # from translate import Translator
@@ -145,7 +147,7 @@ class PartnerPayroll(models.Model):
                                             ('abandono','Abandono'),
                                             ('expulsion','Expulsion')],
                                           string="Baja por", store=True)
-
+    date_disengagements = fields.Date(string='Fecha de baja', default=lambda self: datetime.now().date())
     date_unassociated = fields.Date(string='Fecha de no asociado')
     state_finalize = fields.Selection([('borrador','Borrador'),
                                        ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')

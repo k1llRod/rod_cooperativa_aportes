@@ -129,6 +129,8 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date_deceased']" position="after">
                     <field name="type_disengagements" attrs="{'invisible': [('state', '!=', 'unsubscribe')]}"/>
+                    <field name="date_disengagements" attrs="{'invisible': [('state', '!=', 'unsubscribe')]}"/>
+                    <field name="gloss_disengagement" attrs="{'invisible': [('state', '!=', 'unsubscribe')]}"/>
                 </xpath>
             </field>
         </record>
