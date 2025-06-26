@@ -50,6 +50,18 @@
                 </tree>
             </field>
         </record>
+        <record id="view_res_partner_tree_baja" model="ir.ui.view">
+            <field name="name">res.partner.tree.baja</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Socios dados de baja">
+                    <field name="name"/>
+                    <field name="vat"/>
+                    <field name="street"/>
+                    <field name="type_disengagements"/>
+                </tree>
+            </field>
+        </record>
         <record id="action_partner_payroll_custom_total_a" model="ir.actions.act_window">
             <field name="name">Reporte de socios categoria A</field>
             <field name="res_model">partner.payroll</field>
@@ -65,6 +77,15 @@
             <field name="domain">[('partner_status_especific', '=', 'passive_reserve_b'),('state','=','process')]</field>
             <field name="help">Este reporte muestra a los socios con aportes de la categoria B.</field>
             <field name="view_id" ref="view_partner_payroll_tree_custom_a_b"/>
+        </record>
+        <record id="action_res_partner_tree_baja" model="ir.actions.act_window">
+            <field name="name">Reporte de socios dados de baja</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'unsubscribe')]</field>
+            <field name="context">{'search_default_group_type_disengagements': 1}</field>
+            <field name="help">Este reporte muestra a los socios dados de baja.</field>
+            <field name="view_id" ref="view_res_partner_tree_baja"/>
         </record>
     </data>
 </odoo>
