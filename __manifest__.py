@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','contacts','mail', 'rod_cooperativa','rod_loan_emergency','web_notify','account','web'],
+    'depends': ['base', 'contacts', 'mail', 'rod_cooperativa', 'rod_loan_emergency', 'web_notify', 'account', 'web'],
 
     # always loaded
     'data': [
@@ -57,6 +57,7 @@
         'views/rod_cooperativa_aportes_menuitem.xml',
         'data/month_data.xml',
         'reports/report.xml',
+        'reports/report_tree.xml',
         'reports/payroll_payment_pdf.xml',
         'reports/partner_payroll_pdf.xml',
         'reports/report_payment_note_template.xml',
@@ -67,15 +68,15 @@
         'reports/report_res_partner_elections.xml',
         'reports/report_res_partner_resumen.xml',
         'reports/report_liquidation_partner.xml',
+        'reports/report_res_partner_unsubscribe.xml',
         # 'reports/report_wrd.xml',
     ],
 
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'rod_cooperativa_aportes/static/src/js/partner_payroll.js',
-    #     ],
-    #     'web.assets_qweb': [
-    #         'rod_cooperativa_aportes/static/src/xml/partner_payroll.xml',
-    #     ],
-    # }
+    'assets': {
+        'web.assets_backend': [
+            'rod_cooperativa_aportes/static/src/xml/partner_payroll.xml',
+            'rod_cooperativa_aportes/static/src/js/list_export_pdf.js',
+
+        ],
+    }
 }

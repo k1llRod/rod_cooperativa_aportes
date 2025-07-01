@@ -224,3 +224,6 @@ class ResPartner(models.Model):
     def draft_massive(self):
         for rec in self:
             rec.state = 'draft'
+
+    def print_report_unsubscribe(self):
+        return self.env.ref('rod_cooperativa_aportes.action_partner_unsubscribe_pdf').report_action(self)

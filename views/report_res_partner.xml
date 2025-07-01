@@ -54,7 +54,15 @@
             <field name="name">res.partner.tree.baja</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <tree string="Socios dados de baja">
+                <tree string="Socios dados de baja" create="false">
+                    <header>
+                        <button name="print_report_unsubscribe"
+                                type="object"
+                                string="Exportar PDF"
+                                class="btn btn-primary"
+                                icon="fa-print"
+                                context="{'active_ids': active_ids}"/>
+                    </header>
                     <field name="date_disengagements"/>
                     <field name="name"/>
                     <field name="vat"/>
@@ -88,6 +96,16 @@
             <field name="context">{'search_default_group_type_disengagements': 1}</field>
             <field name="help">Este reporte muestra a los socios dados de baja.</field>
             <field name="view_id" ref="view_res_partner_tree_baja"/>
+        </record>
+        <record id="action_partner_baja_pdf_export" model="ir.actions.server">
+            <field name="name">Exportar PDF - Socios dados de baja</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_type">action</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = env.ref('rod_cooperativa_aportes.action_partner_unsubscribe_pdf').report_action(records)
+            </field>
         </record>
     </data>
 </odoo>
