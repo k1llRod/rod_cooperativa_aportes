@@ -97,15 +97,15 @@
             <field name="help">Este reporte muestra a los socios dados de baja.</field>
             <field name="view_id" ref="view_res_partner_tree_baja"/>
         </record>
-        <record id="action_partner_baja_pdf_export" model="ir.actions.server">
-            <field name="name">Exportar PDF - Socios dados de baja</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="binding_model_id" ref="base.model_res_partner"/>
-            <field name="binding_type">action</field>
-            <field name="state">code</field>
-            <field name="code">
-                action = env.ref('rod_cooperativa_aportes.action_partner_unsubscribe_pdf').report_action(records)
-            </field>
-        </record>
+<!--        <record id="action_partner_baja_pdf_export" model="ir.actions.server">-->
+<!--            <field name="name">Exportar PDF - Socios dados de baja</field>-->
+<!--            <field name="model_id" ref="base.model_res_partner"/>-->
+<!--            <field name="binding_model_id" ref="base.model_res_partner"/>-->
+<!--            <field name="binding_type">action</field>-->
+<!--            <field name="state">code</field>-->
+<!--            <field name="code">-->
+<!--                action = env.ref('rod_cooperativa_aportes.action_partner_unsubscribe_pdf').report_action(records)-->
+<!--            </field>-->
+<!--        </record>-->
     </data>
 </odoo>
