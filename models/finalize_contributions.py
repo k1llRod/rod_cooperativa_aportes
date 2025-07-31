@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from num2words import num2words
 
 
 class FinalizeContributions(models.Model):
@@ -57,6 +58,8 @@ class FinalizeContributions(models.Model):
     account_bank_rest_contributions = fields.Many2one('account.account', string='Cuenta Banco aportes restantes')
     account_manual_post_mortem = fields.Many2one('account.account', string='Cuenta Post mortem manual')
     account_manual_aporte_obligatorio = fields.Many2one('account.account', string='Cuenta Aporte obligatorio manual')
+
+    literal_number = fields.Char(string='Amount literal', compute='_compute_literal_number')
 
     @api.depends('total_voluntary_contributions', 'total_capital_initial')
     def calculate_total_voluntary(self):
@@ -552,6 +555,14 @@ class FinalizeContributions(models.Model):
                             'res_id': account_move_id.id,
                             'views': [(False, 'form')],
                         }
+
+    @api.depends('total_amount')
+    def _compute_literal_number(self):
+        for record in self:
+            record.literal_number = num2words(int(record.total_amount), lang='es').upper()
+            decimal = str(round(record.total_amount % 1 * 100))
+            record.literal_number = record.literal_number + ', CON ' + decimal + '/100 BOLIVIANOS'
+
 
 
 

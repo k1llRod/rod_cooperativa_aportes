@@ -60,6 +60,8 @@
                                 <field name="surpluses"/>
                                 <field name="perfomance_contributions"/>
                                 <field name="total_partial_devolution"/>
+                                <field name="total_amount" string="Total"/>
+                                <field name="literal_number"/>
                             </group>
                             <group>
 

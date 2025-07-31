@@ -65,8 +65,8 @@
                     </header>
                     <field name="date_disengagements"/>
                     <field name="name"/>
-                    <field name="vat"/>
-                    <field name="street"/>
+                    <field name="vat" string="CI"/>
+                    <field name="street" string="Direccion"/>
                     <field name="type_disengagements"/>
                     <field name="gloss_disengagement"/>
                 </tree>

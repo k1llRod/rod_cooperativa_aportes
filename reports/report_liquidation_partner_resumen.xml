@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="rod_layout_liquidation_resumen">
+            <div class="header">
+                <div class="row">
+                    <table style="width:100%;font-size:12px;">
+                        <tr>
+                            <td style="width:20%;" rowspan="6">
+                                <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'" style="width:80px;"/>
+                            </td>
+                            <td style="width:60%;">
+                                <center>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL</center>
+                            </td>
+                            <td style="width:20%;">
+                                <strong style="padding-left:15px;">Usuario:</strong>
+                                <t t-esc="user.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <center>"COA-4 DE DICIEMBRE" R.L.</center>
+                            </td>
+                            <td>
+                                <strong style="padding-left:15px;">Fecha:</strong>
+                                <t t-esc="datetime.date.today().strftime('%d-%m-%Y')"/>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <center>Mezzanine Of. 09 - Telf./Fax: 2420530</center>
+                            </td>
+
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <center>Av. Ecuador N 738</center>
+                            </td>
+
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <center>La Paz - Bolivia</center>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+            <div class="article o_report_layout_standard">
+                <t t-out="0"/>
+            </div>
+            <div class="footer o_standard_footer">
+                <div class="row">
+
+                </div>
+            </div>
+        </template>
+        <template id="report_liquidation_partner_resumen">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page body">
+                        <t t-call="rod_cooperativa_aportes.rod_layout_liquidation_resumen">
+                            <div>
+                                <hr/>
+                                <center style="font-size:14px;">
+                                    <strong>DEVOLUCION DE CERTIFICACION DE</strong>
+                                </center>
+                                <center style="font-size:14px;">
+                                    <strong>APORTACIONES Y EXCEDENTES</strong>
+                                </center>
+                                <br/>
+                                <div style="text-align:justify;font-size:14px;">
+                                    Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
+                                    <strong>
+                                        <span t-field="o.partner_id.category_partner_id.code_loan"/>
+                                        <span t-field="o.partner_id.weapon"/>
+                                        <span t-field="o.partner_id.name"/>
+                                    </strong>
+                                    Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL
+                                    "COA -
+                                    4 DE DICIEMBRE" R.L.
+                                </strong> de acuerdo al siguiente detalle:
+                                </div>
+                                <br/>
+                            </div>
+                            <div>
+                                <t t-foreach="o.finalize_contributions_ids" t-as="l">
+                                    <center>
+                                        <table class="table table-sm" style="font-size:14px;width:70%;">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        <u>CERTIFICACION DE APORTACION</u>
+                                                    </strong>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    APORTES
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round((l.total_voluntary_contributions) + (l.total_capital_initial) + (l.total_mandatory_contributions), 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        <u>OTROS APORTES</u>
+                                                    </strong>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    APORTES
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round((l.other_contributions), 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        <u>EXCEDENTE DE PERCEPCION</u>
+                                                    </strong>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    EXCEDENTES
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round((l.surpluses), 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr style="font-weight:bold;">
+                                                <td>
+                                                    TOTAL APORTACIONES Y EXCEDENTES
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round((l.total_amount), 2)"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </center>
+                                </t>
+                                <center>
+                                    <strong><u>DESCUENTOS</u></strong>
+                                </center>
+                                <center>
+                                    <br/>
+                                    <table class="table table-sm" style="font-size:14px;width:70%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width:80%;">
+                                                    PRESTAMO
+                                                </td>
+                                                <td style="width:10%;">
+                                                    Bs.
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos, 2) "/>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    DESVICULACION COOP.
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round((l.disengagement), 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    TASA DE REGULACION
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round(l.manual_regulation_cup, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    POST MORTEM
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round(l.manual_post_mortem, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    APORTE OBLIGATORIO
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+                                                    <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">
+                                                    TOTAL DESCUENTOS
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    Bs.
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">
+                                                    TOTAL DEVOLUCION
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    Bs.
+                                                </td>
+                                                <td style="font-weight:bold;">
+                                                    <span t-esc="round(l.rest_contributions, 2)"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </center>
+
+                                <br/>
+                                <div class="signature">
+                                    (Son: <span t-field="l.literal_number"/>)
+                                </div>
+                                <div class="signature">
+                                    En señal de conformidad, se firma el pie del presente documento
+                                </div>
+                                <div class="signature" style="text-align:right;">
+                                    La Paz, <span t-esc="l.date_proccess.strftime('%d de %B de %Y').capitalize()"/>
+                                </div>
+                                <br/>
+                            </div>
+
+                            <div class="signature-container" style="margin-top:50px;">
+                                <!-- Usamos una tabla para alinear los cuadros de firma -->
+                                <table style="width:100%; border-collapse: collapse;">
+                                    <!-- Primera fila: Dos cuadros de firma -->
+                                    <tr>
+                                        <td style="width:50%; text-align: center; vertical-align: top;">
+                                            <div style="height:100px; width:80%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;">Elia Monica Zacari Villca</div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>RESPONSABLE DE APORTES</strong></div>
+                                        </td>
+                                        <td style="width:50%; text-align: center; vertical-align: top;">
+                                            <div style="height:100px; width:80%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;"><span t-field="o.partner_name"/></div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>OFICIAL DE EJERCITO</strong></div>
+                                        </td>
+                                    </tr>
+                                    <!-- Segunda fila: Un cuadro de firma centrado -->
+                                    <tr>
+                                        <td colspan="2"
+                                            style="text-align: center; vertical-align: top; padding-top:20px;">
+                                            <div style="height:120px; width:40%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;">Cnl. DAEN. Cristhian Fernando Jimenez Vargas</div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>TESORERO</strong></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"
+                                            style="text-align: center; vertical-align: top; padding-top:20px;">
+                                            <div style="height:100px; width:40%; margin: 0 auto;"></div>
+                                            <div style="margin-top:5px; font-size: 14px;">Cnl. DAEN. Dante Saúl Navarro Rivera</div>
+                                            <div style="margin-top:5px; font-size: 14px;"><strong>PRESIDENTE DEL CONSEJO DE ADMINISTRACION</strong></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="oe_structure"/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
