@@ -38,56 +38,41 @@ class WizardPayroll(models.TransientModel):
         reference = 'APORTES ' + self.period + self.val[0].partner_name
         for record in self:
             journal_id = record.account_journal_id
-            # for rec in self.val:
-            #     total_income = rec.income if rec.income != 0 else rec.income_passive
-            #     data = (0, 0,{
-            #         'account_id': record.account_income_id.id,
-            #         'name': rec.name,
-            #         'debit': total_income if total_income > 0 else 0,
-            #         'credit': 0
-            #     })
-            #     if not (record.total_income == 0): move_line.append(data)
             total_income = record.total_income
             data = (0, 0, {
                 'account_id': record.account_income_id.id,
                 'name': record.name,
                 'debit': total_income if total_income > 0 else 0,
-                'credit': 0
+                'credit': abs(total_income) if total_income < 0 else 0,
             })
             if not (record.total_income == 0): move_line.append(data)
-            # data = (0, 0,{
-            #         'account_id': record.account_income_id.id,
-            #         'name': record.name,
-            #         'debit': record.total_income if record.total_income > 0 else 0,
-            #         'credit': 0
-            # })
 
             data = (0, 0, {
                     'account_id': record.account_inscription_id.id,
                     'name': record.name,
-                    'debit': 0,
-                    'credit': record.total_miscellaneous_income,
+                    'debit': abs(record.total_miscellaneous_income) if record.total_miscellaneous_income < 0 else 0,
+                    'credit': record.total_miscellaneous_income if record.total_miscellaneous_income > 0 else 0,
             })
             if not (record.total_miscellaneous_income == 0): move_line.append(data)
             data = (0, 0, {
                     'account_id': record.account_regulation_cup_id.id,
                     'name': record.name,
-                    'debit': 0,
-                    'credit': record.total_regulation_cup,
+                    'debit': abs(record.total_regulation_cup) if record.total_regulation_cup < 0 else 0,
+                    'credit': record.total_regulation_cup if record.total_regulation_cup > 0 else 0,
             })
             if not (record.total_regulation_cup == 0): move_line.append(data)
             data = (0, 0, {
                     'account_id': record.account_mandatory_contribution_id.id,
                     'name': record.name,
-                    'debit': 0,
-                    'credit': record.total_mandatory_contribution,
+                    'debit': abs(record.total_mandatory_contribution) if record.total_mandatory_contribution < 0 else 0,
+                    'credit': record.total_mandatory_contribution if record.total_mandatory_contribution > 0 else 0,
             })
             if not (record.total_mandatory_contribution == 0): move_line.append(data)
             data = (0, 0, {
                     'account_id': record.account_voluntary_contribution_id.id,
                     'name': record.name,
-                    'debit': 0,
-                    'credit': record.total_voluntary_contribution,
+                    'debit': abs(record.total_voluntary_contribution) if record.total_voluntary_contribution < 0 else 0,
+                    'credit': record.total_voluntary_contribution if record.total_voluntary_contribution > 0 else 0,
             })
             if not (record.total_voluntary_contribution == 0): move_line.append(data)
         move_vals = {

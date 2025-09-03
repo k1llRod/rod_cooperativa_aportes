@@ -40,6 +40,7 @@
         'views/advance_payments.xml',
         'views/due_payments.xml',
         'views/finalize_contributions.xml',
+        'views/performance_yield_batch.xml',
         # 'views/report_form.xml',
         # 'views/views.xml',
         'wizard/wizard_report_form.xml',

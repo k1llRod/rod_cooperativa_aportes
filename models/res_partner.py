@@ -53,6 +53,7 @@ class ResPartner(models.Model):
     date_disengagements = fields.Date(string='Fecha de baja', related='partner_payroll_ids.date_disengagements', store=True)
     gloss_disengagement = fields.Text(string='Glosa de baja', related='partner_payroll_ids.gloss_disengagement', store=True)
 
+
     def compute_contributions_count(self):
         for record in self:
             contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))

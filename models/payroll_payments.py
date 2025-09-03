@@ -433,6 +433,8 @@ class PayrollPayments(models.Model):
             total_income = round(sum(self.mapped('other_contribution')),2)
         else:
             total_income = round(sum(self.mapped('income')),2) if sum(self.mapped('income')) > 0 else round(sum(self.mapped('income_passive')),2)
+        if sum(self.mapped('income')) < 0:
+            total_income = round(sum(self.mapped('income')),2)
         if round(sum(self.mapped('historical_contribution_coaa')),2) > 0 and sum(self.mapped('historical_interest_coaa')) > 0:
             total_income = round(sum(self.mapped('voluntary_contribution_certificate')),2)
         total_miscellaneous_income = sum(self.mapped('miscellaneous_income'))

@@ -26,5 +26,13 @@
             <field name="prefix">LIQAPOR</field>
             <field name="padding">4</field>
         </record>
+        <!-- data/sequence_performance_yield_batch.xml -->
+        <record id="seq_performance_yield_batch" model="ir.sequence">
+            <field name="name">Lote Rendimiento</field>
+            <field name="code">performance.yield.batch</field>
+            <field name="prefix">RYE/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

@@ -13,6 +13,10 @@ from . import dynamic_report_partner_payroll
 from . import due_payments
 from . import report_form
 from . import finalize_contributions
+from . import perfomance_yield_batch
+from . import performance_yield_account_line
+from . import period_payroll_performance
+from . import contributions_anual_partner
 
 # from . import payroll_payment
 
