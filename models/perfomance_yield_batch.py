@@ -2,9 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-from server.odoo.tools.populate import compute
-
-
 class PerformanceYieldBatch(models.Model):
     _name = 'performance.yield.batch'
     _description = 'Lote de Rendimiento por Aportes'
