@@ -26,6 +26,9 @@ class ContributionsAnualPartner(models.Model):
     batch_id = fields.Many2one('performance.yield.batch', string='Lote de rendimiento')
     payroll_count = fields.Integer('N. Aportaciones')
     year = fields.Integer(string='Año', required=True)
+    factor = fields.Float(string='Factor de rendimiento (%)', digits=(12, 9), default=0.0,
+                          help='Factor de rendimiento aplicado sobre los aportes para calcular el rendimiento.')
+    amount_factor_calculate_yield = fields.Float(string='Monto rendimiento calculado', default=0.0, compute='_compute_amount_factor_calculate_yield', store=True)
 
     _sql_constraints = [
         ('unique_partner_year', 'unique(partner_payroll_ids)', 'Ya existe un registro para este asociado en el año especificado.')
@@ -37,4 +40,7 @@ class ContributionsAnualPartner(models.Model):
         for record in self:
             record.total_contribution = record.total_mandatory_contribution + record.total_voluntary_contribution
 
-
+    @api.depends('total_contribution', 'factor')
+    def _compute_amount_factor_calculate_yield(self):
+        for record in self:
+            record.amount_factor_calculate_yield = record.total_contribution * record.factor

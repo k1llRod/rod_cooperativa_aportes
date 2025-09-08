@@ -26,7 +26,7 @@ class PerformanceYieldBatch(models.Model):
     )
 
     total_balance = fields.Monetary(
-        string='Saldo total', currency_field='currency_id',
+        string='Utilidad total', currency_field='currency_id',
         compute='_compute_total_balance', store=True
     )
 
@@ -57,10 +57,15 @@ class PerformanceYieldBatch(models.Model):
                           store=True,
                           help='Factor de rendimiento aplicado sobre los aportes para calcular el rendimiento.')
 
+    state_payroll_payments = fields.Selection([
+        ('surpluses','Excedentes'),
+        ('other_contribution','Otros aportes'),
+    ], string='Estado', store=True)
+
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('confirmed', 'Confirmado'),
-        ('done', 'Procesado'),
+        ('done', 'Hecho'),
         ('cancel', 'Cancelado'),
     ], default='draft', tracking=True)
 
@@ -179,6 +184,7 @@ class PerformanceYieldBatch(models.Model):
                 'total_mandatory_contribution': g.get('mandatory_contribution_certificate', 0.0) or 0.0,
                 'total_voluntary_contribution': g.get('voluntary_contribution_certificate', 0.0) or 0.0,
                 'year': self.date_end.year if self.date_end else False,
+                'factor': self.factor,
                 'payroll_count': g['__count'] or 0,
             }))
         if lines_partner_vals:
@@ -207,6 +213,59 @@ class PerformanceYieldBatch(models.Model):
                 rec.factor = rec.total_balance / rec.amount_total_yield_certificate
             else:
                 rec.factor = 0.0
+
+    def action_confirm(self):
+        for rec in self:
+            for r in rec.contributions_anual_partner_ids:
+                r.factor = rec.factor
+            rec.state = 'confirmed'
+    def action_draft(self):
+        for rec in self:
+            rec.state = 'draft'
+
+    def action_done(self):
+        for rec in self:
+            if rec.state != 'confirmed':
+                raise ValidationError(_('Solo se pueden procesar lotes en estado "Confirmado".'))
+
+            vals_list = []
+            for l in rec.contributions_anual_partner_ids:
+                # Saltar líneas sin importe
+                if (l.total_contribution or 0.0) <= 0:
+                    continue
+
+                # Asegurar que exista la relación a la planilla del socio
+                if not getattr(l, 'partner_payroll_ids', False):
+                    # Si no existe, puedes buscar una por partner si aplica:
+                    # payroll = self.env['partner.payroll'].search([('partner_id', '=', l.partner_id.id)], limit=1)
+                    # if not payroll:
+                    #     continue
+                    # partner_payroll_id = payroll.id
+                    # else:
+                    #     partner_payroll_id = l.partner_payroll_ids.id
+                    # Para no asumir, si no hay relación declarada, saltamos:
+                    continue
+
+                vals_list.append({
+                    'partner_payroll_id': l.partner_payroll_ids.id,
+                    'date_pivote': rec.date_end,
+                    'payment_date': rec.date_end,
+                    # Ajusta qué campos quieres llevar:
+                    'income': 0.0,
+                    'income_passive': 0.0,
+                    'miscellaneous_income': 0.0,
+                    'regulation_cup': 0.0,
+                    'voluntary_contribution_certificate': 0.0,
+                    'mandatory_contribution_certificate': 0.0,
+                    'other_contribution': round(l.amount_factor_calculate_yield or 0.0, 2),
+                    'state': rec.state_payroll_payments or 'other_contribution',
+                })
+
+            if vals_list:
+                # ⚠️ Estos campos corresponden a payroll.payments, no a contribution.certificate
+                self.env['payroll.payments'].create(vals_list)
+
+            rec.state = 'done'
 
 
 
