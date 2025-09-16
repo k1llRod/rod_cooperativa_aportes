@@ -31,12 +31,11 @@ class ContributionsAnualPartner(models.Model):
     amount_factor_calculate_yield = fields.Float(string='Monto rendimiento calculado', default=0.0, compute='_compute_amount_factor_calculate_yield', store=True)
 
     _sql_constraints = [
-        ('unique_partner_year', 'unique(partner_payroll_ids)', 'Ya existe un registro para este asociado en el año especificado.')
+        ('unique_partner_year', 'unique(partner_payroll_ids,batch_id)', 'Ya existe un registro para este asociado en el año especificado.')
     ]
 
     @api.depends('total_mandatory_contribution', 'total_voluntary_contribution')
     def _compute_total_contribution(self):
-
         for record in self:
             record.total_contribution = record.total_mandatory_contribution + record.total_voluntary_contribution
 

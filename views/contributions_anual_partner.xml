@@ -1,0 +1,74 @@
+<odoo>
+    <record id="view_contributions_anual_partner_tree" model="ir.ui.view">
+        <field name="name">contributions.anual.partner.tree</field>
+        <field name="model">contributions.anual.partner</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="batch_id"/>
+                <!--                            <field name="name"/>-->
+                <!--                            <field name="date_init"/>-->
+                <field name="date_burn_partner"/>
+                <field name="year"/>
+                <field name="partner_payroll_ids"/>
+                <field name="partner_id"/>
+                <field name="partner_status_especific"/>
+                <field name="total_mandatory_contribution"/>
+                <field name="total_voluntary_contribution"/>
+                <field name="total_contribution"/>
+                <field name="payroll_count"/>
+                <field name="factor"/>
+                <field name="amount_factor_calculate_yield"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_contributions_anual_partner_form" model="ir.ui.view">
+        <field name="name">contributions.anual.partner.form</field>
+        <field name="model">contributions.anual.partner</field>
+        <field name="arch" type="xml">
+            <form string="Lote de rendimiento">
+<!--                <header>-->
+<!--                    <button name="action_calculate" string="Calcular" type="object" states="draft" class="btn-primary"/>-->
+<!--                    <button name="action_confirm" string="Confirmar" type="object" class="btn-primary" states="draft"/>-->
+<!--                    <button name="action_done" string="Distribuir" type="object" states="confirmed"-->
+<!--                            class="btn-primary"/>-->
+<!--                    <button name="action_draft" string="Borrador" type="object" class="btn-primary"/>-->
+<!--                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>-->
+<!--                </header>-->
+                <sheet>
+                    <group>
+                        <group string="Aportes">
+                            <field name="batch_id"/>
+<!--                            <field name="name"/>-->
+<!--                            <field name="date_init"/>-->
+                            <field name="date_burn_partner"/>
+                            <field name="year"/>
+                            <field name="partner_payroll_ids"/>
+                            <field name="partner_id"/>
+                            <field name="partner_status_especific"/>
+                            <field name="total_mandatory_contribution"/>
+                            <field name="total_voluntary_contribution"/>
+                            <field name="total_contribution"/>
+                            <field name="payroll_count"/>
+                            <field name="factor"/>
+                            <field name="amount_factor_calculate_yield"/>
+                        </group>
+<!--                        <group string="Contabilidad utilidades">-->
+<!--                            <field name="total_balance"/>-->
+<!--                            <field name="factor"/>-->
+<!--                            <field name="state_payroll_payments"/>-->
+<!--                            <field name="account_distribution_partner_ids"/>-->
+<!--                        </group>-->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_contributions_anual_partner" model="ir.actions.act_window">
+        <field name="name">Contribucion total de los socios</field>
+        <field name="res_model">contributions.anual.partner</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+<!--      <menuitem id="menu_contributions_anual_partner" name="Aportes totales de socios"-->
+<!--                parent="menu_performance_root" action="action_contributions_anual_partner"/>-->
+</odoo>

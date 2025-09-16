@@ -23,11 +23,20 @@
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_archivador"
                 sequence="1"
                 action="rod_cooperativa_aportes.action_nominal_relationship_mindef_contributions"/>
-      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_historical_interest"
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_historical_interest_label"
                 name="Rendimiento anual"
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_archivador"
-                sequence="2"
+                sequence="2"/>
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_historical_interest"
+                name="Parametros rendimiento anual"
+                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_historical_interest_label"
+                sequence="1"
                 action="rod_cooperativa_aportes.action_performance_yield_batch"/>
+      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_contributions_anual_partner"
+                name="Aportes totales anual"
+                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_historical_interest_label"
+                sequence="2"
+                action="rod_cooperativa_aportes.action_contributions_anual_partner"/>
 
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
                 name="Reportes"

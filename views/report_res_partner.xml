@@ -72,6 +72,14 @@
                 </tree>
             </field>
         </record>
+        <record id="action_partner_payroll_custom_total" model="ir.actions.act_window">
+            <field name="name">Reporte de socios servicio activo</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_status_especific', '=', 'active_service'),('state','=','process')]</field>
+            <field name="help">Este reporte muestra a los socios con aportes del servicio activo.</field>
+            <field name="view_id" ref="view_partner_payroll_tree_custom_a_b"/>
+        </record>
         <record id="action_partner_payroll_custom_total_a" model="ir.actions.act_window">
             <field name="name">Reporte de socios categoria A</field>
             <field name="res_model">partner.payroll</field>

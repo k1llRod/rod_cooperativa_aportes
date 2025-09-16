@@ -62,12 +62,14 @@ class PerformanceYieldBatch(models.Model):
         ('other_contribution','Otros aportes'),
     ], string='Estado', store=True)
 
+    account_distribution_partner_ids = fields.Many2one('account.account', string='Cuenta de distribución de rendimiento del Socio', required=True)
+
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('confirmed', 'Confirmado'),
         ('done', 'Hecho'),
         ('cancel', 'Cancelado'),
-    ], default='draft', tracking=True)
+    ], default='draft', tracking=True, required=True)
 
 
     @api.model
@@ -258,6 +260,8 @@ class PerformanceYieldBatch(models.Model):
                     'voluntary_contribution_certificate': 0.0,
                     'mandatory_contribution_certificate': 0.0,
                     'other_contribution': round(l.amount_factor_calculate_yield or 0.0, 2),
+                    'account_income_id': rec.account_account_line_ids.account_id.id if rec.account_account_line_ids else False,
+                    'account_voluntary_contribution_id': rec.account_distribution_partner_ids.id,
                     'state': rec.state_payroll_payments or 'other_contribution',
                 })
 

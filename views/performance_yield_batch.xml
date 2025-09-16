@@ -1,108 +1,111 @@
 <!-- views/performance_yield_batch_views.xml -->
 <odoo>
-  <record id="view_performance_yield_batch_tree" model="ir.ui.view">
-    <field name="name">performance.yield.batch.tree</field>
-    <field name="model">performance.yield.batch</field>
-    <field name="arch" type="xml">
-      <tree>
-        <field name="name"/>
-        <field name="date_start"/>
-        <field name="date_end"/>
-        <field name="total_balance"/>
-        <field name="enabled_payroll_service_active_count"/>
-        <field name="enabled_payroll_service_category_a"/>
-        <field name="state"/>
-      </tree>
-    </field>
-  </record>
-
-  <record id="view_performance_yield_batch_form" model="ir.ui.view">
-    <field name="name">performance.yield.batch.form</field>
-    <field name="model">performance.yield.batch</field>
-    <field name="arch" type="xml">
-      <form string="Lote de rendimiento">
-          <header>
-              <button name="action_calculate" string="Calcular" type="object" states="draft" class="btn-primary"/>
-              <button name="action_confirm" string="Confirmar" type="object" class="btn-primary" states="draft"/>
-              <button name="action_done" string="Distribuir" type="object" states="confirmed" class="btn-primary"/>
-              <button name="action_draft" string="Borrador" type="object" class="btn-primary"/>
-              <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
-          </header>
-        <sheet>
-          <group>
-              <group string="Aportes">
-                  <field name="name" readonly="1"/>
-                  <field name="date_start"/>
-                  <field name="date_end"/>
-                  <field name="description"/>
-                  <field name="enabled_payroll_service_active_count"/>
-                  <field name="enabled_payroll_service_category_a"/>
-                  <field name="amount_total_mandatory_contribution_certificate" sum="Total"/>
-                  <field name="amount_total_voluntary_contribution_certificate" sum="Total"/>
-                  <field name="amount_total_yield_certificate" sum="Total"/>
-              </group>
-            <group string="Contabilidad utilidades">
+    <record id="view_performance_yield_batch_tree" model="ir.ui.view">
+        <field name="name">performance.yield.batch.tree</field>
+        <field name="model">performance.yield.batch</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
                 <field name="total_balance"/>
-                <field name="factor"/>
-                <field name="state_payroll_payments"/>
-            </group>
-          </group>
-          <notebook>
-            <page string="Detalle aportes socios total">
-              <field name="contributions_anual_partner_ids"  context="{}">
-                <tree editable="bottom" default_order="partner_id asc" create="0">
-                    <field name="partner_payroll_ids" optional="hidden" readonly="1"/>
-                    <field name="partner_id" readonly="1"/>
-                    <field name="partner_status_especific"/>
-                    <field name="date_burn_partner"/>
-                    <field name="year"/>
-                    <field name="payroll_count"/>
-                    <field name="total_mandatory_contribution" sum="Total"/>
-                    <field name="total_voluntary_contribution" sum="Total"/>
-                    <field name="total_contribution" sum="Total"/>
-                    <field name="factor" decoration-info="1"/>
-                    <field name="amount_factor_calculate_yield" decoration-info="1" sum="Total"/>
-                </tree>
+                <field name="enabled_payroll_service_active_count"/>
+                <field name="enabled_payroll_service_category_a"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
 
-              </field>
-            </page>
-            <page string="Aportes anual">
-              <field name="period_payroll_performance_ids" context="{}">
-                <tree editable="bottom" default_order="name asc" create="0">
-                  <field name="name"/>
-                  <field name="description"/>
-                  <field name="partner_status_especific"/>
-                  <field name="percentage_yield"/>
-                  <field name="total_mandatory_contribution" sum="Total"/>
-                  <field name="total_voluntary_contribution" sum="Total"/>
-                  <field name="total_contribution" sum="Total"/>
-                </tree>
-              </field>
+    <record id="view_performance_yield_batch_form" model="ir.ui.view">
+        <field name="name">performance.yield.batch.form</field>
+        <field name="model">performance.yield.batch</field>
+        <field name="arch" type="xml">
+            <form string="Lote de rendimiento">
+                <header>
+                    <button name="action_calculate" string="Calcular" type="object" states="draft" class="btn-primary"/>
+                    <button name="action_confirm" string="Confirmar" type="object" class="btn-primary" states="draft"/>
+                    <button name="action_done" string="Distribuir" type="object" states="confirmed"
+                            class="btn-primary"/>
+                    <button name="action_draft" string="Borrador" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Aportes">
+                            <field name="name" readonly="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="description"/>
+                            <field name="enabled_payroll_service_active_count"/>
+                            <field name="enabled_payroll_service_category_a"/>
+                            <field name="amount_total_mandatory_contribution_certificate" sum="Total"/>
+                            <field name="amount_total_voluntary_contribution_certificate" sum="Total"/>
+                            <field name="amount_total_yield_certificate" sum="Total"/>
+                        </group>
+                        <group string="Contabilidad utilidades">
+                            <field name="total_balance"/>
+                            <field name="factor"/>
+                            <field name="state_payroll_payments"/>
+                            <field name="account_distribution_partner_ids"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detalle aportes socios total">
+                            <field name="contributions_anual_partner_ids" context="{}">
+                                <tree editable="bottom" default_order="partner_id asc" create="0">
+                                    <field name="partner_payroll_ids" optional="hidden" readonly="1"/>
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="partner_status_especific"/>
+                                    <field name="date_burn_partner"/>
+                                    <field name="year"/>
+                                    <field name="payroll_count"/>
+                                    <field name="total_mandatory_contribution" sum="Total"/>
+                                    <field name="total_voluntary_contribution" sum="Total"/>
+                                    <field name="total_contribution" sum="Total"/>
+                                    <field name="factor" decoration-info="1"/>
+                                    <field name="amount_factor_calculate_yield" decoration-info="1" sum="Total"/>
+                                </tree>
 
-            </page>
-            <page string="Cuentas (Utilidades)">
-              <field name="account_account_line_ids" context="{}">
-                <tree editable="bottom">
-                  <field name="account_id"/>
-                  <field name="debit" readonly="1"/>
-                  <field name="credit" readonly="1"/>
-                  <field name="balance" readonly="1"/>
-                </tree>
-              </field>
-            </page>
-          </notebook>
-        </sheet>
-      </form>
-    </field>
-  </record>
+                            </field>
+                        </page>
+                        <page string="Aportes anual">
+                            <field name="period_payroll_performance_ids" context="{}">
+                                <tree editable="bottom" default_order="name asc" create="0">
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="partner_status_especific"/>
+                                    <field name="percentage_yield"/>
+                                    <field name="total_mandatory_contribution" sum="Total"/>
+                                    <field name="total_voluntary_contribution" sum="Total"/>
+                                    <field name="total_contribution" sum="Total"/>
+                                </tree>
+                            </field>
 
-  <record id="action_performance_yield_batch" model="ir.actions.act_window">
-    <field name="name">Lotes de rendimiento</field>
-    <field name="res_model">performance.yield.batch</field>
-    <field name="view_mode">tree,form</field>
-  </record>
+                        </page>
+                        <page string="Cuentas (Utilidades)">
+                            <field name="account_account_line_ids" context="{}">
+                                <tree editable="bottom">
+                                    <field name="account_id"/>
+                                    <field name="debit" readonly="1"/>
+                                    <field name="credit" readonly="1"/>
+                                    <field name="balance" readonly="1"/>
+                                </tree>
+                            </field>
 
-<!--  <menuitem id="menu_performance_root" name="Rendimientos" parent="base.menu_finance"/>-->
-<!--  <menuitem id="menu_performance_yield_batch" name="Lotes de rendimiento"-->
-<!--            parent="menu_performance_root" action="action_performance_yield_batch"/>-->
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_performance_yield_batch" model="ir.actions.act_window">
+        <field name="name">Lotes de rendimiento</field>
+        <field name="res_model">performance.yield.batch</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--  <menuitem id="menu_performance_root" name="Rendimientos" parent="base.menu_finance"/>-->
+    <!--  <menuitem id="menu_performance_yield_batch" name="Lotes de rendimiento"-->
+    <!--            parent="menu_performance_root" action="action_performance_yield_batch"/>-->
 </odoo>
