@@ -3,13 +3,13 @@
         <field name="name">contributions.anual.partner.tree</field>
         <field name="model">contributions.anual.partner</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order="partner_id asc">
                 <field name="batch_id"/>
                 <!--                            <field name="name"/>-->
                 <!--                            <field name="date_init"/>-->
                 <field name="date_burn_partner"/>
                 <field name="year"/>
-                <field name="partner_payroll_ids"/>
+                <field name="partner_payroll_ids" optional="hidden"/>
                 <field name="partner_id"/>
                 <field name="partner_status_especific"/>
                 <field name="total_mandatory_contribution"/>

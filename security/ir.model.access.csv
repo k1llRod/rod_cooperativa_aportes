@@ -64,3 +64,6 @@ access_performance_yield_account_line,performance.yield.account.line,model_perfo
 access_period_payroll_performance,period.payroll.performance,model_period_payroll_performance,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
 
 access_contributions_anual_partner,contributions.anual.partner,model_contributions_anual_partner,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1
+
+access_payroll_payments_portal,payroll.payments,model_payroll_payments,base.group_portal,1,0,0,0
+
