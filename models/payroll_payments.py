@@ -30,15 +30,30 @@ class PayrollPayments(models.Model):
                                                 related='partner_payroll_id.partner_id.partner_status_especific',
                                                 store=True)
     city = fields.Char(string='Ciudad', related='partner_payroll_id.partner_id.city', store=True)
-    income = fields.Float(string='DESC. MINDEF', required=True, tracking=True)
-    income_passive = fields.Float(string='DESC. PASIVO', required=True, tracking=True)
-    mandatory_contribution_certificate = fields.Float(string='CERT. APOR. OBLI.', default=0.0)
-    voluntary_contribution_certificate = fields.Float(string='CERT. APOR. VOL.',
-                                                      compute="compute_voluntary_contribution_certificate", store=True)
-    regulation_cup = fields.Float(string='TASA REGULACION', default=lambda self: float(
-        self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup')))
-    payment_post_mortem = fields.Float(string='PAGO POST MORTEM')
-    miscellaneous_income = fields.Float(string='INSCRIPCION')
+    company_id = fields.Many2one(
+        'res.company', string='Compañía',
+        default=lambda self: self.env.company, index=True
+    )
+    currency_id = fields.Many2one(
+        'res.currency', string='Moneda',
+        related='company_id.currency_id', store=True, readonly=True
+    )
+    income = fields.Monetary(string='DESC. MINDEF',currency_field='currency_id', required=True, tracking=True)
+    income_passive = fields.Monetary(string='DESC. PASIVO', required=True, tracking=True, currency_field='currency_id')
+    mandatory_contribution_certificate = fields.Monetary(string='CERT. APOR. OBLI.', default=0.0,
+                                                         currency_field='currency_id')
+    voluntary_contribution_certificate = fields.Monetary(
+        string='CERT. APOR. VOL.', compute="compute_voluntary_contribution_certificate", store=True,
+        currency_field='currency_id'
+    )
+    regulation_cup = fields.Monetary(
+        string='TASA REGULACION',
+        default=lambda self: float(
+            self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup')),
+        currency_field='currency_id'
+    )
+    payment_post_mortem = fields.Monetary(string='PAGO POST MORTEM', currency_field='currency_id')
+    miscellaneous_income = fields.Monetary(string='INSCRIPCION', currency_field='currency_id')
     payment_date = fields.Date(string='Fecha de pago', default=fields.Datetime.now(), required=True, tracking=True)
     period_register = fields.Char(string='Periodo de registro', compute="compute_period_register", store=True)
     state = fields.Selection(
@@ -91,8 +106,8 @@ class PayrollPayments(models.Model):
 
     capital_initial = fields.Float(string='Capital inicial')
     state_account = fields.Selection([('draft', 'Borrador'), ('posted', 'Contabilizado'), ('cancel', 'Cancelado')], default='draft', related='account_move_id.state', store=True)
-    other = fields.Float(string='Otros')
-    other_contribution = fields.Float(string='OTROS APORTES', digits=(16, 2))
+    other = fields.Monetary(string='Otros', currency_field='currency_id')
+    other_contribution = fields.Monetary(string='OTROS APORTES', currency_field='currency_id')
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
     #     for record in self:

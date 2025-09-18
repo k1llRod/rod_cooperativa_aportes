@@ -160,7 +160,7 @@ class FinalizeContributions(models.Model):
                             "date": record.date_proccess,
                             "journal_id": record.journal_id.id,
                             "ref": "",
-                            # "company_id": payment.company_id.id,
+                            "partner_id": record.partner_payroll_ids.partner_id.id,
                             # "name": "name test",
                             "glosa": '',
                             "state": "draft",
@@ -258,7 +258,7 @@ class FinalizeContributions(models.Model):
                         "date": record.date_proccess,
                         "journal_id": record.journal_id.id,
                         "ref": "",
-                        # "company_id": payment.company_id.id,
+                        "partner_id": record.partner_payroll_ids.partner_id.id,
                         # "name": "name test",
                         "glosa": '',
                         "state": "draft",
@@ -300,79 +300,88 @@ class FinalizeContributions(models.Model):
                     payroll.partner_devolution()
                     if payroll:
                         val = []
-                        data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
-                                       'debit': record.total_voluntary, 'credit': 0,
-                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_capital_loan.id,
-                                       'debit': record.total_mandatory_contributions, 'credit': 0,
-                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_other_contributions.id,
-                                       'debit': record.other_contributions, 'credit': 0,
-                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_surpluses.id,
-                                       'debit': record.surpluses, 'credit': 0,
-                                       # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_capital_loan.id,
-                                       'debit': 0, 'credit': record.loan_capital_bolivianos,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_interest_month.id,
-                                       'debit': 0, 'credit': record.balance_interest_month_bolivianos,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_disengagement.id,
-                                       'debit': 0, 'credit': record.disengagement,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_regulation_cup.id,
-                                       'debit': 0, 'credit': record.manual_regulation_cup,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_manual_aporte_obligatorio.id,
-                                       'debit': 0, 'credit': record.manual_aporte_obligatorio,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_manual_post_mortem.id,
-                                       'debit': 0, 'credit': record.manual_post_mortem,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-
-                        data = (0, 0, {'account_id': record.account_bank_rest_contributions.id,
-                                       'debit': 0, 'credit': record.rest_contributions,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-
+                        if record.total_voluntary > 0:
+                            data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
+                                           'debit': record.total_voluntary, 'credit': 0,
+                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.total_mandatory_contributions > 0:
+                            data = (0, 0, {'account_id': record.account_mandatory_contributions.id,
+                                           'debit': record.total_mandatory_contributions, 'credit': 0,
+                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.other_contributions > 0:
+                            data = (0, 0, {'account_id': record.account_other_contributions.id,
+                                           'debit': record.other_contributions, 'credit': 0,
+                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.surpluses > 0:
+                            data = (0, 0, {'account_id': record.account_surpluses.id,
+                                           'debit': record.surpluses, 'credit': 0,
+                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.loan_capital_bolivianos > 0:
+                            data = (0, 0, {'account_id': record.account_capital_loan.id,
+                                           'debit': 0, 'credit': record.loan_capital_bolivianos,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.balance_interest_month_bolivianos > 0:
+                            data = (0, 0, {'account_id': record.account_interest_month.id,
+                                           'debit': 0, 'credit': record.balance_interest_month_bolivianos,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.disengagement > 0:
+                            data = (0, 0, {'account_id': record.account_disengagement.id,
+                                           'debit': 0, 'credit': record.disengagement,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.manual_regulation_cup > 0:
+                            data = (0, 0, {'account_id': record.account_regulation_cup.id,
+                                           'debit': 0, 'credit': record.manual_regulation_cup,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.manual_aporte_obligatorio > 0:
+                            data = (0, 0, {'account_id': record.account_manual_aporte_obligatorio.id,
+                                           'debit': 0, 'credit': record.manual_aporte_obligatorio,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.manual_post_mortem > 0:
+                            data = (0, 0, {'account_id': record.account_manual_post_mortem.id,
+                                           'debit': 0, 'credit': record.manual_post_mortem,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
+                        if record.rest_contributions > 0:
+                            data = (0, 0, {'account_id': record.account_bank_rest_contributions.id,
+                                           'debit': 0, 'credit': record.rest_contributions,
+                                           'partner_id': record.partner_payroll_ids.partner_id.id,
+                                           'amount_currency': 0
+                                           })
+                            val.append(data)
                         move_vals = {
                             "date": record.date_proccess,
                             "journal_id": record.journal_id.id,
                             "ref": "",
-                            # "company_id": payment.company_id.id,
+                            "partner_id": record.partner_payroll_ids.partner_id.id,
                             # "name": "name test",
                             "glosa": '',
                             "state": "draft",
@@ -448,7 +457,7 @@ class FinalizeContributions(models.Model):
                             "date": record.date_proccess,
                             "journal_id": record.journal_id.id,
                             "ref": "",
-                            # "company_id": payment.company_id.id,
+                            "partner_id": record.partner_payroll_ids.partner_id.id,
                             # "name": "name test",
                             "glosa": '',
                             "state": "draft",
@@ -516,7 +525,7 @@ class FinalizeContributions(models.Model):
                             "date": record.date_proccess,
                             "journal_id": record.journal_id.id,
                             "ref": "",
-                            # "company_id": payment.company_id.id,
+                            "partner_id": record.partner_payroll_ids.partner_id.id,
                             # "name": "name test",
                             "glosa": '',
                             "state": "draft",

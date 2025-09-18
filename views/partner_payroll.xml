@@ -115,6 +115,8 @@
                         </div>
                         <group>
                             <group>
+                                <field name="company_id" invisible="1"/>
+                                <field name="currency_id" invisible="1"/>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="partner_name" invisible="1"/>
                                 <field name="partner_status" />
@@ -165,6 +167,7 @@
                             <page string="Depositos">
                                 <field name="payroll_payments_ids">
                                     <tree editable="bottom" default_order="date_pivote asc">
+                                        <field name="currency_id" invisible="1"/>
                                         <field name="name" readonly="1" optional="hide"/>
 <!--                                        <field name="partner_status_especific" invisible="1"/>-->
                                         <field name="period_register"/>

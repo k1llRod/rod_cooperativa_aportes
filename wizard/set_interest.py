@@ -13,7 +13,7 @@ class SetInteres(models.TransientModel):
     date_field_select = fields.Date(string="Fecha", require=True, default=fields.Date.today())
     yield_amount = fields.Float(string="Monto de rendimiento", compute="compute_yield_amount")
     partner_payroll_id = fields.Many2one('partner.payroll', string="Socio")
-    contributions_total = fields.Float(string="Total aportes", related="partner_payroll_id.contribution_total")
+    contributions_total = fields.Float(string="Total aportes")
 
     def action_asignement_interest(self):
         vals = {

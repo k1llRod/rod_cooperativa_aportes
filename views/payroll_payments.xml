@@ -99,6 +99,8 @@
                         </div>
                         <group>
                             <group>
+                                <field name="company_id"/>
+                                <field name="currency_id"/>
                                 <field name="partner_payroll_id" readonly="1"/>
                                 <field name="partner_status"/>
                                 <field name="partner_status_especific"/>

@@ -62,7 +62,19 @@ class PartnerPayroll(models.Model):
     advanced_payments = fields.Float(string='Tasa regulacion Adelantado')
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',
                                            tracking=True)
-    capital_initial = fields.Float(string='Capital inicial', compute='compute_contributions', store=True)
+    company_id = fields.Many2one(
+        'res.company', string='Compañía',
+        default=lambda self: self.env.company, index=True
+    )
+    currency_id = fields.Many2one(
+        'res.currency', string='Moneda',
+        related='company_id.currency_id', store=True, readonly=True
+    )
+
+    capital_initial = fields.Monetary(
+        string='Capital inicial', currency_field='currency_id',
+        compute='compute_contributions', store=True
+    )
     # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
     # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
@@ -79,14 +91,21 @@ class PartnerPayroll(models.Model):
     outstanding_payments = fields.Integer(string='Pagos pendientes', compute="compute_updated_partner", store=True)
     outstanding = fields.Integer(string='Pagos pendientes', compute="calculate_month_difference")
 
-    voluntary_contribution_certificate_total = fields.Float(string='Cert. Aport. Vol. Total',
-                                                            compute='compute_count_pay_contributions', store=True)
-    mandatory_contribution_certificate_total = fields.Float(string='Cert. Aport. Oblig. total',
-                                                            compute='compute_count_pay_contributions', store=True)
-    other_contribution_total = fields.Float(string='Otros aportes',
-                                            store=True, digits=(16, 2))
-    surpluses_total = fields.Float(string='Total excedentes', store=True)
-    contribution_total = fields.Float(string='Aporte total', store=True)
+    voluntary_contribution_certificate_total = fields.Monetary(
+        string='Cert. Aport. Vol. Total', currency_field='currency_id',
+        compute='compute_count_pay_contributions', store=True
+    )
+    mandatory_contribution_certificate_total = fields.Monetary(
+        string='Cert. Aport. Oblig. total', currency_field='currency_id',
+        compute='compute_count_pay_contributions', store=True
+    )
+    other_contribution_total = fields.Monetary(
+        string='Otros aportes', currency_field='currency_id', store=True
+    )
+    surpluses_total = fields.Monetary(
+        string='Total excedentes', currency_field='currency_id', store=True
+    )
+    contribution_total = fields.Monetary(string='Aporte total', currency_field='currency_id',store=True)
 
     contribution_total_excluded = fields.Float(string='Aporte total excluido', store=True)
 
