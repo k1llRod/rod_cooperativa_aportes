@@ -28,7 +28,7 @@ class ContributionsAnualPartner(models.Model):
     year = fields.Integer(string='Año', required=True)
     factor = fields.Float(string='Factor de rendimiento (%)', digits=(12, 9), default=0.0,
                           help='Factor de rendimiento aplicado sobre los aportes para calcular el rendimiento.')
-    amount_factor_calculate_yield = fields.Float(string='Monto rendimiento calculado', default=0.0, compute='_compute_amount_factor_calculate_yield', store=True)
+    amount_factor_calculate_yield = fields.Float(string='Monto rendimiento calculado', default=0.0, compute='_compute_amount_factor_calculate_yield', store=True,digits=(12, 2))
 
     _sql_constraints = [
         ('unique_partner_year', 'unique(partner_payroll_ids,batch_id)', 'Ya existe un registro para este asociado en el año especificado.')

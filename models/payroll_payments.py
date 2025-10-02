@@ -108,7 +108,7 @@ class PayrollPayments(models.Model):
     capital_initial = fields.Float(string='Capital inicial')
     state_account = fields.Selection([('draft', 'Borrador'), ('posted', 'Contabilizado'), ('cancel', 'Cancelado')], default='draft', related='account_move_id.state', store=True)
     other = fields.Monetary(string='Otros', currency_field='currency_id')
-    other_contribution = fields.Monetary(string='OTROS APORTES', currency_field='currency_id', digits=(6, 2))
+    other_contribution = fields.Monetary(string='OTROS APORTES', currency_field='currency_id', digits=(12, 2))
     # @api.onchange('payment_date')
     # def onchange_payment_date(self):
     #     for record in self:
