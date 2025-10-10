@@ -438,7 +438,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <strong>Inscripcion:</strong>
+                                            <strong>Inscripcion AFCOOP:</strong>
                                         </td>
                                         <td>
                                             <span t-esc="round(sum(o.payroll_payments_ids.mapped('miscellaneous_income')),2)"/>
@@ -446,7 +446,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <strong>Total tasa de regulación:</strong>
+                                            <strong>Total tasa de regulación AFCOOP:</strong>
                                         </td>
                                         <td>
                                             <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
