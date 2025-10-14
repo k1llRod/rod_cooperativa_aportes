@@ -66,6 +66,7 @@ class PayrollPayments(models.Model):
          ('capital_initial','Capital inicial'),
          ('partner_return', 'Devolucion'),
          ('other_contribution','Otros aportes'),
+         ('other_contribution_coaa','Otros aportes COAA'),
          ('disengagement','Desvinculacion'),
          ('surpluses','Excedentes')],
         default='draft', tracking=True)
