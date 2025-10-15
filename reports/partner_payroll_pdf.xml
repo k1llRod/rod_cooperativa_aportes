@@ -29,7 +29,7 @@
                                 <td style="text-align:center;">LA PAZ - BOLIVIA</td>
                                 <td></td>
                                 <td>Usuario:
-                                    <span t-esc="user.name"/>
+                                    <span t-esc="user.login"/>s
                                 </td>
                             </tr>
                         </table>
