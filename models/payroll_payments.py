@@ -65,7 +65,7 @@ class PayrollPayments(models.Model):
          ('no_contribution', 'Sin aporte'),
          ('capital_initial','Capital inicial'),
          ('partner_return', 'Devolucion'),
-         ('other_contribution','Otros aportes'),
+         ('other_contribution','Otros aportes Cooperativa'),
          ('other_contribution_coaa','Otros aportes COAA'),
          ('disengagement','Desvinculacion'),
          ('surpluses','Excedentes')],
