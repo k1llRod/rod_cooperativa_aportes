@@ -234,7 +234,7 @@
                                         <tr t-set="acumulador" t-value="0"/>
                                         <tr t-set="acumulador1" t-value="0"/>
                                         <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['date_pivote'])" t-as="p">
-                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial' or p.state=='partner_return' or p.state=='other_contribution' or p.state=='surpluses'">
+                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial' or p.state=='partner_return' or p.state=='other_contribution' or p.state=='other_contribution_coaa' or p.state=='surpluses'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
                                                     <td class="align-middle">
@@ -294,7 +294,14 @@
                                                         <t t-set="acumulador"
                                                            t-value="acumulador + round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate + p.other_contribution,2)"/>
                                                     </td>
-                                                    <td class="align-middle">
+                                                    <td class="align-middle" t-attf-style="
+                                                                                      background: #{ '#a6edcc' if p.state == 'other_contribution'
+                                                                                       else ('#e2eda6' if p.state == 'other_contribution_coaa'
+                                                                                       else 'transparent') };
+                                                                        color: #{ 'black' if p.state in ('other_contribution','other_contribution_coaa') else 'black' };
+                                                                        padding: #{ '2px 8px' if p.state in ('other_contribution','other_contribution_coaa') else '0' };
+                                                                        border-radius: #{ '12px' if p.state in ('other_contribution','other_contribution_coaa') else '0' };
+                                                                        -webkit-print-color-adjust: exact; print-color-adjust: exact;">
                                                         <t t-if="p.state == 'transfer'">
                                                             <span>Transferencia</span>
                                                         </t>
@@ -311,7 +318,7 @@
                                                             <span>Devolucion</span>
                                                         </t>
                                                         <t t-elif="p.state == 'other_contribution'">
-                                                            <span>Otros aportes Cooperativa</span>
+                                                            <span >Otros aportes Cooperativa</span>
                                                         </t>
                                                         <t t-elif="p.state == 'other_contribution_coaa'">
                                                             <span>Otros aportes COAA</span>
