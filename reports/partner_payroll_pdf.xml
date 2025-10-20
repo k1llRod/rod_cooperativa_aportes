@@ -294,7 +294,9 @@
                                                         <t t-set="acumulador"
                                                            t-value="acumulador + round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate + p.other_contribution,2)"/>
                                                     </td>
-                                                    <td class="align-middle">
+                                                    <td class="align-middle" t-attf-style="background-color: #{ '#24db8642' if p.state == 'other_contribution'
+                                                                                 else ('#d5cd1e42' if p.state == 'other_contribution_coaa'
+                                                                                 else 'transparent') };">
                                                         <t t-if="p.state == 'transfer'">
                                                             <span>Transferencia</span>
                                                         </t>
@@ -311,7 +313,10 @@
                                                             <span>Devolucion</span>
                                                         </t>
                                                         <t t-elif="p.state == 'other_contribution'">
-                                                            <span>Otros aportes</span>
+                                                            <span>Otros aportes Cooperativa</span>
+                                                        </t>
+                                                        <t t-elif="p.state == 'other_contribution_coaa'">
+                                                            <span>Otros aportes COAA</span>
                                                         </t>
                                                         <t t-elif="p.state == 'surpluses'">
                                                             <span>Excedentes</span>
