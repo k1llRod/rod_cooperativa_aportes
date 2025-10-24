@@ -10,6 +10,9 @@ class WizardPayrollReturn(models.TransientModel):
     mount = fields.Float(string='Monto', required=True)
     glosa = fields.Text(string='Glosa')
     partner_payroll_id = fields.Many2one('partner.payroll', string='Planilla aporte')
+    state = fields.Selection([('partner_return', 'Devolucion'),
+                              ('partner_return_credit', 'Dev. Credito')], string='Tipo de devolucion',
+                             default='partner_return')
 
     @api.depends('date_pivote')
     def compute_period_register(self):

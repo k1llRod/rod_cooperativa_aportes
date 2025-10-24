@@ -88,7 +88,7 @@
                         <button name="partner_devolution" string="Devolucion" type="object"
                                 class="oe_close_button"
                         />
-                        <button name="partner_devolution" string="Devolucion Credito" type="object"
+                        <button name="partner_devolution_credit" string="Devolucion Credito" type="object"
                                 class="oe_close_button"
                         />
 

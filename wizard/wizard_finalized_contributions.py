@@ -29,6 +29,7 @@ class WizardFinalizedContributions(models.TransientModel):
     regulation_cup = fields.Float(string='Tasa de regulacion', default=0)
     option_liquidation = fields.Boolean(string='Liquidar prestamo')
     option_liquidation_contributions = fields.Boolean(string="Liquidar aportes")
+
     def action_confirm(self):
         vals = {
             'disengagement': self.disengagement,

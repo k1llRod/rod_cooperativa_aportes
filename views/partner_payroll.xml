@@ -132,6 +132,7 @@
                                 <field name="performance_management_total"/>
                                 <field name="other_contribution_total" readonly="1"/>
                                 <field name="surpluses_total" readonly="1"/>
+                                <field name="amount_return" class="text-danger"/>
                                 <field name="contribution_total" readonly="1"/>
                                 <field name="contribution_total_excluded" readonly="1" attrs="{'invisible': [('state','!=','unassociated')]}"/>
                                 <field name="date_unassociated" readonly="1" attrs="{'invisible': [('state','!=','unassociated')]}"/>

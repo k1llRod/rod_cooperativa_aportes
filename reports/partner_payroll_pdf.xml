@@ -234,7 +234,7 @@
                                         <tr t-set="acumulador" t-value="0"/>
                                         <tr t-set="acumulador1" t-value="0"/>
                                         <t t-foreach="sorted(o.payroll_payments_ids, key=lambda x: x['date_pivote'])" t-as="p">
-                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial' or p.state=='partner_return' or p.state=='other_contribution' or p.state=='other_contribution_coaa' or p.state=='surpluses'">
+                                            <t t-if="p.state=='transfer' or p.state=='ministry_defense' or p.state=='contribution_interest' or p.state=='capital_initial' or p.state=='partner_return' or p.state=='other_contribution' or p.state=='other_contribution_coaa' or p.state=='surpluses' or p.state=='partner_return_credit' or p.state == 'partner_return'">
                                                 <t t-set="line_number" t-value="line_number + 1"/>
                                                 <tr>
                                                     <td class="align-middle">
@@ -326,6 +326,13 @@
                                                         <t t-elif="p.state == 'surpluses'">
                                                             <span>Excedentes</span>
                                                         </t>
+                                                        <t t-elif="p.state == 'partner_return'">
+                                                            <span>Devolucion</span>
+                                                        </t>
+                                                        <t t-elif="p.state == 'partner_return_credit'">
+                                                            <span>Dev. Credito</span>
+                                                        </t>
+
                                                     </td>
                                                 </tr>
                                             </t>
@@ -403,7 +410,7 @@
                                             <strong>Total aportes obligatorios:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')),2)"/>
+                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense' or x.state =='partner_return' or x.state=='partner_return_credit').mapped('mandatory_contribution_certificate')),2)"/>
                                         </td>
 
                                     </tr>

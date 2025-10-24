@@ -15,6 +15,7 @@
                             <field name="mount"/>
                         </group>
                         <group>
+                            <field name="state"/>
                             <field name="glosa" />
                         </group>
                     </group>

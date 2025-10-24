@@ -22,7 +22,7 @@ class PartnerPayroll(models.Model):
                               ('process', 'En proceso'),
                               ('process_finalized', 'Proceso liquidacion'),
                               ('finalized', 'Liquidado'),
-                              ('unassociated','No asociado')],
+                              ('unassociated', 'No asociado')],
                              default='draft', track_visibility='always')
     partner_id = fields.Many2one('res.partner', string='Socio')
     partner_name = fields.Char(string='Nombre firma', compute='_compute_formatted_name')
@@ -33,24 +33,25 @@ class PartnerPayroll(models.Model):
                                        ('leave', 'Baja')], string="Situacion general",
                                       related='partner_id.partner_status', store=True, track_visibility="always")
     partner_status_historical = fields.Selection([('active', 'Activo'),
-                                       ('active_reserve', 'Reserva activa'),
-                                       ('passive', 'Servicio pasivo'),
-                                       ('leave', 'Baja')], string="Situacion general historico",
-                                       store=True, track_visibility="always")
+                                                  ('active_reserve', 'Reserva activa'),
+                                                  ('passive', 'Servicio pasivo'),
+                                                  ('leave', 'Baja')], string="Situacion general historico",
+                                                 store=True, track_visibility="always")
 
     partner_status_especific = fields.Selection([('active_service', 'Servicio activo'),
                                                  ('letter_a', 'Letra "A" de disponibilidad'),
                                                  ('passive_reserve_a', 'Reserva pasivo "A"'),
                                                  ('passive_reserve_b', 'Reserva pasivo "B"'),
                                                  ('leave', 'Baja')], string='Tipo de asociado',
-                                                related='partner_id.partner_status_especific', store=True, track_visibility="always")
+                                                related='partner_id.partner_status_especific', store=True,
+                                                track_visibility="always")
 
     partner_status_especific_historical = fields.Selection([('active_service', 'Servicio activo'),
-                                                 ('letter_a', 'Letra "A" de disponibilidad'),
-                                                 ('passive_reserve_a', 'Pasivo categoria "A"'),
-                                                 ('passive_reserve_b', 'Pasivo categoria "B"'),
-                                                 ('leave', 'Baja')], string='Tipo de asociado historico',
-                                                 store=True, track_visibility="always")
+                                                            ('letter_a', 'Letra "A" de disponibilidad'),
+                                                            ('passive_reserve_a', 'Pasivo categoria "A"'),
+                                                            ('passive_reserve_b', 'Pasivo categoria "B"'),
+                                                            ('leave', 'Baja')], string='Tipo de asociado historico',
+                                                           store=True, track_visibility="always")
     category_partner = fields.Char(string='Grado', related='partner_id.category_partner_id.name', store=True)
     code_contact = fields.Char(string='Código de asociado', related='partner_id.code_contact', store=True)
     vat = fields.Char(string='CI', related='partner_id.vat')
@@ -105,7 +106,7 @@ class PartnerPayroll(models.Model):
     surpluses_total = fields.Monetary(
         string='Total excedentes', currency_field='currency_id', store=True
     )
-    contribution_total = fields.Monetary(string='Aporte total', currency_field='currency_id',store=True)
+    contribution_total = fields.Monetary(string='Aporte total', currency_field='currency_id', store=True)
 
     contribution_total_excluded = fields.Float(string='Aporte total excluido', store=True)
 
@@ -124,15 +125,28 @@ class PartnerPayroll(models.Model):
     count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
                                                               compute='compute_contributions')
     journal_id = fields.Many2one('account.journal', string='Diario')
-    account_income_id = fields.Many2one('account.account', string='Ingreso', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_income_id'))
-    account_inscription_id = fields.Many2one('account.account', string='Inscripcion', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_inscription_id'))
-    account_regulation_cup_id = fields.Many2one('account.account', string='Tasa de regulacion', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_regulation_cup_id'))
-    account_mandatory_contribution_id = fields.Many2one('account.account', string='Aportes obligatorios', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_mandatory_contribution_id'))
-    account_voluntary_contribution_id = fields.Many2one('account.account', string='Aportes voluntarios', default=lambda self: self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.account_voluntary_contribution_id'))
+    account_income_id = fields.Many2one('account.account', string='Ingreso',
+                                        default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
+                                            'rod_cooperativa_aportes.account_income_id'))
+    account_inscription_id = fields.Many2one('account.account', string='Inscripcion',
+                                             default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
+                                                 'rod_cooperativa_aportes.account_inscription_id'))
+    account_regulation_cup_id = fields.Many2one('account.account', string='Tasa de regulacion',
+                                                default=lambda self: self.env['ir.config_parameter'].sudo().get_param(
+                                                    'rod_cooperativa_aportes.account_regulation_cup_id'))
+    account_mandatory_contribution_id = fields.Many2one('account.account', string='Aportes obligatorios',
+                                                        default=lambda self: self.env[
+                                                            'ir.config_parameter'].sudo().get_param(
+                                                            'rod_cooperativa_aportes.account_mandatory_contribution_id'))
+    account_voluntary_contribution_id = fields.Many2one('account.account', string='Aportes voluntarios',
+                                                        default=lambda self: self.env[
+                                                            'ir.config_parameter'].sudo().get_param(
+                                                            'rod_cooperativa_aportes.account_voluntary_contribution_id'))
 
     payment_type = fields.Selection([('cossmil_discount', 'Descuento COSSMIL'),
                                      ('voluntary_contribution', 'Aporte voluntario'),
-                                     ('voluntary_contribution_discount', 'Descuento devolucion de aportes')], string='Tipo de pago')
+                                     ('voluntary_contribution_discount', 'Descuento devolucion de aportes')],
+                                    string='Tipo de pago')
     since_payment = fields.Date(string='Desde')
     until_payment = fields.Date(string='Hasta')
     amount_type = fields.Float(string='Aporte voluntario post mortem', default=0.0)
@@ -148,40 +162,42 @@ class PartnerPayroll(models.Model):
     must_gestion = fields.Integer(string='Debe gestion')
 
     partner_state = fields.Selection([('draft', 'Borrador'),
-                              ('verificate', 'Verificación'),
-                              ('activate', 'Socio activo'),
-                              ('external','Externo'),
-                              ('rejected', 'Rechazado'),
-                              ('unsubscribe', 'Baja'),
-                              ('deceased','Fallecido')],
-                             string='Estado', default='draft', related='partner_id.state', store=True)
-
+                                      ('verificate', 'Verificación'),
+                                      ('activate', 'Socio activo'),
+                                      ('external', 'Externo'),
+                                      ('rejected', 'Rechazado'),
+                                      ('unsubscribe', 'Baja'),
+                                      ('deceased', 'Fallecido')],
+                                     string='Estado', default='draft', related='partner_id.state', store=True)
 
     afiliated_time = fields.Integer(string='Tiempo afiliado', compute='_onchange_name')
 
     gloss_disengagement = fields.Text(string="Observaciones Baja")
-    type_disengagements = fields.Selection([('fallecimiento','Fallecimiento'),
-                                           ('retiro_voluntario','Retiro voluntario'),
-                                           ('pase_servicio_pasivo','Pase al servicio pasivo'),
-                                            ('abandono','Abandono'),
-                                            ('expulsion','Expulsion')],
-                                          string="Baja por", store=True)
+    type_disengagements = fields.Selection([('fallecimiento', 'Fallecimiento'),
+                                            ('retiro_voluntario', 'Retiro voluntario'),
+                                            ('pase_servicio_pasivo', 'Pase al servicio pasivo'),
+                                            ('abandono', 'Abandono'),
+                                            ('expulsion', 'Expulsion')],
+                                           string="Baja por", store=True)
     date_disengagements = fields.Date(string='Fecha de baja', default=lambda self: datetime.now().date())
     date_unassociated = fields.Date(string='Fecha de no asociado')
-    state_finalize = fields.Selection([('borrador','Borrador'),
-                                       ('hecho','Hecho')], default='borrador', string='Estado de liquidacion')
+    state_finalize = fields.Selection([('borrador', 'Borrador'),
+                                       ('hecho', 'Hecho')], default='borrador', string='Estado de liquidacion')
 
-    finalize_contributions_ids = fields.One2many('finalize.contributions' , 'partner_payroll_ids', string='Liquidaciones')
+    finalize_contributions_ids = fields.One2many('finalize.contributions', 'partner_payroll_ids',
+                                                 string='Liquidaciones')
     partner_status_especific_reorder = fields.Selection([('passive_reserve_a', 'Reserva pasivo "A"'),
-                                                 ('passive_reserve_b', 'Reserva pasivo "B"'),
-                                                 ], string='Tipo de asociado')
+                                                         ('passive_reserve_b', 'Reserva pasivo "B"'),
+                                                         ], string='Tipo de asociado')
     # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     mount_passive_a = fields.Float(string='Monto Categoria A')
+    amount_return = fields.Float(string='Monto Dev.')
 
     def _compute_total(self):
         for record in self:
             record.total = record.capital_initial + record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + record.other_contribution_total
+
     @api.depends('since_payment', 'until_payment')
     def compute_difference_year(self):
         for record in self:
@@ -194,6 +210,7 @@ class PartnerPayroll(models.Model):
                     record.difference_year = 2023
             else:
                 record.difference_year = 0
+
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
         self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
@@ -236,14 +253,15 @@ class PartnerPayroll(models.Model):
     def compute_contributions(self):
         for record in self:
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense' or (x.state == 'partner_return' and x.switch_draf==False))).mapped(
+                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense' or (
+                            x.state == 'partner_return' and x.switch_draf == False))).mapped(
                 'voluntary_contribution_certificate'))
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
             record.capital_initial = sum(
-                record.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest' or x.state == 'capital_initial').mapped(
+                record.payroll_payments_ids.filtered(
+                    lambda x: x.state == 'contribution_interest' or x.state == 'capital_initial').mapped(
                     'voluntary_contribution_certificate'))
-
 
     def init_payroll_partner_wizard(self):
         # Acción para abrir el wizard
@@ -299,19 +317,26 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_count_pay_contributions(self):
         for record in self:
-            record.count_pay_contributions = len(record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.state != 'no_contribution'))
+            record.count_pay_contributions = len(
+                record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.state != 'no_contribution'))
             record.mandatory_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
                 'mandatory_contribution_certificate'))
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or (x.state == 'partner_return' and x.switch_draf==False)).mapped(
+                lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or (
+                            x.state == 'partner_return' and x.switch_draf == False)).mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
-            record.other_contribution_total = sum(round(c,2)for c in record.payroll_payments_ids.filtered(lambda x: x.state == 'other_contribution').mapped('other_contribution'))
+            record.other_contribution_total = sum(round(c, 2) for c in record.payroll_payments_ids.filtered(
+                lambda x: x.state == 'other_contribution').mapped('other_contribution'))
             record.surpluses_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
                     'other_contribution'))
-            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total + record.surpluses_total
+            record.amount_return = sum(
+                record.payroll_payments_ids.filtered(lambda
+                                                         x: x.state == 'partner_return' or x.state == 'partner_return_credit' and x.switch_draf == False).mapped(
+                    'voluntary_contribution_certificate'))
+            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total + record.surpluses_total + record.amount_return
 
     def return_draft(self):
         self.state = 'draft'
@@ -331,9 +356,11 @@ class PartnerPayroll(models.Model):
             else:
                 current = current.replace(month=current.month + 1)
         return result
+
     @api.depends('payroll_payments_ids')
     def compute_updated_partner(self):
-        regulation_cup = float(self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
+        regulation_cup = float(
+            self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
         mandatory_contribution = float(self.env['ir.config_parameter'].sudo().get_param(
             'rod_cooperativa_aportes.mandatory_contribution_certificate'))
         diff_months = 0
@@ -361,7 +388,8 @@ class PartnerPayroll(models.Model):
                     i = 2023
                     for i in range(n):
                         try:
-                            periods = record.payroll_payments_ids.filtered(lambda x:x.period_register).mapped('period_register')
+                            periods = record.payroll_payments_ids.filtered(lambda x: x.period_register).mapped(
+                                'period_register')
                             period_reg = np.unique(periods)
                             if i < len(period_reg):
                                 period = period_reg[i]
@@ -407,7 +435,7 @@ class PartnerPayroll(models.Model):
                     n = record.outstanding
                     sw = 0
                     latest_payment = record.payroll_payments_ids.sorted('date_pivote', reverse=True)[
-                                     :1].date_pivote + relativedelta(months=1)
+                                         :1].date_pivote + relativedelta(months=1)
                     months = record.get_month_starts(latest_payment, datetime.now().date())
                     for i in range(len(months)):
                         try:
@@ -454,7 +482,7 @@ class PartnerPayroll(models.Model):
                 record.updated_partner = False
                 record.outstanding_payments = diff_months - count_payments
                 record.must_regulation_rate = record.outstanding_payments * regulation_cup
-                record.must_mandatory_contribution = (record.outstanding_payments/6) * mandatory_contribution
+                record.must_mandatory_contribution = (record.outstanding_payments / 6) * mandatory_contribution
                 record.must_gestion = count_payments / 12
                 record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
                 # self.env.user.notify_warning(
@@ -480,7 +508,6 @@ class PartnerPayroll(models.Model):
     #             make_register = 0
     #         # make_register = record.calculate_month_difference()
     #         record.outstanding_payments = make_register - round(len(record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
-
 
     @api.depends('payroll_payments_ids')
     def calculate_month_difference(self):
@@ -515,7 +542,6 @@ class PartnerPayroll(models.Model):
                     record.outstanding = diff_months - count_payments
                 # self.env.user.notify_warning(
                 #     message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
-
 
     def select_init_partner_payroll(self):
         for record in self:
@@ -571,13 +597,13 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.balance_advance = record.contribution_total - record.performance_management_total
 
-
     def finalized_payroll(self):
         total_contributions = (self.capital_initial + self.voluntary_contribution_certificate_total +
                                self.mandatory_contribution_certificate_total + self.performance_management_total +
                                self.other_contribution_total + self.surpluses_total)
 
-        loan_id = self.env['loan.application'].search([('partner_id','=',self.partner_id.id),('state','=','progress')])
+        loan_id = self.env['loan.application'].search(
+            [('partner_id', '=', self.partner_id.id), ('state', '=', 'progress')])
         total_loan_capital_bolivianos = loan_id.balance_capital * loan_id.value_dolar
         total_balance_total_interest_month_bolivianos = loan_id.balance_total_interest_month * loan_id.value_dolar
         context = {
@@ -622,7 +648,8 @@ class PartnerPayroll(models.Model):
                 regulation_cup = record.account_regulation_cup_id
                 mandatory_contribution = record.account_mandatory_contribution_id
                 voluntary_contribution = record.account_voluntary_contribution_id
-                payment.create_account_move(income,inscription,regulation_cup,mandatory_contribution,voluntary_contribution)
+                payment.create_account_move(income, inscription, regulation_cup, mandatory_contribution,
+                                            voluntary_contribution)
 
     def _init_report_partner_payroll(self):
         self_obj = self.browse(self)[0]
@@ -681,7 +708,8 @@ class PartnerPayroll(models.Model):
 
     def exclude_contributions(self):
         for record in self:
-            total = round(sum(record.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense').mapped('income')),2)
+            total = round(
+                sum(record.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense').mapped('income')), 2)
         context = {
             'default_partner_payroll_id': self.id,
             'default_total_contributions': total,
@@ -751,8 +779,10 @@ class PartnerPayroll(models.Model):
     def _compute_formatted_name(self):
         try:
             for rec in self:
-                rec.partner_name = " ".join(word.capitalize() for word in rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.name else ""
-                rec.partner_name = rec.partner_name + " " + " ".join(word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
+                rec.partner_name = " ".join(word.capitalize() for word in
+                                            rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.name else ""
+                rec.partner_name = rec.partner_name + " " + " ".join(
+                    word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
         except:
             rec.partner_name = ""
 
@@ -789,7 +819,3 @@ class PartnerPayroll(models.Model):
         return {
             'message': f'Se conciliaron {reconciled} registros del periodo {period}.'
         }
-
-
-
-
