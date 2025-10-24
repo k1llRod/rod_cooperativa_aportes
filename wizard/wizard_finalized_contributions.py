@@ -38,7 +38,7 @@ class WizardFinalizedContributions(models.TransientModel):
             'total_voluntary_contributions': self.total_voluntary_contributions_certificate,
             'total_capital_initial': self.capital_initial,
         }
-        total_contribution = self.total_voluntary_contributions_certificate + self.capital_initial + self.total_other_contributions + self.total_surpluses if self.option_liquidation == True else self.total_voluntary_contributions_certificate + self.capital_initial
+        total_contribution = self.total_voluntary_contributions_certificate + self.total_mandatory_contributions_certificate + self.capital_initial + self.total_other_contributions + self.total_surpluses if self.option_liquidation == True else self.total_voluntary_contributions_certificate + self.capital_initial
 
         total_loan = self.total_loan_capital_bolivianos + self.total_balance_total_interest_month_bolivianos
         if self.option_liquidation == True and total_contribution >= total_loan:

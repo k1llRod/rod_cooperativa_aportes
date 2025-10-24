@@ -88,6 +88,9 @@
                         <button name="partner_devolution" string="Devolucion" type="object"
                                 class="oe_close_button"
                         />
+                        <button name="partner_devolution" string="Devolucion Credito" type="object"
+                                class="oe_close_button"
+                        />
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,transfer,ministry_defense"/>
                     </header>

@@ -65,6 +65,7 @@ class PayrollPayments(models.Model):
          ('no_contribution', 'Sin aporte'),
          ('capital_initial','Capital inicial'),
          ('partner_return', 'Devolucion'),
+         ('partner_return_credit','Dev. Credito'),
          ('other_contribution','Otros aportes Cooperativa'),
          ('other_contribution_coaa','Otros aportes COAA'),
          ('disengagement','Desvinculacion'),
@@ -489,3 +490,7 @@ class PayrollPayments(models.Model):
     def partner_devolution(self):
         for record in self:
             record.state = 'partner_return'
+
+    def partner_devolution_credit(self):
+        for record in self:
+            record.state = 'partner_return_credit'
