@@ -328,7 +328,7 @@ class PartnerPayroll(models.Model):
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
             record.other_contribution_total = sum(round(c, 2) for c in record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'other_contribution').mapped('other_contribution'))
+                lambda x: x.state == 'other_contribution' or x.state=='other_contribution_coaa').mapped('other_contribution'))
             record.surpluses_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
                     'other_contribution'))

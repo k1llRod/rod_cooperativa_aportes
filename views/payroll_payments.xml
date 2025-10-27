@@ -223,9 +223,9 @@
                             <button name="agroup_payroll_payments" string="Generar asiento" class="oe_highlight"
                                     type="object"/>
                         </header>
-                        <field name="name" readonly="1" optional="show"/>
+                        <field name="name" readonly="1" optional="show" />
                         <field name="partner_payroll_id" optional="hide"/>
-                        <field name="partner_name" string="Socio" optional="show"/>
+                        <field name="partner_name" string="Socio" optional="show" />
                         <field name="partner_code_contact" string="Codigo socio"/>
                         <field name="partner_status_especific" />
                         <field name="period_register"/>
