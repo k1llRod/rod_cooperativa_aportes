@@ -600,7 +600,7 @@ class PartnerPayroll(models.Model):
     def finalized_payroll(self):
         total_contributions = (self.capital_initial + self.voluntary_contribution_certificate_total +
                                self.mandatory_contribution_certificate_total + self.performance_management_total +
-                               self.other_contribution_total + self.surpluses_total)
+                               self.other_contribution_total + self.surpluses_total + self.amount_return)
 
         loan_id = self.env['loan.application'].search(
             [('partner_id', '=', self.partner_id.id), ('state', '=', 'progress')])
