@@ -33,10 +33,11 @@ class PerformanceYieldAccountLine(models.Model):
                 for l in self.filtered(lambda x: x.batch_id.id == batch_id):
                     l.debit = l.credit = l.balance = 0.0
                 continue
-
+            # Dominio para read_group
             domain = [
                 ('account_id', 'in', list(account_ids)),
-                ('date', '>=', batch.date_start),
+                # ('date', '>=', batch.date_start),
+                ('date', '>=', '2023-01-01'),  # Ajuste temporal para evitar problemas con asientos antiguos mal fechados
                 ('date', '<=', batch.date_end),
                 ('parent_state', '=', 'posted'),  # solo asientos contabilizados
             ]
