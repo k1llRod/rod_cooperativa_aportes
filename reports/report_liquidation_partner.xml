@@ -59,9 +59,9 @@
 <!--                <t t-out="0"/>-->
 <!--            </div>-->
             <div class="article o_report_layout_standard" style="position: relative;">
-                <div style="position: absolute; top: 200px; width: 100%; text-align: center; z-index: -1000;">
+                <div style="position: absolute; top: 350px; left: 0; right: 0; margin: auto; width: 100%; text-align: center; z-index: -1000;">
                     <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'"
-                         style="width: 750px; opacity: 0.12; display: inline-block;"/>
+                         style="width: 750px; opacity: 0.13 !important; -webkit-opacity: 0.13 !important; display: inline-block;"/>
                 </div>
 
                 <t t-out="0"/>
