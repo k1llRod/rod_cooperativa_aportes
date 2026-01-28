@@ -55,17 +55,17 @@
 
                 </div>
             </div>
-            <div class="article o_report_layout_standard">
-                <t t-out="0"/>
-            </div>
-<!--            <div class="article o_report_layout_standard" style="position: relative;">-->
-<!--                <div style="position: absolute; top: 300px; width: 100%; text-align: center; z-index: -1000;">-->
-<!--                    <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'"-->
-<!--                         style="width: 500px; opacity: 0.12; display: inline-block;"/>-->
-<!--                </div>-->
-
+<!--            <div class="article o_report_layout_standard">-->
 <!--                <t t-out="0"/>-->
 <!--            </div>-->
+            <div class="article o_report_layout_standard" style="position: relative;">
+                <div style="position: absolute; top: 200px; width: 100%; text-align: center; z-index: -1000;">
+                    <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'"
+                         style="width: 750px; opacity: 0.12; display: inline-block;"/>
+                </div>
+
+                <t t-out="0"/>
+            </div>
             <div class="footer o_standard_footer">
                 <div class="row">
 
@@ -75,8 +75,7 @@
         <template id="report_liquidation_partner">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
-                    <div class="page"
-                        t-att-style="'background-image: url(/rod_cooperativa_aportes/static/src/img/background_cooperativa.png);background-repeat:repeat-y; height:850px; background-position-x:center;'">
+                    <div class="page">
                         <t t-call="rod_cooperativa_aportes.rod_layout_liquidation">
                             <div class="body">
                                 <hr/>
