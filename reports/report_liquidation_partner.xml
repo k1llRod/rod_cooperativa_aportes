@@ -103,12 +103,11 @@
                                     4 DE DICIEMBRE" R.L.
                                 </strong> de acuerdo al siguiente detalle:
                                 </div>
-                                <br/>
                             </div>
                             <div>
                                 <t t-foreach="o.finalize_contributions_ids" t-as="l">
                                     <center>
-                                        <table class="table table-sm" style="font-size:14px;width:70%;">
+                                        <table class="table table-sm" style="font-size:16px;width:80%;">
                                         <tbody>
                                             <tr>
                                                 <td style="width:80%;">
@@ -216,7 +215,7 @@
                                 </center>
                                 <center>
                                     <br/>
-                                    <table class="table table-sm" style="font-size:14px;width:70%;">
+                                    <table class="table table-sm" style="font-size:16px;width:80%;">
                                         <tbody>
                                             <tr>
                                                 <td style="width:80%;">
@@ -307,7 +306,6 @@
                                 </center>
 
                             </div>
-                            <br/>
                             <div style="text-align:justify;font-size:16px;">
                                 Son: (<strong><span t-esc="l.literal_res_contributions"/></strong>.)
                             </div>
