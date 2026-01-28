@@ -315,7 +315,6 @@
                             <div style="text-align:justify;font-size:16px;">
                                 En señal de confomidad, se firma al pie del presente documento.
                             </div>
-                            <br/>
                             <div style="text-align:right;font-size:16px;">
                                 <t t-set="now" t-value="l.date_proccess or datetime.date.today()"/>
                                 <t t-set="meses"
@@ -323,7 +322,7 @@
                                 <t t-set="fecha_literal" t-value="'La Paz, %s de %s de %s' % (now.day, meses[now.month-1], now.year)"/>
                                 <span t-esc="fecha_literal"/>
                             </div>
-                            <div class="signature-container" style="margin-top:50px;">
+                            <div class="signature-container" style="margin-top:40px;">
                                 <!-- Usamos una tabla para alinear los cuadros de firma -->
                                 <table style="width:100%; border-collapse: collapse;">
                                     <!-- Primera fila: Dos cuadros de firma -->
