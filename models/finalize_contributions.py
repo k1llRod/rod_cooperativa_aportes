@@ -60,6 +60,7 @@ class FinalizeContributions(models.Model):
     account_manual_aporte_obligatorio = fields.Many2one('account.account', string='Cuenta Aporte obligatorio manual')
 
     literal_number = fields.Char(string='Amount literal', compute='_compute_literal_number')
+    literal_res_contributions = fields.Char(string='Amount literal rest contributions', compute='_compute_literal_res_contributions')
 
     @api.depends('total_voluntary_contributions', 'total_capital_initial')
     def calculate_total_voluntary(self):
@@ -571,7 +572,12 @@ class FinalizeContributions(models.Model):
             record.literal_number = num2words(int(record.total_amount), lang='es').upper()
             decimal = str(round(record.total_amount % 1 * 100))
             record.literal_number = record.literal_number + ', CON ' + decimal + '/100 BOLIVIANOS'
-
+    @api.depends('total_amount')
+    def _compute_literal_res_contributions(self):
+        for record in self:
+            record.literal_res_contributions = num2words(int(record.rest_contributions), lang='es').upper()
+            decimal = str(round(record.rest_contributions % 1 * 100))
+            record.literal_res_contributions = record.literal_res_contributions + ', CON ' + decimal + '/100 BOLIVIANOS'
 
 
 

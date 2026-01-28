@@ -55,7 +55,15 @@
 
                 </div>
             </div>
-            <div class="article o_report_layout_standard">
+<!--            <div class="article o_report_layout_standard">-->
+<!--                <t t-out="0"/>-->
+<!--            </div>-->
+            <div class="article o_report_layout_standard" style="position: relative;">
+                <div style="position: absolute; top: 300px; width: 100%; text-align: center; z-index: -1000;">
+                    <img t-att-src="'/rod_account_coa/static/src/img/coaa.png'"
+                         style="width: 500px; opacity: 0.12; display: inline-block;"/>
+                </div>
+
                 <t t-out="0"/>
             </div>
             <div class="footer o_standard_footer">
@@ -82,7 +90,12 @@
                                     Devolucion de Certificacion de APORTACIONES y EXCEDENTES de Percepcion señor(a)
                                     <strong>
                                         <span t-field="o.partner_id.category_partner_id.code_loan"/>
-                                        <span t-field="o.partner_id.weapon"/>
+                                        <t t-if="o.partner_id.weapon in ['Artilleria', 'artilleria', 'Artillería', 'ARTILLERIA']">
+                                            <span>Art.</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="o.partner_id.weapon"/>
+                                        </t>
                                         <span t-field="o.partner_id.name"/>
                                     </strong>
                                     Asociado(a) de la <strong>COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL
@@ -114,7 +127,8 @@
                                                     Bs.
                                                 </td>
                                                 <td >
-                                                    <span t-esc="round((l.total_mandatory_contributions), 2)"/>
+<!--                                                    <span t-esc="round((l.total_mandatory_contributions), 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.total_mandatory_contributions).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -134,7 +148,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_voluntary_contributions) + (l.total_capital_initial), 2)"/>
+                                                    <span t-esc="'{:,.2f}'.format(l.total_voluntary_contributions).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
+<!--                                                    <span t-esc="round((l.total_voluntary_contributions) + (l.total_capital_initial), 2)"/>-->
                                                 </td>
                                             </tr>
                                             <tr>
@@ -154,7 +169,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.other_contributions), 2)"/>
+                                                    <span t-esc="'{:,.2f}'.format(l.other_contributions).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
+<!--                                                    <span t-esc="round((l.other_contributions), 2)"/>-->
                                                 </td>
                                             </tr>
                                             <tr>
@@ -174,7 +190,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.surpluses), 2)"/>
+                                                    <span t-esc="'{:,.2f}'.format(l.surpluses).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
+<!--                                                    <span t-esc="round((l.surpluses), 2)"/>-->
                                                 </td>
                                             </tr>
                                             <tr style="font-weight:bold;">
@@ -185,7 +202,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.total_amount), 2)"/>
+                                                    <span t-esc="'{:,.2f}'.format(l.total_amount).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
+<!--                                                    <span t-esc="round((l.total_amount), 2)"/>-->
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -208,7 +226,8 @@
                                                     Bs.
                                                 </td>
                                                 <td style="width:10%;">
-                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos, 2) "/>
+<!--                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos, 2) "/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
 
@@ -220,7 +239,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round((l.disengagement), 2)"/>
+<!--                                                    <span t-esc="round((l.disengagement), 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.disengagement).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -231,7 +251,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round(l.manual_regulation_cup, 2)"/>
+<!--                                                    <span t-esc="round(l.manual_regulation_cup, 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.manual_regulation_cup).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -242,7 +263,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round(l.manual_post_mortem, 2)"/>
+<!--                                                    <span t-esc="round(l.manual_post_mortem, 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.manual_post_mortem).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -253,7 +275,8 @@
                                                     Bs.
                                                 </td>
                                                 <td>
-                                                    <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>
+<!--                                                    <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.manual_aporte_obligatorio).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -264,7 +287,8 @@
                                                     Bs.
                                                 </td>
                                                 <td style="font-weight:bold;">
-                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>
+<!--                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -275,13 +299,29 @@
                                                     Bs.
                                                 </td>
                                                 <td style="font-weight:bold;">
-                                                    <span t-esc="round(l.rest_contributions, 2)"/>
+                                                    <span t-esc="'{:,.2f}'.format(l.rest_contributions).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </center>
 
+                            </div>
+                            <br/>
+                            <div style="text-align:justify;font-size:16px;">
+                                Son: (<strong><span t-esc="l.literal_res_contributions"/></strong>.)
+                            </div>
+                            <br/>
+                            <div style="text-align:justify;font-size:16px;">
+                                En señal de confomidad, se firma al pie del presente documento.
+                            </div>
+                            <br/>
+                            <div style="text-align:right;font-size:16px;">
+                                <t t-set="now" t-value="l.date_proccess or datetime.date.today()"/>
+                                <t t-set="meses"
+                                   t-value="['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']"/>
+                                <t t-set="fecha_literal" t-value="'La Paz, %s de %s de %s' % (now.day, meses[now.month-1], now.year)"/>
+                                <span t-esc="fecha_literal"/>
                             </div>
                             <div class="signature-container" style="margin-top:50px;">
                                 <!-- Usamos una tabla para alinear los cuadros de firma -->

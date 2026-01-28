@@ -119,6 +119,7 @@
                                         <field name="manual_post_mortem"/>
                                         <field name="account_bank_rest_contributions"/>
                                         <field name="rest_contributions"/>
+                                        <field name="literal_res_contributions"/>
                                         <field name="total_amount_credit"/>
                                     </group>
 
