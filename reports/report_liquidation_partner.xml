@@ -56,11 +56,6 @@
                 </div>
             </div>
             <div class="article o_report_layout_standard">
-                <div style="position: absolute; top: 200px; left: 0; right: 0; margin: auto; width: 100%; text-align: center; z-index: -1000;">
-                    <img t-att-src="'/rod_cooperativa_aportes/static/src/img/coaa_opacity.png'"
-                         style="width: 750px; display: inline-block;"/>
-
-                </div>
                 <t t-out="0"/>
             </div>
 <!--            <div class="article o_report_layout_standard" style="position: relative;">-->
