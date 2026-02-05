@@ -53,19 +53,45 @@ class ResPartner(models.Model):
     date_disengagements = fields.Date(string='Fecha de baja', related='partner_payroll_ids.date_disengagements', store=True)
     gloss_disengagement = fields.Text(string='Glosa de baja', related='partner_payroll_ids.gloss_disengagement', store=True)
 
-
     def compute_contributions_count(self):
         for record in self:
-            contributions = len(record.env['partner.payroll'].search([('partner_id', '=', record.id)]))
-            loans = len(record.env['loan.application'].search([('partner_id', '=', record.id),('with_guarantor','!=','mortgage')]))
-            loans_mortgage = len(record.env['loan.application'].search([('partner_id', '=', record.id),('with_guarantor','=','mortgage')]))
-            loans_emergency = len(record.env['loan.application.emergency'].search([('partner_id', '=', record.id)]))
-            record.contributions_count = contributions
-            record.loan_count = loans
-            record.loan_count_mortgage = loans_mortgage
-            record.loan_count_loan_emergency = loans_emergency
-            record.partner_payroll_ids = record.env['partner.payroll'].search([('partner_id', '=', record.id)])[-1] if contributions > 0 else False
-            record.loan_application_ids = record.env['loan.application'].search([('partner_id', '=', record.id)])[-1] if loans > 0 else False
+            # 1. Usar search_count (Solo cuenta en BD, no trae datos)
+            record.contributions_count = self.env['partner.payroll'].search_count([('partner_id', '=', record.id)])
+
+            # Filtros optimizados para conteos
+            record.loan_count = self.env['loan.application'].search_count([
+                ('partner_id', '=', record.id),
+                ('with_guarantor', '!=', 'mortgage'),
+                ('state', '!=', 'progress')
+            ])
+            record.loan_count_mortgage = self.env['loan.application'].search_count([
+                ('partner_id', '=', record.id),
+                ('with_guarantor', '=', 'mortgage'),
+                ('state', '!=', 'progress')
+            ])
+            record.loan_count_loan_emergency = self.env['loan.application.emergency'].search_count([
+                ('partner_id', '=', record.id)
+            ])
+
+            # 2. Obtener el último registro eficientemente (Sin cargar toda la lista)
+            # Asumiendo que quieres el último creado (order='id desc')
+            if record.contributions_count > 0:
+                record.partner_payroll_ids = self.env['partner.payroll'].search(
+                    [('partner_id', '=', record.id)],
+                    order='id desc',
+                    limit=1
+                )
+            else:
+                record.partner_payroll_ids = False
+
+            if record.loan_count > 0:
+                record.loan_application_ids = self.env['loan.application'].search(
+                    [('partner_id', '=', record.id)],
+                    order='id desc',
+                    limit=1
+                )
+            else:
+                record.loan_application_ids = False
     def action_view_contributions(self):
         self.ensure_one()
         action = self.env["ir.actions.actions"]._for_xml_id("rod_cooperativa_aportes.action_partner_payroll")
