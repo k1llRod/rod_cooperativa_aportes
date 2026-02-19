@@ -62,12 +62,12 @@ class ResPartner(models.Model):
             record.loan_count = self.env['loan.application'].search_count([
                 ('partner_id', '=', record.id),
                 ('with_guarantor', '!=', 'mortgage'),
-                ('state', '!=', 'progress')
+                ('state', '=', 'progress')
             ])
             record.loan_count_mortgage = self.env['loan.application'].search_count([
                 ('partner_id', '=', record.id),
                 ('with_guarantor', '=', 'mortgage'),
-                ('state', '!=', 'progress')
+                ('state', '=', 'progress')
             ])
             record.loan_count_loan_emergency = self.env['loan.application.emergency'].search_count([
                 ('partner_id', '=', record.id)
