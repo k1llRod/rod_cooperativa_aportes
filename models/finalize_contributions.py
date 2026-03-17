@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from num2words import num2words
+from odoo.exceptions import UserError
 
 
 class FinalizeContributions(models.Model):
@@ -7,6 +8,10 @@ class FinalizeContributions(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Codigo')
+    # 1. Definir la moneda primero
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    currency_id = fields.Many2one('res.currency', string='Moneda (Bs)', related='company_id.currency_id', readonly=True)
+
     liquidation = fields.Boolean(string='Liquidar prestamo', default=False)
     liquidation_contributions = fields.Boolean(string="Liquidar aportes", default=False)
     date_proccess = fields.Date(string='Fecha de proceso')
@@ -38,7 +43,24 @@ class FinalizeContributions(models.Model):
 
     loan_capital_bolivianos = fields.Float(string='Total capital prestamo', digits=(16, 2))
     balance_interest_month_bolivianos = fields.Float(string='Total dias de interes', digits=(16, 2))
+
+    # Debes usar Monetary porque el origen en loan.application es Monetary
+    loan_capital_bolivianos_related = fields.Monetary(
+        string='Total capital prestamo relacionado',
+        related='loan_application_ids.balance_capital_bs',
+        currency_field='currency_id',  # Requerido para campos Monetary
+        readonly=True
+    )
+
+    balance_interest_month_bolivianos_related = fields.Monetary(
+        string='Total dias de interes relacionado',
+        related='loan_application_ids.balance_total_interest_month_bs',
+        currency_field='currency_id',  # Requerido para campos Monetary
+        readonly=True
+    )
+
     discount_contribution = fields.Float(string='Descuento aporte', digits=(16, 2))
+
 
 
     journal_id = fields.Many2one('account.journal', string='Diario')
@@ -117,454 +139,103 @@ class FinalizeContributions(models.Model):
 
     def action_confirm(self):
         for record in self:
-            if record.partner_payroll_ids.state == 'process':
-                vals = {}
-                if record.total_diference_contribution_loan == 0 and record.liquidation == True:
-                    vals = {
-                        'partner_payroll_id': record.partner_payroll_ids.id,
-                        'income': 0,
-                        'income_passive': 0,
-                        'miscellaneous_income': 0,
-                        'regulation_cup': 0,
-                        'mandatory_contribution_certificate': 0,
-                        'voluntary_contribution_certificate': record.discount_contribution,
-                        'other_contribution': 0,
-                        'payment_date': record.date_proccess,
-                        'date_pivote': record.date_proccess,
-                    }
-                    payroll = self.env['payroll.payments'].create(vals)
-                    payroll.write({
-                        'voluntary_contribution_certificate': -(record.discount_contribution),
-                    })
-                    payroll.partner_devolution()
-                    if payroll:
-                        val = []
-                        data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
-                                       'debit': record.discount_contribution, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_capital_loan.id,
-                                       'debit': 0, 'credit': record.loan_capital_bolivianos,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_interest_month.id,
-                                       'debit': 0, 'credit': record.balance_interest_month_bolivianos,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        move_vals = {
-                            "date": record.date_proccess,
-                            "journal_id": record.journal_id.id,
-                            "ref": "",
-                            "partner_id": record.partner_payroll_ids.partner_id.id,
-                            # "name": "name test",
-                            "glosa": '',
-                            "state": "draft",
-                            "line_ids": val,
-                        }
-                        account_move_id = record.env['account.move'].create(move_vals)
-                        record.account_move_id = account_move_id.id
-                        account_move_id.finalize_contributions_id = record.id
+            if record.partner_payroll_ids.state != 'process':
+                raise UserError(_("Los aportes deben estar en estado 'Proceso'."))
 
-                        finalized_loan = self.env['finalized.loan'].create({
-                            'loan_application_id': self.loan_application_ids.id,
-                            'date_finalize': self.date_proccess,
-                            'amount_loan_dollars_initial': record.loan_application_ids.amount_loan_dollars,
-                            'amount_loan_initial': record.loan_application_ids.amount_loan,
-                            'payment_count': record.loan_application_ids.total_payments_confirm,
-                            'balance_capital_dollar': record.loan_application_ids.balance_capital,
-                            'balance_capital_bolivianos': record.loan_capital_bolivianos,
-                            'balance_total_interest_month': record.loan_application_ids.balance_total_interest_month,
-                            'balance_total_interest_month_bolivianos': record.balance_interest_month_bolivianos,
-                            'state': 'draft'
-                        })
-                        if finalized_loan:
-                            record.loan_application_ids.state = 'liquidation_process'
-                            finalized_loan.action_confirm()
-                            finalized_loan.accounting_finalized_loan_id = account_move_id.id
-                            record.loan_application_ids.loan_payment_ids.filtered(lambda x:x.name == 'LIQUID 1').account_move_id = account_move_id.id
-                        return {
-                            'name': 'Pagos de planilla',
-                            'type': 'ir.actions.act_window',
-                            'res_model': 'account.move',
-                            'view_mode': 'form',
-                            'res_id': account_move_id.id,
-                            'views': [(False, 'form')],
-                        }
-                        # record.accounting_entry_id = account_move_id.id
-                        # account_move_id.loan_application_id = record.id
+            # Sincronización de montos con el registro de aportes
+            if record.total_mandatory_contributions != record.partner_payroll_ids.mandatory_contribution_certificate_total:
+                record.total_mandatory_contributions = record.partner_payroll_ids.mandatory_contribution_certificate_total
+            if record.total_voluntary_contributions != record.partner_payroll_ids.voluntary_contribution_certificate_total:
+                record.total_voluntary_contributions = record.partner_payroll_ids.voluntary_contribution_certificate_total
+            if record.total_capital_initial != record.partner_payroll_ids.capital_initial:
+                record.total_capital_initial = record.partner_payroll_ids.capital_initial
+            if record.other_contributions != record.partner_payroll_ids.other_contribution_total:
+                record.other_contributions = record.partner_payroll_ids.other_contribution_total
+            if record.surpluses != record.partner_payroll_ids.surpluses_total:
+                record.surpluses = record.partner_payroll_ids.surpluses_total
 
-                if record.liquidation_contributions == True and record.liquidation == False:
-                    val = []
-                    data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
-                                   'debit': record.total_voluntary, 'credit': 0,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_mandatory_contributions.id,
-                                   'debit': record.total_mandatory_contributions, 'credit': 0,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_other_contributions.id,
-                                   'debit': record.other_contributions, 'credit': 0,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_surpluses.id,
-                                   'debit': record.surpluses, 'credit': 0,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_disengagement.id,
-                                   'debit': 0, 'credit': record.disengagement,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_regulation_cup.id,
-                                   'debit': 0, 'credit': record.manual_regulation_cup,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_bank_rest_contributions.id,
-                                   'debit': 0, 'credit': record.rest_contributions,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_manual_aporte_obligatorio.id,
-                                   'debit': 0, 'credit': record.manual_aporte_obligatorio,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    data = (0, 0, {'account_id': record.account_manual_post_mortem.id,
-                                   'debit': 0, 'credit': record.manual_post_mortem,
-                                   'partner_id': record.partner_payroll_ids.partner_id.id,
-                                   'amount_currency': 0
-                                   })
-                    val.append(data)
-                    move_vals = {
-                        "date": record.date_proccess,
-                        "journal_id": record.journal_id.id,
-                        "ref": "",
-                        "partner_id": record.partner_payroll_ids.partner_id.id,
-                        # "name": "name test",
-                        "glosa": '',
-                        "state": "draft",
-                        "line_ids": val,
-                    }
-                    account_move_id = record.env['account.move'].create(move_vals)
-                    record.account_move_id = account_move_id.id
-                    account_move_id.finalize_contributions_id = record.id
-                    if account_move_id:
-                        record.partner_payroll_ids.state = 'process_finalized'
-                    return {
-                        'name': 'Pagos de planilla',
-                        'type': 'ir.actions.act_window',
-                        'res_model': 'account.move',
-                        'view_mode': 'form',
-                        'res_id': account_move_id.id,
-                        'views': [(False, 'form')],
-                    }
-                    # account_move_id.finalize_contributions_id = record.id
+            # Cálculo de verificación (incluyendo rendimiento si aplica)
+            total_calc = round(record.total_mandatory_contributions + record.total_voluntary_contributions +
+                               record.total_capital_initial + record.other_contributions + record.surpluses, 2)
 
-                if record.liquidation_contributions == True and record.liquidation == True and record.total_amount >= (
-                        record.loan_capital_bolivianos + record.balance_interest_month_bolivianos):
-                    vals = {
-                        'partner_payroll_id': record.partner_payroll_ids.id,
-                        'income': 0,
-                        'income_passive': 0,
-                        'miscellaneous_income': 0,
-                        'regulation_cup': 0,
-                        'mandatory_contribution_certificate': 0,
-                        'voluntary_contribution_certificate': record.discount_contribution,
-                        'other_contribution': 0,
-                        'payment_date': record.date_proccess,
-                        'date_pivote': record.date_proccess,
-                    }
-                    payroll = self.env['payroll.payments'].create(vals)
-                    payroll.write({
-                        'voluntary_contribution_certificate': -(record.discount_contribution),
-                    })
-                    payroll.partner_devolution()
-                    if payroll:
-                        val = []
-                        if record.total_voluntary > 0:
-                            data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
-                                           'debit': record.total_voluntary, 'credit': 0,
-                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.total_mandatory_contributions > 0:
-                            data = (0, 0, {'account_id': record.account_mandatory_contributions.id,
-                                           'debit': record.total_mandatory_contributions, 'credit': 0,
-                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.other_contributions > 0:
-                            data = (0, 0, {'account_id': record.account_other_contributions.id,
-                                           'debit': record.other_contributions, 'credit': 0,
-                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.surpluses > 0:
-                            data = (0, 0, {'account_id': record.account_surpluses.id,
-                                           'debit': record.surpluses, 'credit': 0,
-                                           # 'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.loan_capital_bolivianos > 0:
-                            data = (0, 0, {'account_id': record.account_capital_loan.id,
-                                           'debit': 0, 'credit': record.loan_capital_bolivianos,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.balance_interest_month_bolivianos > 0:
-                            data = (0, 0, {'account_id': record.account_interest_month.id,
-                                           'debit': 0, 'credit': record.balance_interest_month_bolivianos,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.disengagement > 0:
-                            data = (0, 0, {'account_id': record.account_disengagement.id,
-                                           'debit': 0, 'credit': record.disengagement,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.manual_regulation_cup > 0:
-                            data = (0, 0, {'account_id': record.account_regulation_cup.id,
-                                           'debit': 0, 'credit': record.manual_regulation_cup,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.manual_aporte_obligatorio > 0:
-                            data = (0, 0, {'account_id': record.account_manual_aporte_obligatorio.id,
-                                           'debit': 0, 'credit': record.manual_aporte_obligatorio,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.manual_post_mortem > 0:
-                            data = (0, 0, {'account_id': record.account_manual_post_mortem.id,
-                                           'debit': 0, 'credit': record.manual_post_mortem,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        if record.rest_contributions > 0:
-                            data = (0, 0, {'account_id': record.account_bank_rest_contributions.id,
-                                           'debit': 0, 'credit': record.rest_contributions,
-                                           'partner_id': record.partner_payroll_ids.partner_id.id,
-                                           'amount_currency': 0
-                                           })
-                            val.append(data)
-                        move_vals = {
-                            "date": record.date_proccess,
-                            "journal_id": record.journal_id.id,
-                            "ref": "",
-                            "partner_id": record.partner_payroll_ids.partner_id.id,
-                            # "name": "name test",
-                            "glosa": '',
-                            "state": "draft",
-                            "line_ids": val,
-                        }
-                        account_move_id = record.env['account.move'].create(move_vals)
-                        record.account_move_id = account_move_id.id
-                        account_move_id.finalize_contributions_id = record.id
+            if round(record.total_amount, 2) != total_calc:
+                raise UserError(
+                    _("El total de aportes no coincide con el total calculado. Por favor, revise los datos."))
 
-                        finalized_loan = self.env['finalized.loan'].create({
-                            'loan_application_id': self.loan_application_ids.id,
-                            'date_finalize': self.date_proccess,
-                            'amount_loan_dollars_initial': record.loan_application_ids.amount_loan_dollars,
-                            'amount_loan_initial': record.loan_application_ids.amount_loan,
-                            'payment_count': record.loan_application_ids.total_payments_confirm,
-                            'balance_capital_dollar': record.loan_application_ids.balance_capital,
-                            'balance_capital_bolivianos': record.loan_capital_bolivianos,
-                            'balance_total_interest_month': record.loan_application_ids.balance_total_interest_month,
-                            'balance_total_interest_month_bolivianos': record.balance_interest_month_bolivianos,
-                            'state': 'draft'
-                        })
-                        if finalized_loan:
-                            record.loan_application_ids.state = 'liquidation_process'
-                            finalized_loan.action_confirm()
-                            finalized_loan.accounting_finalized_loan_id = account_move_id.id
-                            record.loan_application_ids.loan_payment_ids.filtered(
-                                lambda x: x.name == 'LIQUID 1').account_move_id = account_move_id.id
-                            record.partner_payroll_ids.state = 'process_finalized'
-                            record.state = 'done'
-                        return {
-                            'name': 'Pagos de planilla',
-                            'type': 'ir.actions.act_window',
-                            'res_model': 'account.move',
-                            'view_mode': 'form',
-                            'res_id': account_move_id.id,
-                            'views': [(False, 'form')],
-                        }
+            # Sincronización con el préstamo
+            if record.loan_capital_bolivianos != record.loan_application_ids.balance_capital_bs:
+                record.loan_capital_bolivianos = record.loan_application_ids.balance_capital_bs
+            if record.balance_interest_month_bolivianos != record.loan_application_ids.balance_total_interest_month_bs:
+                record.balance_interest_month_bolivianos = record.loan_application_ids.balance_total_interest_month_bs
 
+            move_lines = []
+            partner = record.partner_payroll_ids.partner_id
 
-                if record.total_partial_devolution > 0 and record.liquidation == False:
-                    vals = {
-                        'partner_payroll_id': record.partner_payroll_ids.id,
-                        'income': 0,
-                        'income_passive': 0,
-                        'miscellaneous_income': 0,
-                        'regulation_cup': 0,
-                        'mandatory_contribution_certificate': 0,
-                        'voluntary_contribution_certificate': record.total_partial_devolution,
-                        'other_contribution': 0,
-                        'payment_date': record.date_proccess,
-                        'date_pivote': record.date_proccess,
-                    }
-                    payroll = self.env['payroll.payments'].create(vals)
-                    payroll.write({
-                        'voluntary_contribution_certificate': -(record.discount_contribution),
-                    })
-                    payroll.partner_devolution()
-                    if payroll:
-                        val = []
-                        data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
-                                       'debit': record.discount_contribution, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_bank_rest_contributions.id,
-                                       'debit': 0, 'credit': record.rest_contributions,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        move_vals = {
-                            "date": record.date_proccess,
-                            "journal_id": record.journal_id.id,
-                            "ref": "",
-                            "partner_id": record.partner_payroll_ids.partner_id.id,
-                            # "name": "name test",
-                            "glosa": '',
-                            "state": "draft",
-                            "line_ids": val,
-                        }
-                        account_move_id = record.env['account.move'].create(move_vals)
-                        record.account_move_id = account_move_id.id
-                        payroll.account_move_id = account_move_id.id
-                        account_move_id.finalize_contributions_id = record.id
-                        record.state = 'done'
-                        return {
-                            'name': 'Pagos de planilla',
-                            'type': 'ir.actions.act_window',
-                            'res_model': 'account.move',
-                            'view_mode': 'form',
-                            'res_id': account_move_id.id,
-                            'views': [(False, 'form')],
-                        }
+            # Ajuste solicitado: partner_id solo si es DEBITO
+            def add_line(account, debit, credit, name):
+                if account and (debit > 0 or credit > 0):
+                    line_partner = partner.id if debit > 0 else False
+                    move_lines.append((0, 0, {
+                        'account_id': account.id,
+                        'debit': debit,
+                        'credit': credit,
+                        # 'name': name,
+                        'partner_id': line_partner,  # partner_id condicionado
+                    }))
 
-                if record.total_partial_devolution > 0 and record.liquidation == True:
-                    vals = {
-                        'partner_payroll_id': record.partner_payroll_ids.id,
-                        'income': 0,
-                        'income_passive': 0,
-                        'miscellaneous_income': 0,
-                        'regulation_cup': 0,
-                        'mandatory_contribution_certificate': 0,
-                        'voluntary_contribution_certificate': record.total_partial_devolution,
-                        'other_contribution': 0,
-                        'payment_date': record.date_proccess,
-                        'date_pivote': record.date_proccess,
-                    }
-                    payroll = self.env['payroll.payments'].create(vals)
-                    payroll.write({
-                        'voluntary_contribution_certificate': -(record.discount_contribution),
-                    })
-                    payroll.partner_devolution()
-                    if payroll:
-                        val = []
-                        data = (0, 0, {'account_id': record.account_voluntary_contributions.id,
-                                       'debit': record.discount_contribution, 'credit': 0,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_capital_loan.id,
-                                       'debit': 0, 'credit': record.loan_capital_bolivianos,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_interest_month.id,
-                                       'debit': 0, 'credit': record.balance_interest_month_bolivianos,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        data = (0, 0, {'account_id': record.account_bank_rest.id,
-                                       'debit': 0, 'credit': record.total_diference_contribution_loan,
-                                       'partner_id': record.partner_payroll_ids.partner_id.id,
-                                       'amount_currency': 0
-                                       })
-                        val.append(data)
-                        move_vals = {
-                            "date": record.date_proccess,
-                            "journal_id": record.journal_id.id,
-                            "ref": "",
-                            "partner_id": record.partner_payroll_ids.partner_id.id,
-                            # "name": "name test",
-                            "glosa": '',
-                            "state": "draft",
-                            "line_ids": val,
-                        }
-                        account_move_id = record.env['account.move'].create(move_vals)
-                        record.account_move_id = account_move_id.id
-                        payroll.account_move_id = account_move_id.id
-                        account_move_id.finalize_contributions_id = record.id
+            # DEBE (Aportes): El partner_id se asignará automáticamente aquí
+            if record.liquidation_contributions:
+                add_line(record.account_voluntary_contributions, record.total_voluntary, 0,
+                         _("Liq. Aportes Voluntarios"))
+                add_line(record.account_mandatory_contributions, record.total_mandatory_contributions, 0,
+                         _("Liq. Aportes Obligatorios"))
+                add_line(record.account_other_contributions, record.other_contributions, 0, _("Otros Aportes"))
+                add_line(record.account_surpluses, record.surpluses, 0, _("Excedentes"))
 
-                        finalized_loan = self.env['finalized.loan'].create({
-                            'loan_application_id': self.loan_application_ids.id,
-                            'date_finalize': self.date_proccess,
-                            'amount_loan_dollars_initial': record.loan_application_ids.amount_loan_dollars,
-                            'amount_loan_initial': record.loan_application_ids.amount_loan,
-                            'payment_count': record.loan_application_ids.total_payments_confirm,
-                            'balance_capital_dollar': record.loan_application_ids.balance_capital,
-                            'balance_capital_bolivianos': record.loan_capital_bolivianos,
-                            'balance_total_interest_month': record.loan_application_ids.balance_total_interest_month,
-                            'balance_total_interest_month_bolivianos': record.balance_interest_month_bolivianos,
-                            'state': 'draft'
-                        })
-                        if finalized_loan:
-                            record.loan_application_ids.state = 'liquidation_process'
-                            finalized_loan.action_confirm()
-                            finalized_loan.accounting_finalized_loan_id = account_move_id.id
-                            record.loan_application_ids.loan_payment_ids.filtered(
-                                lambda x: x.name == 'LIQUID 1').account_move_id = account_move_id.id
-                            record.state = 'done'
+            # HABER (Deudas/Pagos): El partner_id quedará en False
+            if record.liquidation:
+                add_line(record.account_capital_loan, 0, record.loan_capital_bolivianos, _("Pago Capital Préstamo"))
+                add_line(record.account_interest_month, 0, record.balance_interest_month_bolivianos,
+                         _("Pago Intereses"))
+                add_line(record.account_regulation_cup, 0, record.manual_regulation_cup, _("Tasa de regulación"))
+                add_line(record.account_manual_post_mortem, 0, record.manual_post_mortem, _("Post mortem manual"))
+                add_line(record.account_manual_aporte_obligatorio, 0, record.manual_aporte_obligatorio, _("Aporte obligatorio manual"))
 
-                        return {
-                            'name': 'Pagos de planilla',
-                            'type': 'ir.actions.act_window',
-                            'res_model': 'account.move',
-                            'view_mode': 'form',
-                            'res_id': account_move_id.id,
-                            'views': [(False, 'form')],
-                        }
+            add_line(record.account_disengagement, 0, record.disengagement, _("Gasto Desvinculación"))
+
+            if record.rest_contributions > 0:
+                add_line(record.account_bank_rest_contributions, 0, record.rest_contributions,
+                         _("Saldo devuelto al socio"))
+
+            # Creación del asiento contable
+            move = self.env['account.move'].create({
+                'date': record.date_proccess,
+                'journal_id': record.journal_id.id,
+                'ref': f"CERTIFICADO DE DEVOLUCIÓN DE APORTES {partner.name}",
+                'partner_id': partner.id,
+                'line_ids': move_lines,
+            })
+            record.account_move_id = move.id
+
+            # Cierre de estados en documentos relacionados
+            if record.liquidation and record.loan_application_ids:
+                record.loan_application_ids.write({'state': 'liquidation_process'})
+                self.env['finalized.loan'].create({
+                    'loan_application_id': record.loan_application_ids.id,
+                    'date_finalize': record.date_proccess,
+                    'balance_capital_bolivianos': record.loan_capital_bolivianos,
+                    'state': 'draft'
+                })
+
+            record.partner_payroll_ids.state = 'process_finalized'
+            record.state = 'done'
+
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'account.move',
+                'view_mode': 'form',
+                'res_id': move.id,
+            }
 
     @api.depends('total_amount')
     def _compute_literal_number(self):
@@ -580,5 +251,6 @@ class FinalizeContributions(models.Model):
             record.literal_res_contributions = record.literal_res_contributions + ', CON ' + decimal + '/100 BOLIVIANOS'
 
 
-
-
+    def action_draft(self):
+        for record in self:
+            record.state = 'draft'

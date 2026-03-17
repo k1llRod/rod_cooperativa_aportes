@@ -87,6 +87,8 @@
                             <group string="Saldos">
                                 <field name="balance_post_mortem"/>
                                 <field name="balance_longevity"/>
+                                <field name="since"/>
+                                <field name="until"/>
 
 <!--                                <field name="Saldo post mortem"/>-->
                             </group>

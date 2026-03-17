@@ -76,20 +76,20 @@
                 name="Reporte viudas"
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_widows_menu"
                 sequence="3"
-                action="rod_cooperativa.action_server_view_widow"
+                action="rod_cooperativa.action_family"
                 />
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_widows_test"
                 name="Reporte viudas test"
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_widows_menu"
                 sequence="4"
-                action="rod_cooperativa.action_server_view_widow"
+                action="rod_cooperativa.action_family"
                 />
-      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_servicio_activo"
-                name="Asociados servicio activo"
-                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_widows_menu"
-                sequence="5"
-                action="rod_cooperativa.action_server_view_widow"
-                />
+<!--      <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_servicio_activo"-->
+<!--                name="Asociados servicio activo"-->
+<!--                parent="rod_cooperativa_aportes.rod_cooperativa_aportes_widows_menu"-->
+<!--                sequence="5"-->
+<!--                action="rod_cooperativa.action_server_view_widow"-->
+<!--                />-->
 
 
   </data>

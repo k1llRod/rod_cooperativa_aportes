@@ -6,6 +6,7 @@
             <field name="arch" type="xml">
                 <tree create="0">
                     <header>
+                        <button name="action_draft" string="Borrador" class="oe_highlight" type="object"/>
                         <button name="action_confirm" string="Confirmar" class="oe_highlight" type="object"/>
 <!--                        <button name="assign_performance" string="Asignar rendimiento" type="object"-->
 <!--                                class="oe_highlight"-->
@@ -28,6 +29,10 @@
             <field name="arch" type="xml">
                 <form string="Solicitud de presupuesto" class="oe_left oe_edit_only oe_form_required" create="0">
                     <header>
+                        <button name="action_draft" string="Borrar"
+                                type="object"
+                                class="oe_close_button"
+                                />
                         <button name="action_confirm" string="Confirmar"
                                 type="object"
                                 class="oe_close_button"
@@ -73,6 +78,10 @@
                                 <field name="loan_application_ids"/>
                                 <field name="loan_capital_bolivianos"/>
                                 <field name="balance_interest_month_bolivianos"/>
+                            </group>
+                            <group string="Prestamo relacionado">
+                                <field name="loan_capital_bolivianos_related"/>
+                                <field name="balance_interest_month_bolivianos_related"/>
                             </group>
                         </group>
                         <notebook>
