@@ -94,13 +94,20 @@
                             </group>
                         </group>
                         <field name="post_mortem_ids">
-                            <tree string="Pagos">
+                            <tree string="Pagos" create="0" >
                                 <field name="name"/>
                                 <field name="family_ids" widget="many2many_tags"/>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="type_payment"/>
                                 <field name="payment_date"/>
                                 <field name="return_amount"/>
+                                <field name="observation"/>
+                                <field name="state"
+                                       widget="badge"
+                                       decoration-info="state == 'draft'"
+                                       decoration-warning="state == 'verification'"
+                                       decoration-success="state == 'paid'"
+                                />
                             </tree>
                         </field>
                     </page>

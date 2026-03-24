@@ -28,6 +28,7 @@ class FinalizeContributions(models.Model):
     manual_regulation_cup = fields.Float(string="Tasa de regulacion manual", digits=(16, 2))
     manual_post_mortem = fields.Float(string="Post mortem manual", digits=(16, 2))
     manual_aporte_obligatorio = fields.Float(string="Aporte obligatorio manual", digits=(16, 2))
+    manual_aporte_voluntario = fields.Float(string="Aporte voluntario manual CAT 'A'", digits=(16, 2))
     rest_contributions = fields.Float(string="Monto restante aportes", compute='calculate_rest_contributions',
                                       digits=(16, 2))
     other_contributions = fields.Float('Total otros aportes', digits=(16, 2))
@@ -81,6 +82,8 @@ class FinalizeContributions(models.Model):
     account_manual_post_mortem = fields.Many2one('account.account', string='Cuenta Post mortem manual')
     account_manual_aporte_obligatorio = fields.Many2one('account.account', string='Cuenta Aporte obligatorio manual')
 
+    account_manual_aporte_voluntario = fields.Many2one('account.account', string='Cuenta Aporte voluntario manual CAT "A"')
+
     literal_number = fields.Char(string='Amount literal', compute='_compute_literal_number')
     literal_res_contributions = fields.Char(string='Amount literal rest contributions', compute='_compute_literal_res_contributions')
 
@@ -127,97 +130,129 @@ class FinalizeContributions(models.Model):
     @api.depends('disengagement', 'manual_regulation_cup', 'rest_contributions')
     def calculate_amount_credit(self):
         for record in self:
-            record.total_amount_credit = record.disengagement + record.manual_regulation_cup + record.rest_contributions + record.loan_capital_bolivianos + record.balance_interest_month_bolivianos + record.manual_post_mortem + record.manual_aporte_obligatorio
+            record.total_amount_credit = (record.disengagement + record.manual_regulation_cup +
+                                          record.rest_contributions + record.loan_capital_bolivianos +
+                                          record.balance_interest_month_bolivianos + record.manual_post_mortem +
+                                          record.manual_aporte_obligatorio + record.manual_aporte_voluntario)
 
-    @api.depends('manual_regulation_cup', 'disengagement','manual_post_mortem', 'manual_aporte_obligatorio')
+    @api.depends('manual_regulation_cup', 'disengagement','manual_post_mortem', 'manual_aporte_obligatorio', 'manual_aporte_voluntario')
     def calculate_rest_contributions(self):
         for record in self:
             if record.total_partial_devolution > 0:
                 record.rest_contributions = record.total_partial_devolution
             else:
-                record.rest_contributions = record.total_amount - record.disengagement - record.manual_regulation_cup - record.loan_capital_bolivianos - record.balance_interest_month_bolivianos - record.manual_post_mortem - record.manual_aporte_obligatorio
+                record.rest_contributions = (record.total_amount - record.disengagement - record.manual_regulation_cup -
+                                             record.loan_capital_bolivianos - record.balance_interest_month_bolivianos -
+                                             record.manual_post_mortem - record.manual_aporte_obligatorio - record.manual_aporte_voluntario)
 
     def action_confirm(self):
         for record in self:
             if record.partner_payroll_ids.state != 'process':
                 raise UserError(_("Los aportes deben estar en estado 'Proceso'."))
 
-            # Sincronización de montos con el registro de aportes
-            if record.total_mandatory_contributions != record.partner_payroll_ids.mandatory_contribution_certificate_total:
-                record.total_mandatory_contributions = record.partner_payroll_ids.mandatory_contribution_certificate_total
-            if record.total_voluntary_contributions != record.partner_payroll_ids.voluntary_contribution_certificate_total:
-                record.total_voluntary_contributions = record.partner_payroll_ids.voluntary_contribution_certificate_total
-            if record.total_capital_initial != record.partner_payroll_ids.capital_initial:
-                record.total_capital_initial = record.partner_payroll_ids.capital_initial
-            if record.other_contributions != record.partner_payroll_ids.other_contribution_total:
-                record.other_contributions = record.partner_payroll_ids.other_contribution_total
-            if record.surpluses != record.partner_payroll_ids.surpluses_total:
-                record.surpluses = record.partner_payroll_ids.surpluses_total
+            # 1. Sincronización de montos (Evitar escrituras innecesarias con condicionales)
+            p_ids = record.partner_payroll_ids
+            sync_vals = {
+                'total_mandatory_contributions': p_ids.mandatory_contribution_certificate_total,
+                'total_voluntary_contributions': p_ids.voluntary_contribution_certificate_total,
+                'total_capital_initial': p_ids.capital_initial,
+                'other_contributions': p_ids.other_contribution_total,
+                'surpluses': p_ids.surpluses_total,
+                'loan_capital_bolivianos': record.loan_application_ids.balance_capital_bs,
+                'balance_interest_month_bolivianos': record.loan_application_ids.balance_total_interest_month_bs,
+            }
 
-            # Cálculo de verificación (incluyendo rendimiento si aplica)
-            total_calc = round(record.total_mandatory_contributions + record.total_voluntary_contributions +
-                               record.total_capital_initial + record.other_contributions + record.surpluses, 2)
+            # Aplicamos los valores sincronizados al record
+            record.write(sync_vals)
+
+            # 2. Cálculo de verificación ACTUALIZADO
+            # Incluimos rendimientos y los nuevos campos manuales (obligatorio y VOLUNTARIO)
+            total_calc = round(
+                record.total_mandatory_contributions +
+                record.total_voluntary_contributions +
+                record.total_capital_initial +
+                record.other_contributions +
+                record.surpluses +
+                record.perfomance_contributions, 2  # Rendimientos
+                # record.manual_aporte_obligatorio +
+                # record.manual_aporte_voluntario, 2  # Campo solicitado
+            )
 
             if round(record.total_amount, 2) != total_calc:
-                raise UserError(
-                    _("El total de aportes no coincide con el total calculado. Por favor, revise los datos."))
+                raise UserError(_(
+                    "El total de aportes (%s) no coincide con el total calculado (%s). "
+                    "Por favor, revise los datos."
+                ) % (record.total_amount, total_calc))
 
-            # Sincronización con el préstamo
-            if record.loan_capital_bolivianos != record.loan_application_ids.balance_capital_bs:
-                record.loan_capital_bolivianos = record.loan_application_ids.balance_capital_bs
-            if record.balance_interest_month_bolivianos != record.loan_application_ids.balance_total_interest_month_bs:
-                record.balance_interest_month_bolivianos = record.loan_application_ids.balance_total_interest_month_bs
-
+            # 3. Preparación de líneas contables
             move_lines = []
             partner = record.partner_payroll_ids.partner_id
 
-            # Ajuste solicitado: partner_id solo si es DEBITO
             def add_line(account, debit, credit, name):
-                if account and (debit > 0 or credit > 0):
-                    line_partner = partner.id if debit > 0 else False
+                if account and (round(debit, 2) > 0 or round(credit, 2) > 0):
                     move_lines.append((0, 0, {
+                        'name': name,
                         'account_id': account.id,
                         'debit': debit,
                         'credit': credit,
-                        # 'name': name,
-                        'partner_id': line_partner,  # partner_id condicionado
+                        'partner_id': partner.id if debit > 0 else False,
                     }))
 
-            # DEBE (Aportes): El partner_id se asignará automáticamente aquí
+            # DEBE: Liquidación de Aportes (Activos que el fondo devuelve/cruza)
             if record.liquidation_contributions:
+                # Aportes Voluntarios (Suma el total calculado que ya incluye el manual)
                 add_line(record.account_voluntary_contributions, record.total_voluntary, 0,
-                         _("Liq. Aportes Voluntarios"))
+                         False)
+
+                # Si el aporte manual tiene cuenta específica, podrías separarlo aquí,
+                # pero usualmente se suma al total del rubro.
+                # Si quieres que vaya a su propia cuenta 'account_manual_aporte_voluntario':
+                # if record.manual_aporte_voluntario > 0:
+                #     add_line(record.account_manual_aporte_voluntario, record.manual_aporte_voluntario, 0,
+                #              False)
+
                 add_line(record.account_mandatory_contributions, record.total_mandatory_contributions, 0,
-                         _("Liq. Aportes Obligatorios"))
-                add_line(record.account_other_contributions, record.other_contributions, 0, _("Otros Aportes"))
-                add_line(record.account_surpluses, record.surpluses, 0, _("Excedentes"))
+                         False)
+                add_line(record.account_other_contributions, record.other_contributions, 0, False)
+                add_line(record.account_surpluses, record.surpluses, 0, False)
+                add_line(record.account_performance_contributions, record.perfomance_contributions, 0, False)
 
-            # HABER (Deudas/Pagos): El partner_id quedará en False
+            # HABER: Deudas o Salida de Efectivo
             if record.liquidation:
-                add_line(record.account_capital_loan, 0, record.loan_capital_bolivianos, _("Pago Capital Préstamo"))
+                add_line(record.account_capital_loan, 0, record.loan_capital_bolivianos, False)
                 add_line(record.account_interest_month, 0, record.balance_interest_month_bolivianos,
-                         _("Pago Intereses"))
-                add_line(record.account_regulation_cup, 0, record.manual_regulation_cup, _("Tasa de regulación"))
-                add_line(record.account_manual_post_mortem, 0, record.manual_post_mortem, _("Post mortem manual"))
-                add_line(record.account_manual_aporte_obligatorio, 0, record.manual_aporte_obligatorio, _("Aporte obligatorio manual"))
+                         False)
 
-            add_line(record.account_disengagement, 0, record.disengagement, _("Gasto Desvinculación"))
 
+            add_line(record.account_disengagement, 0, record.disengagement, False)
+            add_line(record.account_regulation_cup, 0, record.manual_regulation_cup, False)
+            add_line(record.account_manual_post_mortem, 0, record.manual_post_mortem, False)
+            add_line(record.account_manual_aporte_obligatorio, 0, record.manual_aporte_obligatorio,
+                     False)
+            add_line(record.account_manual_aporte_voluntario, 0, record.manual_aporte_voluntario, False)
+
+            # Saldo a devolver al socio (Banco/Caja)
             if record.rest_contributions > 0:
                 add_line(record.account_bank_rest_contributions, 0, record.rest_contributions,
-                         _("Saldo devuelto al socio"))
+                         False)
 
-            # Creación del asiento contable
+            # 4. Creación del Asiento
             move = self.env['account.move'].create({
                 'date': record.date_proccess,
                 'journal_id': record.journal_id.id,
-                'ref': f"CERTIFICADO DE DEVOLUCIÓN DE APORTES {partner.name}",
-                'partner_id': partner.id,
+                'ref': f"CERTIFICADO DEVOLUCIÓN: {partner.name}",
+                'move_type': 'entry',
                 'line_ids': move_lines,
             })
-            record.account_move_id = move.id
 
-            # Cierre de estados en documentos relacionados
+            # 5. Cierre y Vinculación
+            record.write({
+                'account_move_id': move.id,
+                'state': 'done'
+            })
+
+            p_ids.write({'state': 'process_finalized'})
+
             if record.liquidation and record.loan_application_ids:
                 record.loan_application_ids.write({'state': 'liquidation_process'})
                 self.env['finalized.loan'].create({
@@ -227,10 +262,8 @@ class FinalizeContributions(models.Model):
                     'state': 'draft'
                 })
 
-            record.partner_payroll_ids.state = 'process_finalized'
-            record.state = 'done'
-
             return {
+                'name': _('Asiento Contable'),
                 'type': 'ir.actions.act_window',
                 'res_model': 'account.move',
                 'view_mode': 'form',

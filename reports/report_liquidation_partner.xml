@@ -285,6 +285,18 @@
                                                 </td>
                                             </tr>
                                             <tr>
+                                                <td>
+                                                    APORTE VOLUNTARIO CAT. A (CAPITAL INICIAL)
+                                                </td>
+                                                <td>
+                                                    Bs.
+                                                </td>
+                                                <td>
+<!--                                                    <span t-esc="round(l.manual_aporte_obligatorio, 2)"/>-->
+                                                    <span t-esc="'{:,.2f}'.format(l.manual_aporte_voluntario).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
                                                 <td style="font-weight:bold;">
                                                     TOTAL DESCUENTOS
                                                 </td>
@@ -293,7 +305,7 @@
                                                 </td>
                                                 <td style="font-weight:bold;">
 <!--                                                    <span t-esc="round(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio, 2)"/>-->
-                                                    <span t-esc="'{:,.2f}'.format(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
+                                                    <span t-esc="'{:,.2f}'.format(l.loan_capital_bolivianos + l.balance_interest_month_bolivianos + l.disengagement + l.manual_regulation_cup + l.manual_post_mortem + l.manual_aporte_obligatorio + l.manual_aporte_voluntario).replace(',', 'X').replace('.', ',').replace('X', '.')"/>
                                                 </td>
                                             </tr>
                                             <tr>

@@ -124,6 +124,8 @@
                                         <field name="manual_regulation_cup"/>
                                         <field name="account_manual_aporte_obligatorio"/>
                                         <field name="manual_aporte_obligatorio"/>
+                                        <field name="account_manual_aporte_voluntario"/>
+                                        <field name="manual_aporte_voluntario"/>
                                         <field name="account_manual_post_mortem"/>
                                         <field name="manual_post_mortem"/>
                                         <field name="account_bank_rest_contributions"/>
