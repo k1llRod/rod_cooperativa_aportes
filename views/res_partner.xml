@@ -93,7 +93,7 @@
 <!--                                <field name="Saldo post mortem"/>-->
                             </group>
                         </group>
-                        <field name="post_mortem_ids">
+                        <field name="post_mortem_ids" context="{'form_view_ref': 'rod_cooperativa.post_mortem_form_id'}">
                             <tree string="Pagos" create="0" >
                                 <field name="name"/>
                                 <field name="family_ids" widget="many2many_tags"/>
@@ -108,6 +108,7 @@
                                        decoration-warning="state == 'verification'"
                                        decoration-success="state == 'paid'"
                                 />
+                                <button name="get_formview_action" type="object" icon="fa-external-link" title="Abrir Formulario Completo"/>
                             </tree>
                         </field>
                     </page>

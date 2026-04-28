@@ -4,82 +4,69 @@ class ReportCategoryB(models.AbstractModel):
     _name = 'report.rod_cooperativa_aportes.report_category_b'
     _inherit = 'report.report_xlsx.abstract'
 
-    def generate_xlsx_report(self, workbook, data, lines):
-        partner_payroll = self.env['partner.payroll'].search([('partner_status_especific', '=', 'passive_reserve_b'), ('state', '=', 'process')], order='partner_id')
+    def generate_xlsx_report(self, workbook, data, wizard_record):
+        # 1. Recuperar años del wizard
+        gestiones_objetivo = data.get('years', [])
+
+        # 2. Obtener registros de socios
+        # Nota: Aquí filtramos según lo que definiste originalmente
+        partner_payroll = self.env['partner.payroll'].search([
+            ('partner_status_especific', '=', 'passive_reserve_b'),
+            ('state', '=', 'process')
+        ], order='partner_id')
+
         sheet = workbook.add_worksheet('Aportes')
 
-        a = 0
-        b = 1
-        c = 2
-        d = 3
-        e = 4
-        f = 5
-        g = 6
-        h = 7
-        i = 8
-        j = 9
-        trow = 0
+        # 3. Definición de Formatos
+        title_style = workbook.add_format({'bold': True, 'align': 'center', 'font_size': 12})
+        header_style = workbook.add_format({'bold': True, 'border': 1, 'align': 'center', 'bg_color': '#E9E9E9'})
+        text_style = workbook.add_format({'border': 1, 'align': 'left'})
+        num_style = workbook.add_format({'border': 1, 'align': 'right', 'num_format': '#,##0.00'})
+        int_style = workbook.add_format({'border': 1, 'align': 'center'})
+
+        # 4. Encabezados de la Empresa
+        sheet.merge_range('A1:C1', 'COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL', title_style)
+        sheet.merge_range('A2:C2', '"COA - 4 DE DICIEMBRE" R.L.', title_style)
+        sheet.merge_range('A4:F4', 'RELACION NOMINAL DEL PERSONAL DE OFICIALES DEL SERVICIO PASIVO', title_style)
+
+        # 5. Cabeceras de Tabla Dinámicas
         row = 8
-        col = 0
-        n = 0
-        border_format_header = workbook.add_format({
-            'border': 1,
-            'bold': True,
-            'align': 'center',
-            'valign': 'vcenter',
-        })
-        border_format = workbook.add_format({
-            'border': 1
-        })
-        title_header_page = workbook.add_format({
-            'bold': True,
-            'align': 'center',
-            'valign': 'vcenter',
-            'font_size': 8,
-            # 'bg_color': '#F7F7F7'
-        })
+        sheet.write(row, 0, 'N°', header_style)
+        sheet.write(row, 1, 'SOCIO', header_style)
 
-        title_format = workbook.add_format({
-            'bold': True,
-            'align': 'center',
-            'valign': 'vcenter',
-            'font_size': 12,
-            # 'bg_color': '#F7F7F7'
-        })
+        col_ptr = 2
+        for gestion in gestiones_objetivo:
+            sheet.write(row, col_ptr, gestion, header_style)
+            col_ptr += 1
 
-        # Define a format for the cells with borders
-        cell_format = workbook.add_format({
-            'border': 1
-        })
+        sheet.write(row, col_ptr, 'OBSERVACIONES', header_style)
 
-        sheet.merge_range('A1:B1', 'COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL', title_header_page)
-        sheet.merge_range('A2:B2', '"COA - 4 DE DICIEMBRE" R.L.', title_header_page)
-        sheet.merge_range('A3:B3', 'BOLIVIA', title_header_page)
-        # sheet.write(0, a, 'COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL', title_format)
-        # sheet.write(1, a, '"COA - 4 DE DICIEMBRE" R.L.')
-        # sheet.write(2, a, 'BOLIVIA')
-        sheet.merge_range('A4:D4', 'RELACION NOMINAL DEL PERSONAL DE OFICIALES DEL SERVICIO PASIVO ASOCIADOS CATEGORIA "B" QUE SE', title_format)
-        sheet.merge_range('A5:D5','ENCUENTRAN AFILIADOS EN LA COOPERATIVA DE AHORRO Y CREDITO DE VINCULO LABORAL "COA 4 - DE DICIEMBRE" R.L.', title_format)
-        sheet.write(row, a, 'N', border_format)
-        sheet.write(row, b, 'SOCIO', border_format)
-        # sheet.write(row, c, 'Ciudad', border_format)
-        sheet.write(row, c, '2023', border_format)
-        sheet.write(row, d, '2024', border_format)
-        sheet.write(row, e, '2025', border_format)
-        sheet.write(row, f, 'OBSERVACIONES', border_format)
+        # 6. Llenado de Datos
+        row += 1
+        counter = 1
 
         for partner in partner_payroll:
+            # Actualizar datos del socio antes de escribir
             partner.compute_updated_partner()
-            n += 1
+
+            sheet.write(row, 0, counter, int_style)
+            sheet.write(row, 1, partner.partner_id.name or '', text_style)
+
+            # Mapeo de aportes por año { '2023': 150.00 }
+            pagos_dict = {str(due.gestion): due.d_total for due in partner.due_payments_ids}
+
+            current_col = 2
+            for gestion in gestiones_objetivo:
+                monto = pagos_dict.get(gestion, 0.0)
+                # Escribir solo si es mayor a 0, de lo contrario 0
+                sheet.write(row, current_col, monto if monto > 0 else 0.0, num_style)
+                current_col += 1
+
+            # Celda de observaciones vacía con borde
+            sheet.write(row, current_col, '', text_style)
+
             row += 1
-            sheet.write(row, a, n,border_format)
-            sheet.write(row, b, partner.partner_id.name,border_format)
-            # sheet.write(row, c, partner.city,border_format)
-            z = c
-            y = c
-            srow = 0
-            for due in partner.due_payments_ids:
-                # sheet.write(row, z, due.gestion)
-                sheet.write(row, y, round(due.d_total,2),border_format) if due.d_total > 0 else sheet.write(row, y, 0,border_format)
-                z += 1
-                y += 1
+            counter += 1
+
+        # Ajustar ancho de columnas automáticamente (opcional)
+        sheet.set_column('B:B', 40)  # Nombre del socio más ancho

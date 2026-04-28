@@ -9,6 +9,8 @@
                     <group string="Pagos pendientes">
                         <group>
                             <field name="partner_status_especific"/>
+                            <field name="start_year"/>
+                            <field name="end_year"/>
                         </group>
                         <group>
                             <button name="report_loan" string="Reporte deudas" type="object" class="oe_highlight"/>
