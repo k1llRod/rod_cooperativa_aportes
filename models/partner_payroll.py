@@ -455,38 +455,51 @@ class PartnerPayroll(models.Model):
                         })
 
                 if record.partner_status_especific == 'passive_reserve_a':
+                    # 1. Limpieza de deudas previas
                     self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
-                    n = record.outstanding
-                    sw = 0
-                    latest_payment = record.payroll_payments_ids.sorted('date_pivote', reverse=True)[
-                                         :1].date_pivote + relativedelta(months=1)
-                    months = record.get_month_starts(latest_payment, datetime.now().date())
-                    for i in range(len(months)):
-                        try:
-                            cal_miscellaneous = 0
-                            cal_regulation_cup = 0
-                            cal_mandatory = 0
-                            sum_voluntary = 0
-                            sum_voluntary = 0
-                            d_total = self.mount_passive_a
-                            # record.due_payments_ids.unlink()
-                            loan = self.env['due.payments'].create({
-                                'name': months[i].strftime('%m/%Y'),
-                                'd_miscellaneous_income': cal_miscellaneous,
-                                'd_regulation_cup': cal_regulation_cup,
-                                'd_mandatory_contribution': cal_mandatory,
-                                'd_voluntary_contribution': sum_voluntary,
-                                'd_total': round(d_total, 2),
-                                'due_partner_payroll_id': record.id,
-                                'gestion': months[i].year,
-                            })
-                            count_payments = 0
-                            d_total = 0
-                        except:
-                            count_payments = 0
-                            d_total = 0
-                            pass
 
+                    # 2. DETERMINACIÓN DE LA FECHA PIVOTE (Seguridad ante Nulos)
+                    # Obtenemos el último pago de forma segura
+                    last_pay_record = record.payroll_payments_ids.sorted('date_pivote', reverse=True)[:1]
+
+                    if last_pay_record and last_pay_record.date_pivote:
+                        # Si hay pagos, empezamos al mes siguiente del último pago
+                        start_calc_date = last_pay_record.date_pivote + relativedelta(months=1)
+                    else:
+                        # Si NO hay pagos, usamos la fecha de ingreso (date_burn_partner)
+                        # Si tampoco tiene fecha de ingreso, usamos el 01/01/2023 por defecto
+                        start_calc_date = record.date_burn_partner or datetime(2023, 1, 1).date()
+
+                    # 3. VALIDACIÓN DE LA REGLA DE 3 MESES (Octubre, Noviembre, Diciembre)
+                    # Si es un socio nuevo y se inscribió después de Septiembre, pasamos al 1 de enero del año siguiente
+                    if not last_pay_record and start_calc_date.month > 9:
+                        start_calc_date = datetime(start_calc_date.year + 1, 1, 1).date()
+
+                    # 4. OBTENCIÓN DE MESES A COBRAR
+                    # Asumimos que get_month_starts devuelve una lista de objetos date/datetime
+                    months_to_bill = record.get_month_starts(start_calc_date, datetime.now().date()) or []
+
+                    # 5. GENERACIÓN DE DEUDAS
+                    for month_date in months_to_bill:
+                        # Evitamos el try-except genérico para poder ver errores reales si ocurren
+                        cal_miscellaneous = 0.0
+                        cal_regulation_cup = 0.0
+                        cal_mandatory = 0.0
+                        sum_voluntary = 0.0
+
+                        # Monto basado en la categoría (Passive A en este caso según tu variable)
+                        d_total = self.mount_passive_a or 0.0
+
+                        self.env['due.payments'].create({
+                            'name': month_date.strftime('%m/%Y'),
+                            'd_miscellaneous_income': cal_miscellaneous,
+                            'd_regulation_cup': cal_regulation_cup,
+                            'd_mandatory_contribution': cal_mandatory,
+                            'd_voluntary_contribution': sum_voluntary,
+                            'd_total': round(d_total, 2),
+                            'due_partner_payroll_id': record.id,
+                            'gestion': month_date.year,
+                        })
                 else:
                     record.compute_count_pay_contributions()
                     diff = relativedelta(datetime.now(), record.date_burn_partner)
