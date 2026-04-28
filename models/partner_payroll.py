@@ -346,6 +346,10 @@ class PartnerPayroll(models.Model):
         #     raise ValidationError(_('No se puede regresar a borrador si ya se han realizado pagos'))
 
     def get_month_starts(self, start_date, end_date):
+        if hasattr(start_date, 'date'):  # Si es datetime, extrae la date
+            start_date = start_date.date()
+        if hasattr(end_date, 'date'):
+            end_date = end_date.date()
         result = []
         current = start_date.replace(day=1)
         while current <= end_date:
@@ -475,6 +479,8 @@ class PartnerPayroll(models.Model):
                     if not last_pay_record and start_calc_date.month > 9:
                         start_calc_date = datetime(start_calc_date.year + 1, 1, 1).date()
 
+                    if isinstance(start_calc_date, datetime):
+                        start_calc_date = start_calc_date.date()
                     # 4. OBTENCIÓN DE MESES A COBRAR
                     # Asumimos que get_month_starts devuelve una lista de objetos date/datetime
                     months_to_bill = record.get_month_starts(start_calc_date, datetime.now().date()) or []
