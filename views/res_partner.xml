@@ -119,18 +119,18 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="res_partner_tree_inh_aportes">
-            <field name="name">res.partner.tree.inh.aportes</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="rod_cooperativa.res_partner_tree_inh"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='type_blood']" position="after">
-                    <field name="contributions_count"/>
-                    <field name="loan_count"/>
-                    <field name="state"/>
-                </xpath>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="res_partner_tree_inh_aportes">-->
+<!--            <field name="name">res.partner.tree.inh.aportes</field>-->
+<!--            <field name="model">res.partner</field>-->
+<!--            <field name="inherit_id" ref="rod_cooperativa.res_partner_tree_inh"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='type_blood']" position="after">-->
+<!--                    <field name="contributions_count"/>-->
+<!--                    <field name="loan_count"/>-->
+<!--                    <field name="state"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
 
         <record model="ir.ui.view" id="res_partner_fields_drop">
             <field name="name">res.partner.fields.drop</field>
