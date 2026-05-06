@@ -60,7 +60,7 @@ class ReconcileContributions(models.TransientModel):
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].search(
             [('period_process', '=', period), ('state', '=', 'draft')])
         partner_payroll_ids = self.env['partner.payroll'].search(
-            [('partner_status_especific', '=', 'active_service')])
+            [('partner_status_especific', '=', 'active_service'),('state','=','process')])
         # payroll_payments_ids = self.env['payroll.payments']
         if self.drawback == True:
             status_dinamic = 'drawback'
