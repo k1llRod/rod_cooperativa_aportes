@@ -11,3 +11,4 @@ from . import wizard_payroll_return
 from . import wizard_finalized_contributions
 from . import wizard_unassociated
 from . import wizard_report_all
+from . import report_homologate_mindef

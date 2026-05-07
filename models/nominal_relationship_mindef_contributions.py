@@ -46,3 +46,13 @@ class NominalRelationshipMindefContributions(models.Model):
             'view_type': 'form',
             'target': 'new',
         }
+
+    def report_homologate_mindef(self):
+        return {
+            'name': 'Reporte mensual de planillas mindef',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mindef.report.wizard',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+        }

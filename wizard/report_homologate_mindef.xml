@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Formulario del Wizard -->
+    <record id="view_mindef_report_wizard_form" model="ir.ui.view">
+        <field name="name">mindef.report.wizard.form</field>
+        <field name="model">mindef.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generar Resumen de Homologación">
+                <group>
+                    <field name="month"/>
+                    <field name="year"/>
+                </group>
+                <group>
+                    <field name="draft_quantity"/>
+                    <field name="no_reconciled_quantity"/>
+                    <field name="reconciled_quantity"/>
+                    <field name="observed_quantity"/>
+                </group>
+                <footer>
+                    <button name="action_generate_summary" string="Procesar Resumen" type="object" class="oe_highlight"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

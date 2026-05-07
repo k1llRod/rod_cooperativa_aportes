@@ -73,3 +73,4 @@ access_contributions_anual_partner,contributions.anual.partner,model_contributio
 
 access_payroll_payments_portal,payroll.payments,model_payroll_payments,base.group_portal,1,0,0,0
 
+access_mindef_report_wizard,mindef.report.wizard,model_mindef_report_wizard,rod_cooperativa_aportes.group_rod_cooperativa_aportes_administrator,1,1,1,1

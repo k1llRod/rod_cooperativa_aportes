@@ -56,6 +56,7 @@
         'wizard/wizard_finalized_contributions.xml',
         'wizard/wizard_unassociated.xml',
         'wizard/wizard_report_all.xml',
+        'wizard/report_homologate_mindef.xml',
         'views/rod_cooperativa_aportes_menuitem.xml',
         'data/month_data.xml',
         'reports/report.xml',

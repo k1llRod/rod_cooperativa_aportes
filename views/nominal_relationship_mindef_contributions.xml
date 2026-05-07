@@ -9,6 +9,7 @@
                 <tree editable="bottom">
                     <header>
                         <button name="homologate_data_mindef" string="Homologar" type="object" class="oe_highlight"/>
+                        <button name="report_homologate_mindef" string="Reporte mensual" type="object" class="oe_highlight"/>
                     </header>
                     <field name="name" optional="hide"/>
                     <field name="management"/>
