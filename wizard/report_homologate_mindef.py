@@ -18,36 +18,49 @@ class MindefReportWizard(models.TransientModel):
     reconciled_quantity = fields.Integer(string='Contador conciliado')
     observed_quantity = fields.Integer(string='Contador observado')
 
-
+    @api.onchange('month', 'year')
+    def _onchange_month_year(self):
+        if self.month and self.year:
+            period = f"{self.month}/{self.year}"
+            contributions = self.env['nominal.relationship.mindef.contributions'].search([
+                ('period_process', '=', period)
+            ])
+            self.draft_quantity = len(contributions.filtered(lambda x: x.state == 'draft'))
+            self.no_reconciled_quantity = len(contributions.filtered(lambda x: x.state == 'no_reconciled'))
+            self.reconciled_quantity = len(contributions.filtered(lambda x: x.state == 'reconciled'))
+            self.observed_quantity = len(contributions.filtered(lambda x: x.state == 'observed'))
+        else:
+            self.draft_quantity = 0
+            self.no_reconciled_quantity = 0
+            self.reconciled_quantity = 0
+            self.observed_quantity = 0
 
     def action_generate_summary(self):
+        self.ensure_one()
         period = f"{self.month}/{self.year}"
 
-        # Consultar los datos en el modelo nominal.relationship.mindef.contributions
+        # Buscamos todas las contribuciones del periodo
         contributions = self.env['nominal.relationship.mindef.contributions'].search([
             ('period_process', '=', period)
         ])
 
-        # Procesar contadores por estado
+        # Preparamos los datos para el reporte
+        # Pasamos los IDs de los registros separados por estado para facilitar el dibujo en Excel
         summary_data = {
             'period': period,
-            'draft_quantity': len(contributions.filtered(lambda x: x.state == 'draft')),
-            'no_reconciled_quantity': len(contributions.filtered(lambda x: x.state == 'no_reconciled')),
-            'reconciled_quantity': len(contributions.filtered(lambda x: x.state == 'reconciled')),
-            'observed_quantity': len(contributions.filtered(lambda x: x.state == 'observed')),
-            'date': fields.Datetime.now(),
+            'date': fields.Datetime.now().strftime('%d/%m/%Y %H:%M'),
+            'stats': {
+                'draft': len(contributions.filtered(lambda x: x.state == 'draft')),
+                'no_reconciled': len(contributions.filtered(lambda x: x.state == 'no_reconciled')),
+                'reconciled': len(contributions.filtered(lambda x: x.state == 'reconciled')),
+                'observed': len(contributions.filtered(lambda x: x.state == 'observed')),
+            },
+            # Pasamos los IDs de los registros para que el reporte los lea
+            'ids_draft': contributions.filtered(lambda x: x.state == 'draft').ids,
+            'ids_no_reconciled': contributions.filtered(lambda x: x.state == 'no_reconciled').ids,
+            'ids_reconciled': contributions.filtered(lambda x: x.state == 'reconciled').ids,
+            'ids_observed': contributions.filtered(lambda x: x.state == 'observed').ids,
         }
 
-        # Crear el registro en el modelo de reporte
-        report_rec = self.env['report.homologate.mindef'].create(summary_data)
-
-        # Retornar la vista del reporte generado
-        return {
-            'name': 'Resumen de Homologación',
-            'type': 'ir.actions.act_window',
-            'res_model': 'report.homologate.mindef',
-            'view_mode': 'form',
-            'res_id': report_rec.id,
-            'target': 'current',
-        }
+        return self.env.ref('rod_cooperativa_aportes.action_report_mindef_xlsx').report_action(self, data=summary_data)
 

@@ -73,6 +73,7 @@
         'reports/report_liquidation_partner.xml',
         'reports/report_liquidation_partner_resumen.xml',
         'reports/report_res_partner_unsubscribe.xml',
+        'reports/report_mindef_xlsx.xml',
         # 'reports/report_wrd.xml',
     ],
 }

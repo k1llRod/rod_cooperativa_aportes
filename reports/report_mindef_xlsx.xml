@@ -1,0 +1,10 @@
+<odoo>
+    <record id="action_report_mindef_xlsx" model="ir.actions.report">
+    <field name="name">Resumen Homologación Excel</field>
+    <field name="model">mindef.report.wizard</field>
+    <field name="report_type">xlsx</field>
+    <field name="report_name">rod_cooperativa_aportes.report_mindef_xlsx_abstract</field>
+    <field name="report_file">Resumen_Mindef</field>
+    <field name="binding_model_id" eval="False"/>
+</record>
+</odoo>
