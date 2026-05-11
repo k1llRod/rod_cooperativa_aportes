@@ -363,173 +363,132 @@ class PartnerPayroll(models.Model):
 
     @api.depends('payroll_payments_ids')
     def compute_updated_partner(self):
-        regulation_cup = float(
-            self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.regulation_cup'))
-        mandatory_contribution = float(self.env['ir.config_parameter'].sudo().get_param(
-            'rod_cooperativa_aportes.mandatory_contribution_certificate'))
-        diff_months = 0
-        count_payments = 0
+        # 1. Carga de parámetros iniciales (fuera del loop para optimizar)
+        config_sudo = self.env['ir.config_parameter'].sudo()
+        regulation_cup = float(config_sudo.get_param('rod_cooperativa_aportes.regulation_cup', 0))
+        mandatory_contribution = float(
+            config_sudo.get_param('rod_cooperativa_aportes.mandatory_contribution_certificate', 0))
+        today = datetime.now().date()
+
         for record in self:
-            if record.date_burn_partner:
-                if record.partner_status_especific == 'passive_reserve_b':
-                    # 1. Limpieza de deudas previas
-                    self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
+            # Inicialización de campos para evitar errores de caché
+            record.updated_partner = False
+            record.outstanding_payments = 0
 
-                    # 2. DETERMINACIÓN DEL AÑO DE INICIO (DINÁMICO)
-                    # Si tiene fecha de alta, usamos ese año. Si no, usamos 2023 por defecto.
-                    # Además, nos aseguramos de no cobrar antes de 2023 si esa es la política.
+            if not record.date_burn_partner:
+                continue
 
-                    año_base_cooperativa = 2023
-                    gestion_ini = año_base_cooperativa
+            # --- CASO: RESERVA PASIVA B ---
+            if record.partner_status_especific == 'passive_reserve_b':
+                # Limpieza segura
+                self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
 
-                    if record.date_burn_partner:
-                        # Si la fecha de inscripción es en Octubre (10), Noviembre (11) o Diciembre (12)
-                        # ya pasaron o restan menos de 3 meses del año.
-                        if record.date_burn_partner.month > 9:
-                            # Saltamos al año siguiente
-                            gestion_ini = max(record.date_burn_partner.year + 1, año_base_cooperativa)
-                        else:
-                            # Cobramos desde el año de inscripción
-                            gestion_ini = max(record.date_burn_partner.year, año_base_cooperativa)
-
-                    gestion_end = datetime.now().year
-
-                    # 3. Constantes
-                    inscription_fee = 10.0
-                    reg_cup_total = (regulation_cup or 0.0) * 12
-                    mandatory_total = (mandatory_contribution or 0.0) * 2
-                    post_mortem_fee = 167.28
-
-                    # 1. Buscamos si tiene registros previos finalizados (fuera del actual)
-                    # Esto nos dirá si es un socio antiguo que está "continuando" o es nuevo.
-                    anteriores_count = self.env['partner.payroll'].search_count([
-                        ('partner_id', '=', record.partner_id.id),
-                        ('id', '!=', record.id),  # Excluimos el registro actual
-                        ('state', 'in', ['process_finalized', 'finalized'])
-                    ])
-
-                    # 2. Definimos si se cobra inscripción
-                    # Si el conteo es 0, significa que NO tiene historial previo: es su PRIMERA inscripción.
-                    sw_primera_gestion = True if anteriores_count == 0 else False
-
-                    # 4. Loop de años a cobrar (Solo desde gestion_ini)
-                    for gestion_process in range(gestion_ini, gestion_end + 1):
-
-                        # Filtramos pagos realizados para este año específico
-                        payments_this_year = record.payroll_payments_ids.filtered(
-                            lambda x: x.period_register and str(gestion_process) in str(x.period_register)
-                        )
-
-                        sum_miscellanous = sum(payments_this_year.mapped('miscellaneous_income'))
-                        sum_reg_cup = sum(payments_this_year.mapped('regulation_cup'))
-                        sum_mandatory = sum(payments_this_year.mapped('mandatory_contribution_certificate'))
-                        sum_voluntary = sum(payments_this_year.mapped('voluntary_contribution_certificate'))
-
-                        # --- CÁLCULO DE SALDOS ---
-                        cal_reg_cup = max(reg_cup_total - sum_reg_cup, 0)
-                        cal_mandatory = max(mandatory_total - sum_mandatory, 0)
-
-                        # Inscripción: Solo se cobra el primer año que entra al sistema (su gestion_ini)
-                        cal_misc = 0.0
-                        if sw_primera_gestion:
-                            # Solo si la cooperativa definió que este socio paga inscripción
-                            if record.miscellaneous_income != 0:
-                                cal_misc = max(inscription_fee - sum_miscellanous, 0)
-                            sw_primera_gestion = False
-
-                        # Post Mortem: Validamos contra la fecha 'until_payment'
-                        cal_post_mortem = 0.0
-                        limit_year = record.until_payment.year if record.until_payment else 0
-                        if gestion_process > limit_year:
-                            cal_post_mortem = max(post_mortem_fee - sum_voluntary, 0)
-
-                        d_total = cal_misc + cal_reg_cup + cal_mandatory + cal_post_mortem
-
-                        # 5. Creación del registro
-                        self.env['due.payments'].create({
-                            'name': f"Gestión {gestion_process}",
-                            'd_miscellaneous_income': cal_misc,
-                            'd_regulation_cup': cal_reg_cup,
-                            'd_mandatory_contribution': cal_mandatory,
-                            'd_voluntary_contribution': sum_voluntary,
-                            'd_post_mortem': cal_post_mortem,
-                            'd_total': round(d_total, 2),
-                            'due_partner_payroll_id': record.id,
-                            'gestion': gestion_process
-                        })
-
-                if record.partner_status_especific == 'passive_reserve_a':
-                    # 1. Limpieza de deudas previas
-                    self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
-
-                    # 2. DETERMINACIÓN DE LA FECHA PIVOTE (Seguridad ante Nulos)
-                    # Obtenemos el último pago de forma segura
-                    last_pay_record = record.payroll_payments_ids.sorted('date_pivote', reverse=True)[:1]
-
-                    if last_pay_record and last_pay_record.date_pivote:
-                        # Si hay pagos, empezamos al mes siguiente del último pago
-                        start_calc_date = last_pay_record.date_pivote + relativedelta(months=1)
-                    else:
-                        # Si NO hay pagos, usamos la fecha de ingreso (date_burn_partner)
-                        # Si tampoco tiene fecha de ingreso, usamos el 01/01/2023 por defecto
-                        start_calc_date = record.date_burn_partner or datetime(2023, 1, 1).date()
-
-                    # 3. VALIDACIÓN DE LA REGLA DE 3 MESES (Octubre, Noviembre, Diciembre)
-                    # Si es un socio nuevo y se inscribió después de Septiembre, pasamos al 1 de enero del año siguiente
-                    if not last_pay_record and start_calc_date.month > 9:
-                        start_calc_date = datetime(start_calc_date.year + 1, 1, 1).date()
-
-                    if isinstance(start_calc_date, datetime):
-                        start_calc_date = start_calc_date.date()
-                    # 4. OBTENCIÓN DE MESES A COBRAR
-                    # Asumimos que get_month_starts devuelve una lista de objetos date/datetime
-                    months_to_bill = record.get_month_starts(start_calc_date, datetime.now().date()) or []
-
-                    # 5. GENERACIÓN DE DEUDAS
-                    for month_date in months_to_bill:
-                        # Evitamos el try-except genérico para poder ver errores reales si ocurren
-                        cal_miscellaneous = 0.0
-                        cal_regulation_cup = 0.0
-                        cal_mandatory = 0.0
-                        sum_voluntary = 0.0
-
-                        # Monto basado en la categoría (Passive A en este caso según tu variable)
-                        d_total = self.mount_passive_a or 0.0
-
-                        self.env['due.payments'].create({
-                            'name': month_date.strftime('%m/%Y'),
-                            'd_miscellaneous_income': cal_miscellaneous,
-                            'd_regulation_cup': cal_regulation_cup,
-                            'd_mandatory_contribution': cal_mandatory,
-                            'd_voluntary_contribution': sum_voluntary,
-                            'd_total': round(d_total, 2),
-                            'due_partner_payroll_id': record.id,
-                            'gestion': month_date.year,
-                        })
+                año_base = 2023
+                # Regla de 3 meses para inicio de cobro
+                if record.date_burn_partner.month > 9:
+                    gestion_ini = max(record.date_burn_partner.year + 1, año_base)
                 else:
-                    record.compute_count_pay_contributions()
-                    diff = relativedelta(datetime.now(), record.date_burn_partner)
-                    diff_months = diff.years * 12 + diff.months
-                    count_payments = len(
-                        record.payroll_payments_ids.filtered(
-                            lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
+                    gestion_ini = max(record.date_burn_partner.year, año_base)
 
-            if count_payments >= diff_months and record.state != 'draft':
-                record.updated_partner = True
-                # self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
-                #                              title='Verificado')
-                record.outstanding_payments = 0
-                record.must_regulation_rate = 0
-                record.must_mandatory_contribution = 0
+                # VALIDACIÓN NewId: Evitar error en search_count con registros nuevos
+                domain_ant = [
+                    ('partner_id', '=', record.partner_id.id),
+                    ('state', 'in', ['process_finalized', 'finalized'])
+                ]
+                if record.id and not isinstance(record.id, models.NewId):
+                    domain_ant.append(('id', '!=', record.id))
+
+                anteriores_count = self.env['partner.payroll'].search_count(domain_ant)
+                sw_primera_gestion = True if anteriores_count == 0 else False
+
+                for gestion_process in range(gestion_ini, today.year + 1):
+                    # Filtro optimizado de pagos
+                    payments_year = record.payroll_payments_ids.filtered(
+                        lambda x: x.period_register and str(gestion_process) in str(x.period_register)
+                    )
+
+                    sum_reg_cup = sum(payments_year.mapped('regulation_cup'))
+                    sum_mandatory = sum(payments_year.mapped('mandatory_contribution_certificate'))
+                    sum_voluntary = sum(payments_year.mapped('voluntary_contribution_certificate'))
+
+                    cal_reg_cup = max((regulation_cup * 12) - sum_reg_cup, 0)
+                    cal_mandatory = max((mandatory_contribution * 2) - sum_mandatory, 0)
+
+                    # Inscripción única
+                    cal_misc = 0.0
+                    if sw_primera_gestion and record.miscellaneous_income != 0:
+                        sum_misc = sum(payments_year.mapped('miscellaneous_income'))
+                        cal_misc = max(10.0 - sum_misc, 0)
+                        sw_primera_gestion = False
+
+                    # Post Mortem
+                    cal_post_mortem = 0.0
+                    limit_year = record.until_payment.year if record.until_payment else 0
+                    if gestion_process > limit_year:
+                        cal_post_mortem = max(167.28 - sum_voluntary, 0)
+
+                    self.env['due.payments'].create({
+                        'name': f"Gestión {gestion_process}",
+                        'd_miscellaneous_income': cal_misc,
+                        'd_regulation_cup': cal_reg_cup,
+                        'd_mandatory_contribution': cal_mandatory,
+                        'd_voluntary_contribution': sum_voluntary,
+                        'd_post_mortem': cal_post_mortem,
+                        'd_total': round(cal_misc + cal_reg_cup + cal_mandatory + cal_post_mortem, 2),
+                        'due_partner_payroll_id': record.id,
+                        'gestion': gestion_process
+                    })
+
+            # --- CASO: RESERVA PASIVA A ---
+            elif record.partner_status_especific == 'passive_reserve_a':
+                self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
+
+                last_pay = record.payroll_payments_ids.sorted('date_pivote', reverse=True)[:1]
+                if last_pay and last_pay.date_pivote:
+                    start_calc_date = last_pay.date_pivote + relativedelta(months=1)
+                else:
+                    start_calc_date = record.date_burn_partner or date(2023, 1, 1)
+
+                # Normalización Date vs Datetime
+                if isinstance(start_calc_date, datetime):
+                    start_calc_date = start_calc_date.date()
+
+                months_to_bill = record.get_month_starts(start_calc_date, today) or []
+
+                for month_date in months_to_bill:
+                    d_total = self.mount_passive_a or 0.0
+                    self.env['due.payments'].create({
+                        'name': month_date.strftime('%m/%Y'),
+                        'd_total': round(d_total, 2),
+                        'due_partner_payroll_id': record.id,
+                        'gestion': month_date.year,
+                    })
+
+            # --- CASO: GENERAL / OTROS ---
             else:
-                record.updated_partner = False
-                record.outstanding_payments = diff_months - count_payments
-                record.must_regulation_rate = record.outstanding_payments * regulation_cup
-                record.must_mandatory_contribution = (record.outstanding_payments / 6) * mandatory_contribution
-                record.must_gestion = count_payments / 12
-                record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + record.must_post_mortem
-                # self.env.user.notify_warning(
-                #     message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
+                record.compute_count_pay_contributions()
+                diff = relativedelta(today, record.date_burn_partner)
+                diff_months = diff.years * 12 + diff.months
+
+                valid_payments = record.payroll_payments_ids.filtered(
+                    lambda x: x.state in ['ministry_defense', 'transfer'] and not x.drawback
+                )
+                count_payments = len(valid_payments)
+
+                if count_payments >= diff_months and record.state != 'draft':
+                    record.updated_partner = True
+                    record.outstanding_payments = 0
+                    record.must_regulation_rate = 0
+                    record.must_mandatory_contribution = 0
+                else:
+                    record.updated_partner = False
+                    record.outstanding_payments = diff_months - count_payments
+                    record.must_regulation_rate = record.outstanding_payments * regulation_cup
+                    record.must_mandatory_contribution = (record.outstanding_payments / 6) * mandatory_contribution
+                    record.must_gestion = count_payments / 12
+                    # Asegurar que must_post_mortem exista o esté inicializado
+                    post_mortem_val = getattr(record, 'must_post_mortem', 0)
+                    record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + post_mortem_val
 
     def print_report_total(self):
         return {
