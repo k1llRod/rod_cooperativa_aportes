@@ -39,13 +39,19 @@ class MindefReportWizard(models.TransientModel):
         self.ensure_one()
         period = f"{self.month}/{self.year}"
 
-        # Buscamos todas las contribuciones del periodo
+        # 1. Búsqueda de contribuciones (Modelo Archivador)
         contributions = self.env['nominal.relationship.mindef.contributions'].search([
             ('period_process', '=', period)
         ])
 
-        # Preparamos los datos para el reporte
-        # Pasamos los IDs de los registros separados por estado para facilitar el dibujo en Excel
+        # 2. NUEVA BÚSQUEDA: Socios Activos sin aporte (Modelo Pagos Individuales)
+        # Filtramos por estado 'no_contribution' y tipo 'active_service'
+        no_contribution_payments = self.env['payroll.payments'].search([
+            ('period_register', '=', period),
+            ('state', '=', 'no_contribution'),
+            ('partner_status_especific', '=', 'active_service')
+        ])
+
         summary_data = {
             'period': period,
             'date': fields.Datetime.now().strftime('%d/%m/%Y %H:%M'),
@@ -54,13 +60,15 @@ class MindefReportWizard(models.TransientModel):
                 'no_reconciled': len(contributions.filtered(lambda x: x.state == 'no_reconciled')),
                 'reconciled': len(contributions.filtered(lambda x: x.state == 'reconciled')),
                 'observed': len(contributions.filtered(lambda x: x.state == 'observed')),
+                'no_contribution_active': len(no_contribution_payments),  # Nueva estadística
             },
-            # Pasamos los IDs de los registros para que el reporte los lea
             'ids_draft': contributions.filtered(lambda x: x.state == 'draft').ids,
             'ids_no_reconciled': contributions.filtered(lambda x: x.state == 'no_reconciled').ids,
             'ids_reconciled': contributions.filtered(lambda x: x.state == 'reconciled').ids,
             'ids_observed': contributions.filtered(lambda x: x.state == 'observed').ids,
+
+            # Pasamos los IDs de los pagos sin aporte para el Excel
+            'ids_no_contribution_active': no_contribution_payments.ids,
         }
 
         return self.env.ref('rod_cooperativa_aportes.action_report_mindef_xlsx').report_action(self, data=summary_data)
-

@@ -177,6 +177,11 @@
             <field name="name">Aportes</field>
             <field name="res_model">payroll.payments</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{
+                'search_default_group_period': 1,
+                'search_default_group_state': 1
+                }
+            </field>
         </record>
 
         <!--        <record model="ir.ui.view" id="payroll_payments_reports_tree_id">-->
@@ -266,15 +271,15 @@
             <field name="name">payroll.payments.select</field>
             <field name="model">payroll.payments</field>
             <field name="arch" type="xml">
-                <search string="Search payroll">
+                <search string="Buscar aportes">
                     <field name="partner_name" string="Nombre del socio"/>
                     <field name="name"
                            filter_domain="['|', ('display_name', 'ilike', self)]"/>
                     <field name="partner_code_contact"/>
-                    <filter name="capital_initial_greater_zero"
-                            string="Capital inicial mayor que '0'"
-                            domain="[('state','=','contribution_interest')]"/>
-                    <separator />
+<!--                    <filter name="capital_initial_greater_zero"-->
+<!--                            string="Capital inicial mayor que '0'"-->
+<!--                            domain="[('state','=','contribution_interest')]"/>-->
+<!--                    <separator />-->
                     <filter name="partner_active_service"
                             string="Asociados servicio activo"
                             domain="[('partner_status_especific', '=', 'active_service')]"/>
@@ -284,28 +289,28 @@
                     <filter name="partner_passive_reserve_b"
                             string="Asociados Pasivo categoria 'B'"
                             domain="[('partner_status_especific','=','passive_reserve_b')]"/>
+                    <separator/>
+                    <filter string="Fecha Pivote" name="filter_date_pivote" date="date_pivote"/>
+                    <filter string="Fecha de Pago" name="filter_payment_date" date="payment_date"/>
+                    <separator/>
+
+                    <filter string="Borrador" name="state_draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Confirmado" name="state_confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter string="Sin Aporte" name="state_no_contribution"
+                            domain="[('state', '=', 'no_contribution')]"/>
+                    <filter string="Devolución" name="state_partner_return"
+                            domain="[('state', '=', 'partner_return')]"/>
                     <group expand="0" string="Group By">
+
                         <filter string="Por asociado"
                                 name="group_partner_status"
                                 context="{'group_by': 'partner_name'}"/>
-
+                        <filter string="Periodo de Registro" name="group_period" context="{'group_by': 'period_register'}"/>
+                        <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Situación Específica" name="group_status_spec" context="{'group_by': 'partner_status_especific'}"/>
+                        <filter string="Ciudad" name="group_city" context="{'group_by': 'city'}"/>
+                        <separator/>
                     </group>
-
-                    <!--                    <field name="email" filter_domain="[('email', 'ilike', self)]"/>-->
-                    <!--                    <field name="phone" filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>-->
-                    <!--                    <field name="category_id" string="Tag" filter_domain="[('category_id', 'child_of', self)]"/>-->
-                    <!--                    <field name="user_id"/>-->
-                    <!--                    <separator/>-->
-                    <!--                    <filter string="Individuals" name="type_person" domain="[('is_company', '=', False)]"/>-->
-                    <!--                    <filter string="Companies" name="type_company" domain="[('is_company', '=', True)]"/>-->
-                    <!--                    <separator/>-->
-                    <!--                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>-->
-                    <!--                    <separator/>-->
-                    <!--                    <group expand="0" name="group_by" string="Group By">-->
-                    <!--                        <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}" />-->
-                    <!--                        <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>-->
-                    <!--                        <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>-->
-                    <!--                    </group>-->
                 </search>
             </field>
         </record>

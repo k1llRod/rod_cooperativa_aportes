@@ -39,7 +39,7 @@
                 action="rod_cooperativa_aportes.action_contributions_anual_partner"/>
 
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
-                name="Reportes"
+                name="Detalles de aportes"
                 parent="rod_cooperativa_aportes.menu_root"
                 sequence="3"
                 />
@@ -62,7 +62,7 @@
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_configuration"
                 name="Configuración"
                 parent="rod_cooperativa_aportes.menu_root"
-                sequence="4"
+                sequence="5"
                 action="rod_cooperativa_aportes.action_cooperativa_aportes_configuration"/>
 
       <!-- menu items viudas-->

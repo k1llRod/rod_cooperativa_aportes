@@ -23,5 +23,21 @@
             </form>
         </field>
     </record>
+    <record id="action_mindef_payment_report_wizard" model="ir.actions.act_window">
+        <field name="name">Reporte Mensual Aportes Mindef</field>
+        <field name="res_model">mindef.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_mindef_payment_reports_category"
+              name="Reportes MINDEF"
+              parent="rod_cooperativa_aportes.menu_root"
+              sequence="4"/>
+
+    <menuitem id="menu_mindef_payment_report"
+              name="Reporte Mensual Aportes"
+              parent="menu_mindef_payment_reports_category"
+              action="action_mindef_payment_report_wizard"
+              sequence="1"/>
 
 </odoo>
