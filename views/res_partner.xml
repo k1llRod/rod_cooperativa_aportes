@@ -167,6 +167,89 @@
             <field name="code">action = records.draft_massive()</field>
         </record>
 
-
+        <record id="view_res_partner_tree_custom_no_loan" model="ir.ui.view">
+            <field name="name">res.partner.tree.custom</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Contactos Personalizados">
+                    <field name="category_partner_id"/>
+                    <field name="name"/>
+                    <field name="partner_status_especific"/>
+                    <field name="loan_count" optional="hide"/>
+                    <field name="loan_count_mortgage" optional=""/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_res_partner_tree_custom_no_loan" model="ir.actions.act_window">
+            <field name="name">Relación nominal de asociados sin préstamos (Activo y categoría "A")</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_res_partner_tree_custom_no_loan"/>
+            <field name="domain">[('loan_count', '=', 0),('loan_count_mortgage', '=', '0'),
+                ('partner_status_especific',
+                'in', ['active_service', 'passive_reserve_a'])]
+            </field>
+        </record>
+        <record id="view_res_partner_tree_custom_active_service" model="ir.ui.view">
+            <field name="name">res.partner.tree.custom.active.service</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Relacion nominal">
+                    <field name="category_partner_id"/>
+                    <field name="name"/>
+                    <field name="graduation_year"/>
+                    <field name="date_burn_partner" optional=""/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_res_partner_tree_custom_active_service" model="ir.actions.act_window">
+            <field name="name">Relación nominal de asociados activos (Servicio activo)</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_res_partner_tree_custom_active_service"/>
+            <field name="domain">[('partner_status_especific','in', ['active_service']),
+                                    ('state','=','activate')]
+            </field>
+        </record>
+        <record id="view_res_partner_tree_custom_category_b" model="ir.ui.view">
+            <field name="name">res.partner.tree.custom.category.b</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Relacion nominal de asociados pasivos (Categoría B)" default_order="name asc">
+                    <field name="category_partner_id" string="GRADO"/>
+                    <field name="name" string="NOMBRE COMPLETO"/>
+                    <field name="graduation_year" string="FECHA DE EGRESO"/>
+                    <field name="since" string="FECHA DE PASE AL SERVICIO PASIVO"/>
+                    <field name="date_burn_partner" string="FECHA DE FILIACION"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_res_partner_tree_custom_category_b" model="ir.actions.act_window">
+            <field name="name">Relación nominal de asociados pasivos (Categoria B)</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_res_partner_tree_custom_category_b"/>
+            <field name="domain">[('partner_status_especific','in', ['passive_reserve_b']),
+                                    ('state','=','activate')]
+            </field>
+        </record>
+        <record id="action_res_partner_tree_custom_category_a" model="ir.actions.act_window">
+            <field name="name">Relación nominal de asociados pasivos (Categoria A)</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_res_partner_tree_custom_category_b"/>
+            <field name="domain">[('partner_status_especific','in', ['passive_reserve_a']),
+                                    ('state','=','activate')]
+            </field>
+        </record>
+        <record id="action_res_partner_tree_custom_all_partners" model="ir.actions.act_window">
+            <field name="name">Relación nominal de asociados de la Cooperativa.</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_res_partner_tree_custom_category_b"/>
+            <field name="domain">[('partner_status_especific','in', ['active_service','passive_reserve_a','passive_reserve_b']),
+                                    ('state','=','activate')]
+            </field>
+        </record>
     </data>
 </odoo>

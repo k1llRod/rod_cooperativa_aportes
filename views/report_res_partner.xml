@@ -39,14 +39,17 @@
             <field name="model">partner.payroll</field>
             <field name="arch" type="xml">
                 <tree string="Socios que solicitaron su desvinculacion">
-                    <field name="category_partner"/>
-                    <field name="partner_id"/>
-                    <field name="mandatory_contribution_certificate_total"/>
-                    <field name="voluntary_contribution_certificate_total"/>
-                    <field name="other_contribution_total"/>
-                    <field name="surpluses_total"/>
-                    <field name="contribution_total"/>
-                    <field name="state" optional="hidden"/>
+                    <field name="category_partner" string="GRADO"/>
+                    <field name="partner_id" string="SOCIO"/>
+                    <field name="partner_status_especific" string="TIPO DE ASOCIADO"/>
+<!--                    <field name="regulation_cup" string="TASA DE REGULACION"/>-->
+                    <field name="mandatory_contribution_certificate_total" string="APORTES OBLIGATORIOS" sum="Total"/>
+                    <field name="voluntary_contribution_certificate_total" string="APORTES VOLUNTARIOS" sum="Total"/>
+                    <field name="capital_initial" string="CAPITAL INICIAL"/>
+                    <field name="other_contribution_total" string="OTROS APORTES" sum="Total"/>
+                    <field name="surpluses_total" string="TOTAL EXCEDENTES" sum="Total"/>
+                    <field name="contribution_total" string="TOTAL BS." sum="Total"/>
+                    <field name="state" optional="show"/>
                 </tree>
             </field>
         </record>
@@ -73,7 +76,15 @@
             </field>
         </record>
         <record id="action_partner_payroll_custom_total" model="ir.actions.act_window">
-            <field name="name">Reporte de socios servicio activo</field>
+            <field name="name">Reporte de Aportes totales de socios activos</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_status_especific', 'in', ['active_service','passive_reserve_a','passive_reserve_b']),('state','=','process')]</field>
+            <field name="help">Este reporte muestra a los socios con aportes del servicio activo.</field>
+            <field name="view_id" ref="view_partner_payroll_tree_custom_a_b"/>
+        </record>
+        <record id="action_partner_payroll_custom_active_service" model="ir.actions.act_window">
+            <field name="name">Relacion nominal de socios activos con aportes y rendimientos</field>
             <field name="res_model">partner.payroll</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('partner_status_especific', '=', 'active_service'),('state','=','process')]</field>
@@ -104,6 +115,14 @@
             <field name="context">{'search_default_group_type_disengagements': 1}</field>
             <field name="help">Este reporte muestra a los socios dados de baja.</field>
             <field name="view_id" ref="view_res_partner_tree_baja"/>
+        </record>
+        <record id="action_partner_payroll_cooperativa_disengagement" model="ir.actions.act_window">
+            <field name="name">Socios que solicitaron su desvinculacion</field>
+            <field name="res_model">partner.payroll</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','process_finalized')]</field>
+            <field name="help">Este reporte muestra a los socios que solicitaron su desvinculacion.</field>
+            <field name="view_id" ref="view_partner_payroll_tree_custom_a_b"/>
         </record>
 <!--        <record id="action_partner_baja_pdf_export" model="ir.actions.server">-->
 <!--            <field name="name">Exportar PDF - Socios dados de baja</field>-->

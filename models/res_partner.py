@@ -36,8 +36,8 @@ class ResPartner(models.Model):
         }
 
     contributions_count = fields.Integer(string='Aportes', compute='compute_contributions_count', store=True)
-    loan_count = fields.Integer(string='Préstamos', compute='compute_contributions_count', store=True)
-    loan_count_mortgage = fields.Integer(string='Préstamos', compute='compute_contributions_count')
+    loan_count = fields.Integer(string='Préstamos regulares', compute='compute_contributions_count', store=True)
+    loan_count_mortgage = fields.Integer(string='Préstamos hipotecarios', compute='compute_contributions_count', store=True)
     loan_count_loan_emergency = fields.Integer(string='Préstamos', compute='compute_contributions_count')
     date_unsubscribe = fields.Date(string='Fecha de baja')
 
@@ -53,8 +53,9 @@ class ResPartner(models.Model):
     date_disengagements = fields.Date(string='Fecha de baja', related='partner_payroll_ids.date_disengagements', store=True)
     gloss_disengagement = fields.Text(string='Glosa de baja', related='partner_payroll_ids.gloss_disengagement', store=True)
 
-    since = fields.Date(string='Desde', related='partner_payroll_ids.since_payment', store=True)
+    since = fields.Date(string='Fecha de pase al sevicio pasivo', related='partner_payroll_ids.since_payment', store=True)
     until = fields.Date(string='Hasta', related='partner_payroll_ids.until_payment', store=True)
+    date_burn_partner = fields.Datetime(string='Fecha de filiacion', related='partner_payroll_ids.date_burn_partner', store=True)
 
     def compute_contributions_count(self):
         for record in self:
