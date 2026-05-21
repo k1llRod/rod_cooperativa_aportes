@@ -237,12 +237,12 @@ class PartnerPayroll(models.Model):
             sum_verificate_payments = sum(verificate_payments.mapped('mandatory_contribution_certificate'))
             record.mandatory_contribution_pending = count_mandatory_contributions - sum_verificate_payments
 
-    @api.model
-    def create(self, vals):
-        name = self.env['ir.sequence'].next_by_code('partner.payroll')
-        vals['name'] = name
-        res = super(PartnerPayroll, self).create(vals)
-        return res
+    # @api.model
+    # def create(self, vals):
+    #     name = self.env['ir.sequence'].next_by_code('partner.payroll')
+    #     vals['name'] = name
+    #     res = super(PartnerPayroll, self).create(vals)
+    #     return res
 
     # def write(self, vals):
     #     res = super(PartnerPayroll, self).write(vals)
@@ -363,7 +363,6 @@ class PartnerPayroll(models.Model):
 
     @api.depends('payroll_payments_ids', 'date_burn_partner', 'partner_status_especific', 'until_payment')
     def compute_updated_partner(self):
-        # 1. Carga de parámetros iniciales fuera del loop para optimizar rendimiento
         config_sudo = self.env['ir.config_parameter'].sudo()
         regulation_cup = float(config_sudo.get_param('rod_cooperativa_aportes.regulation_cup', 0))
         mandatory_contribution = float(
@@ -371,43 +370,74 @@ class PartnerPayroll(models.Model):
         today = datetime.now().date()
 
         for record in self:
-            # Inicialización estricta de todos los campos que este método debe computar
             record.updated_partner = False
             record.outstanding_payments = 0
             record.must_regulation_rate = 0.0
             record.must_mandatory_contribution = 0.0
-            record.must_gestion = 0
             record.must_total = 0.0
+            record.must_gestion = 0
 
-            # Guardrail: Si no hay fecha, ya dejamos los valores por defecto asignados de forma segura
+            if not record.date_burn_partner:
+                continue
+
+            # --- CASO: GENERAL / OTROS (Cálculos de campos) ---
+            if record.partner_status_especific not in ['passive_reserve_a', 'passive_reserve_b']:
+                date_burn = record.date_burn_partner.date() if isinstance(record.date_burn_partner,
+                                                                          datetime) else record.date_burn_partner
+                diff = relativedelta(today, date_burn)
+                diff_months = diff.years * 12 + diff.months
+
+                valid_payments = record.payroll_payments_ids.filtered(
+                    lambda x: x.state in ['ministry_defense', 'transfer'] and not x.drawback
+                )
+                count_payments = len(valid_payments)
+
+                if count_payments >= diff_months and record.state != 'draft':
+                    record.updated_partner = True
+                    record.outstanding_payments = 0
+                else:
+                    record.updated_partner = False
+                    record.outstanding_payments = diff_months - count_payments
+                    record.must_regulation_rate = record.outstanding_payments * regulation_cup
+                    record.must_mandatory_contribution = (record.outstanding_payments / 6) * mandatory_contribution
+                    record.must_gestion = count_payments / 12
+
+                    post_mortem_val = getattr(record, 'must_post_mortem', 0.0)
+                    record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + post_mortem_val
+
+    def _update_due_payments(self):
+        """Método encargado exclusivamente de la base de datos (Alta/Baja de due.payments)"""
+        config_sudo = self.env['ir.config_parameter'].sudo()
+        regulation_cup = float(config_sudo.get_param('rod_cooperativa_aportes.regulation_cup', 0))
+        mandatory_contribution = float(
+            config_sudo.get_param('rod_cooperativa_aportes.mandatory_contribution_certificate', 0))
+        today = datetime.now().date()
+
+        for record in self:
             if not record.date_burn_partner:
                 continue
 
             # --- CASO: RESERVA PASIVA B ---
             if record.partner_status_especific == 'passive_reserve_b':
-                # Limpieza segura de registros previos
                 self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
 
                 año_base = 2023
-                # Regla de 3 meses para inicio de cobro
-                if record.date_burn_partner.month > 9:
-                    gestion_ini = max(record.date_burn_partner.year + 1, año_base)
+                date_burn = record.date_burn_partner.date() if isinstance(record.date_burn_partner,
+                                                                          datetime) else record.date_burn_partner
+                if date_burn.month > 9:
+                    gestion_ini = max(date_burn.year + 1, año_base)
                 else:
-                    gestion_ini = max(record.date_burn_partner.year, año_base)
+                    gestion_ini = max(date_burn.year, año_base)
 
-                # VALIDACIÓN NewId: Evitar error en search_count con registros nuevos/en edición
                 domain_ant = [
                     ('partner_id', '=', record.partner_id.id),
-                    ('state', 'in', ['process_finalized', 'finalized'])
+                    ('state', 'in', ['process_finalized', 'finalized']),
+                    ('id', '!=', record.id)
                 ]
-                if record.id and not isinstance(record.id, models.NewId):
-                    domain_ant.append(('id', '!=', record.id))
-
                 anteriores_count = self.env['partner.payroll'].search_count(domain_ant)
                 sw_primera_gestion = True if anteriores_count == 0 else False
 
                 for gestion_process in range(gestion_ini, today.year + 1):
-                    # Filtro optimizado de pagos
                     payments_year = record.payroll_payments_ids.filtered(
                         lambda x: x.period_register and str(gestion_process) in str(x.period_register)
                     )
@@ -419,14 +449,12 @@ class PartnerPayroll(models.Model):
                     cal_reg_cup = max((regulation_cup * 12) - sum_reg_cup, 0)
                     cal_mandatory = max((mandatory_contribution * 2) - sum_mandatory, 0)
 
-                    # Inscripción única
                     cal_misc = 0.0
                     if sw_primera_gestion and record.miscellaneous_income != 0:
                         sum_misc = sum(payments_year.mapped('miscellaneous_income'))
                         cal_misc = max(10.0 - sum_misc, 0)
                         sw_primera_gestion = False
 
-                    # Post Mortem
                     cal_post_mortem = 0.0
                     limit_year = record.until_payment.year if record.until_payment else 0
                     if gestion_process > limit_year:
@@ -454,14 +482,13 @@ class PartnerPayroll(models.Model):
                 else:
                     start_calc_date = record.date_burn_partner
 
-                # Normalización Date vs Datetime
                 if isinstance(start_calc_date, datetime):
                     start_calc_date = start_calc_date.date()
 
                 months_to_bill = record.get_month_starts(start_calc_date, today) or []
 
                 for month_date in months_to_bill:
-                    d_total = self.mount_passive_a or 0.0
+                    d_total = record.mount_passive_a or 0.0
                     self.env['due.payments'].create({
                         'name': month_date.strftime('%m/%Y'),
                         'd_total': round(d_total, 2),
@@ -469,29 +496,22 @@ class PartnerPayroll(models.Model):
                         'gestion': month_date.year,
                     })
 
-            # --- CASO: GENERAL / OTROS ---
-            else:
-                record.compute_count_pay_contributions()
-                diff = relativedelta(today, record.date_burn_partner)
-                diff_months = diff.years * 12 + diff.months
+    @api.model
+    def create(self, vals):
+        # Sobreescribimos el comportamiento nativo al guardar un registro nuevo
+        name = self.env['ir.sequence'].next_by_code('partner.payroll')
+        vals['name'] = name
+        res = super(PartnerPayroll, self).create(vals)
+        res._update_due_payments()
+        return res
 
-                valid_payments = record.payroll_payments_ids.filtered(
-                    lambda x: x.state in ['ministry_defense', 'transfer'] and not x.drawback
-                )
-                count_payments = len(valid_payments)
-
-                if count_payments >= diff_months and record.state != 'draft':
-                    record.updated_partner = True
-                    record.outstanding_payments = 0
-                else:
-                    record.updated_partner = False
-                    record.outstanding_payments = diff_months - count_payments
-                    record.must_regulation_rate = record.outstanding_payments * regulation_cup
-                    record.must_mandatory_contribution = (record.outstanding_payments / 6) * mandatory_contribution
-                    record.must_gestion = count_payments / 12
-
-                    post_mortem_val = getattr(record, 'must_post_mortem', 0.0)
-                    record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + post_mortem_val
+    def write(self, vals):
+        # Sobreescribimos el comportamiento al editar campos clave
+        res = super(PartnerPayroll, self).write(vals)
+        fields_to_check = ['payroll_payments_ids', 'date_burn_partner', 'partner_status_especific', 'until_payment']
+        if any(f in vals for f in fields_to_check):
+            self._update_due_payments()
+        return res
 
     def print_report_total(self):
         return {
