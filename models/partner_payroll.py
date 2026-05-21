@@ -361,9 +361,9 @@ class PartnerPayroll(models.Model):
                 current = current.replace(month=current.month + 1)
         return result
 
-    @api.depends('payroll_payments_ids')
+    @api.depends('payroll_payments_ids', 'date_burn_partner', 'partner_status_especific', 'until_payment')
     def compute_updated_partner(self):
-        # 1. Carga de parámetros iniciales (fuera del loop para optimizar)
+        # 1. Carga de parámetros iniciales fuera del loop para optimizar rendimiento
         config_sudo = self.env['ir.config_parameter'].sudo()
         regulation_cup = float(config_sudo.get_param('rod_cooperativa_aportes.regulation_cup', 0))
         mandatory_contribution = float(
@@ -371,16 +371,21 @@ class PartnerPayroll(models.Model):
         today = datetime.now().date()
 
         for record in self:
-            # Inicialización de campos para evitar errores de caché
+            # Inicialización estricta de todos los campos que este método debe computar
             record.updated_partner = False
             record.outstanding_payments = 0
+            record.must_regulation_rate = 0.0
+            record.must_mandatory_contribution = 0.0
+            record.must_gestion = 0
+            record.must_total = 0.0
 
+            # Guardrail: Si no hay fecha, ya dejamos los valores por defecto asignados de forma segura
             if not record.date_burn_partner:
                 continue
 
             # --- CASO: RESERVA PASIVA B ---
             if record.partner_status_especific == 'passive_reserve_b':
-                # Limpieza segura
+                # Limpieza segura de registros previos
                 self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
 
                 año_base = 2023
@@ -390,7 +395,7 @@ class PartnerPayroll(models.Model):
                 else:
                     gestion_ini = max(record.date_burn_partner.year, año_base)
 
-                # VALIDACIÓN NewId: Evitar error en search_count con registros nuevos
+                # VALIDACIÓN NewId: Evitar error en search_count con registros nuevos/en edición
                 domain_ant = [
                     ('partner_id', '=', record.partner_id.id),
                     ('state', 'in', ['process_finalized', 'finalized'])
@@ -447,7 +452,7 @@ class PartnerPayroll(models.Model):
                 if last_pay and last_pay.date_pivote:
                     start_calc_date = last_pay.date_pivote + relativedelta(months=1)
                 else:
-                    start_calc_date = record.date_burn_partner or date(2023, 1, 1)
+                    start_calc_date = record.date_burn_partner
 
                 # Normalización Date vs Datetime
                 if isinstance(start_calc_date, datetime):
@@ -478,16 +483,14 @@ class PartnerPayroll(models.Model):
                 if count_payments >= diff_months and record.state != 'draft':
                     record.updated_partner = True
                     record.outstanding_payments = 0
-                    record.must_regulation_rate = 0
-                    record.must_mandatory_contribution = 0
                 else:
                     record.updated_partner = False
                     record.outstanding_payments = diff_months - count_payments
                     record.must_regulation_rate = record.outstanding_payments * regulation_cup
                     record.must_mandatory_contribution = (record.outstanding_payments / 6) * mandatory_contribution
                     record.must_gestion = count_payments / 12
-                    # Asegurar que must_post_mortem exista o esté inicializado
-                    post_mortem_val = getattr(record, 'must_post_mortem', 0)
+
+                    post_mortem_val = getattr(record, 'must_post_mortem', 0.0)
                     record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + post_mortem_val
 
     def print_report_total(self):
