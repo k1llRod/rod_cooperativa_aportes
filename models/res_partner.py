@@ -265,26 +265,42 @@ class ResPartner(models.Model):
     def print_report_unsubscribe(self):
         return self.env.ref('rod_cooperativa_aportes.action_partner_unsubscribe_pdf').report_action(self)
 
+    # -*- coding: utf-8 -*-
+    import base64
+    from io import BytesIO
+    import textwrap
+    from PIL import Image, ImageDraw, ImageFont
+
+
     def action_generate_birthday_card(self):
         self.ensure_one()
 
-        # 1. Obtener la ruta de la plantilla limpia
+        # 1. Obtener la ruta de la plantilla limpia local
         image_base_path = get_module_resource(
             'rod_cooperativa_aportes',
             'static', 'src', 'img', 'template_cumpleanos.png'
         )
 
         if not image_base_path:
-            raise UserError("No se encontró la plantilla en: static/src/img/template_cumpleanos.png")
+            raise UserError("Falta la plantilla base en: static/src/img/template_cumpleanos.png")
 
-        # 2. Configuración de fuentes (Cursiva ordinaria y Cursiva+Negrita para el nombre)
+        # 2. Carga local y segura de fuentes desde el módulo (Solución definitiva Docker)
+        font_path_italic = get_module_resource('rod_cooperativa_aportes', 'static', 'src', 'fonts', 'timesi.ttf')
+        font_path_bold_italic = get_module_resource('rod_cooperativa_aportes', 'static', 'src', 'fonts',
+                                                    'timesbi.ttf')
+
+        if not font_path_italic or not font_path_bold_italic:
+            raise UserError(
+                "Faltan los archivos de fuentes tipográficas en el módulo. "
+                "Por favor, verifique que 'timesi.ttf' y 'timesbi.ttf' estén guardados "
+                "en la ruta: static/src/fonts/"
+            )
+
         try:
-            font_path_italic = "C:\\Windows\\Fonts\\timesi.ttf"  # Cursiva estándar (Italic)
-            font_path_bold_italic = "C:\\Windows\\Fonts\\timesbi.ttf"  # Negrita + Cursiva (Bold Italic)
-
             font_body = ImageFont.truetype(font_path_italic, 32)
-            font_name = ImageFont.truetype(font_path_bold_italic, 32)  # Mismo tamaño para no desalinear el renglón
+            font_name = ImageFont.truetype(font_path_bold_italic, 32)
         except IOError:
+            # Respaldo crítico en caso de error extremo de lectura
             font_body = ImageFont.load_default()
             font_name = ImageFont.load_default()
 
@@ -292,15 +308,16 @@ class ResPartner(models.Model):
             img = Image.open(image_base_path)
             draw = ImageDraw.Draw(img)
         except Exception as e:
-            raise UserError(f"Error al abrir la plantilla base: {str(e)}")
+            raise UserError(f"Error al procesar la plantilla de imagen: {str(e)}")
 
-        # 3. Datos dinámicos del asociado (Normalizamos espacios)
-        grado = self.category_partner_id[0].code_loan if self.category_partner_id else ''
+        # 3. Preparación y normalización de los datos del Asociado
+        grado = self.category_id[0].name if self.category_id else ''
         nombre_completo = self.name or ''
-        texto_socio_completo = f"{grado} {nombre_completo}"
+        texto_socio_completo = f"Sr. {grado} {nombre_completo}"
+        # Eliminar dobles espacios accidentales que puedan venir de la base de datos
         texto_socio_completo = " ".join(texto_socio_completo.split()).strip()
 
-        # 4. Textos oficiales consolidados
+        # 4. Textos oficiales consolidados para la Cooperativa
         bloque_unificado = (
             f"A nombre de los miembros del Directorio y el Consejo de Administración, "
             f"Socios y mío en particular, saludo muy atentamente al {texto_socio_completo}, "
@@ -317,21 +334,28 @@ class ResPartner(models.Model):
 
         bloque_cierre = "Con este especial motivo, saludo a Ud. con las consideraciones más distinguidas."
 
-        color_texto = (26, 26, 26)
+        color_texto = (26, 26, 26)  # Gris oscuro/negro corporativo
         ancho_imagen, alto_imagen = img.size
 
-        # 5. Configuración de márgenes, espaciados y sangría
-        margin_left = 225
+        # 5. Parámetros de maquetación y diseño editorial
+        margin_left = 220  # Espacio de resguardo a los costados
         max_text_width = ancho_imagen - (margin_left * 2)
-        current_y = 430
-        line_spacing = 40
-        paragraph_spacing = 50
-        indent_pixels = 60
+        current_y = 420  # Coordenada Y inicial para librar el membrete
+        line_spacing = 46  # Interlineado entre renglones
+        paragraph_spacing = 50  # Espaciado entre bloques de párrafos
+        indent_pixels = 60  # Tamaño de la sangría en el primer renglón
 
-        # Algoritmo de renderizado posicional preciso (Maneja Sangrías y cambia a Bold Italic en el rango del nombre)
-        def draw_justified_paragraph_with_bold_italic(text, target_bold_text, font_regular, font_bold_italic, y_start,
-                                                      indent=60):
-            # Encontramos la posición exacta en caracteres de dónde empieza y termina el nombre
+        # Helper adaptativo para medir el ancho del texto según la versión de Pillow detectada
+        def get_word_width(text_word, current_font):
+            if hasattr(current_font, 'getbbox'):
+                bbox = draw.textbbox((0, 0), text_word, font=current_font)
+                return bbox[2] - bbox[0]
+            else:
+                return draw.textsize(text_word, font=current_font)[0]
+
+        # Algoritmo de justificación híbrido basado en índices posicionales
+        def draw_justified_paragraph_with_bold_italic(text, target_bold_text, font_regular, font_bold_italic,
+                                                      y_start, indent=60):
             start_bold_idx = text.find(target_bold_text)
             end_bold_idx = start_bold_idx + len(target_bold_text) if start_bold_idx != -1 else -1
 
@@ -339,7 +363,6 @@ class ResPartner(models.Model):
             first_line_words = []
             current_w = indent
 
-            # Reconstrucción de la primera línea con índices dinámicos
             char_counter = 0
             while words:
                 word = words[0]
@@ -350,9 +373,8 @@ class ResPartner(models.Model):
                     is_bold = True
 
                 f_actual = font_bold_italic if is_bold else font_regular
-                bbox = draw.textbbox((0, 0), word, font=f_actual)
-                word_w = bbox[2] - bbox[0]
-                space_w = draw.textbbox((0, 0), " ", font=f_actual)[2] - draw.textbbox((0, 0), " ", font=f_actual)[0]
+                word_w = get_word_width(word, f_actual)
+                space_w = get_word_width(" ", f_actual)
 
                 if current_w + word_w > max_text_width:
                     break
@@ -376,7 +398,7 @@ class ResPartner(models.Model):
                 current_margin_left = margin_left + indent if i == 0 else margin_left
                 current_max_width = max_text_width - indent if i == 0 else max_text_width
 
-                # Regla de fin de párrafo (Alineado normal a la izquierda)
+                # Regla de fin de párrafo (Alineación natural a la izquierda de su respectivo margen)
                 if i == len(lines) - 1:
                     x_cursor = current_margin_left
                     for word in line_words:
@@ -387,16 +409,14 @@ class ResPartner(models.Model):
                         f_actual = font_bold_italic if is_bold else font_regular
                         draw.text((x_cursor, y), word, fill=color_texto, font=f_actual)
 
-                        word_w = draw.textbbox((0, 0), word, font=f_actual)[2] - \
-                                 draw.textbbox((0, 0), word, font=f_actual)[0]
-                        space_w = draw.textbbox((0, 0), " ", font=f_actual)[2] - \
-                                  draw.textbbox((0, 0), " ", font=f_actual)[0]
+                        word_w = get_word_width(word, f_actual)
+                        space_w = get_word_width(" ", f_actual)
                         x_cursor += word_w + space_w
                         global_char_idx += len(word)
                     y += line_spacing
                     continue
 
-                # Calcular el tamaño de las palabras respetando si es Regular o Bold Italic
+                # Calcular el ancho total ocupado por las palabras de la línea actual
                 words_width = 0
                 temp_char_idx = global_char_idx
                 for word in line_words:
@@ -404,15 +424,14 @@ class ResPartner(models.Model):
                     is_bold = (
                                 start_bold_idx != -1 and temp_char_idx >= start_bold_idx and temp_char_idx < end_bold_idx)
                     f_actual = font_bold_italic if is_bold else font_regular
-                    bbox = draw.textbbox((0, 0), word, font=f_actual)
-                    words_width += (bbox[2] - bbox[0])
+                    words_width += get_word_width(word, f_actual)
                     temp_char_idx += len(word)
 
                 total_space_width = current_max_width - words_width
                 num_spaces = len(line_words) - 1
                 space_width = total_space_width / num_spaces if num_spaces > 0 else 0
 
-                # Renderizado palabra por palabra aplicando el estilo exacto
+                # Renderizado palabra por palabra aplicando justificación dinámica
                 x_cursor = current_margin_left
                 for word in line_words:
                     global_char_idx = text.find(word, global_char_idx)
@@ -422,34 +441,35 @@ class ResPartner(models.Model):
                     f_actual = font_bold_italic if is_bold else font_regular
                     draw.text((x_cursor, y), word, fill=color_texto, font=f_actual)
 
-                    word_w = draw.textbbox((0, 0), word, font=f_actual)[2] - draw.textbbox((0, 0), word, font=f_actual)[
-                        0]
+                    word_w = get_word_width(word, f_actual)
                     x_cursor += word_w + space_width
                     global_char_idx += len(word)
 
                 y += line_spacing
             return y
 
-        # --- GENERACIÓN DE CAPAS ---
-        # Pasamos como objetivo 'texto_socio_completo' para aplicar estrictamente Bold Italic en todo el bloque del nombre
+        # --- EJECUCIÓN DEL RENDERIZADO POR CAPAS ---
+        # Bloque 1: Texto principal unificado (Mapea el nombre del socio para aplicar el Bold Italic)
         current_y = draw_justified_paragraph_with_bold_italic(bloque_unificado, texto_socio_completo, font_body,
                                                               font_name, current_y, indent=indent_pixels)
         current_y += paragraph_spacing
 
+        # Bloque 2: Deseos familiares (No lleva texto destacado en negrita, pasamos cadena vacía)
         current_y = draw_justified_paragraph_with_bold_italic(bloque_deseos, "", font_body, font_name, current_y,
                                                               indent=indent_pixels)
         current_y += paragraph_spacing
 
+        # Bloque 3: Cierre formal y protocolar
         current_y = draw_justified_paragraph_with_bold_italic(bloque_cierre, "", font_body, font_name, current_y,
                                                               indent=indent_pixels)
 
-        # 6. Procesamiento final de la imagen
+        # 6. Conversión de la imagen resultante a binario para Odoo
         buffer = BytesIO()
         img.save(buffer, format="JPEG", quality=95)
         img_str = base64.b64encode(buffer.getvalue())
         buffer.close()
 
-        # 7. Crear el adjunto y enviarlo al navegador
+        # 7. Creación del adjunto binario temporal en el sistema
         attachment = self.env['ir.attachment'].create({
             'name': f"Felicitacion_{self.name.replace(' ', '_')}.jpg",
             'type': 'binary',
@@ -457,6 +477,7 @@ class ResPartner(models.Model):
             'mimetype': 'image/jpeg',
         })
 
+        # 8. Lanzar la descarga automática en el navegador del usuario
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content/{attachment.id}?download=true',
