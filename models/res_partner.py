@@ -338,11 +338,11 @@ class ResPartner(models.Model):
         ancho_imagen, alto_imagen = img.size
 
         # 5. Parámetros de maquetación y diseño editorial
-        margin_left = 220  # Espacio de resguardo a los costados
+        margin_left = 240  # Espacio de resguardo a los costados
         max_text_width = ancho_imagen - (margin_left * 2)
-        current_y = 420  # Coordenada Y inicial para librar el membrete
+        current_y = 425  # Coordenada Y inicial para librar el membrete
         line_spacing = 46  # Interlineado entre renglones
-        paragraph_spacing = 50  # Espaciado entre bloques de párrafos
+        paragraph_spacing = 20  # Espaciado entre bloques de párrafos
         indent_pixels = 60  # Tamaño de la sangría en el primer renglón
 
         # Helper adaptativo para medir el ancho del texto según la versión de Pillow detectada
