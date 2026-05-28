@@ -311,9 +311,9 @@ class ResPartner(models.Model):
             raise UserError(f"Error al procesar la plantilla de imagen: {str(e)}")
 
         # 3. Preparación y normalización de los datos del Asociado
-        grado = self.category_id[0].name if self.category_id else ''
+        grado = self.category_partner_id[0].code_loan if self.category_partner_id else ''
         nombre_completo = self.name or ''
-        texto_socio_completo = f"Sr. {grado} {nombre_completo}"
+        texto_socio_completo = f"{grado} {nombre_completo}"
         # Eliminar dobles espacios accidentales que puedan venir de la base de datos
         texto_socio_completo = " ".join(texto_socio_completo.split()).strip()
 
