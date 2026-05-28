@@ -35,6 +35,11 @@
 <!--                        />-->
                         <button name="form_unsubscribe" string="Dar de baja" type="object"
                         />
+                        <button name="action_generate_birthday_card"
+                                string="Generar Tarjeta Cumpleaños"
+                                type="object"
+                                class="oe_highlight"
+                                icon="fa-birthday-cake"/>
                     </header>
 
                 </xpath>
