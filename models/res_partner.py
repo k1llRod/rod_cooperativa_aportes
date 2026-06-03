@@ -270,8 +270,6 @@ class ResPartner(models.Model):
     from io import BytesIO
     import textwrap
     from PIL import Image, ImageDraw, ImageFont
-
-
     def action_generate_birthday_card(self):
         self.ensure_one()
 
@@ -286,8 +284,7 @@ class ResPartner(models.Model):
 
         # 2. Carga local y segura de fuentes desde el módulo (Solución definitiva Docker)
         font_path_italic = get_module_resource('rod_cooperativa_aportes', 'static', 'src', 'fonts', 'timesi.ttf')
-        font_path_bold_italic = get_module_resource('rod_cooperativa_aportes', 'static', 'src', 'fonts',
-                                                    'timesbi.ttf')
+        font_path_bold_italic = get_module_resource('rod_cooperativa_aportes', 'static', 'src', 'fonts', 'timesbi.ttf')
 
         if not font_path_italic or not font_path_bold_italic:
             raise UserError(
@@ -404,7 +401,7 @@ class ResPartner(models.Model):
                     for word in line_words:
                         global_char_idx = text.find(word, global_char_idx)
                         is_bold = (
-                                    start_bold_idx != -1 and global_char_idx >= start_bold_idx and global_char_idx < end_bold_idx)
+                                start_bold_idx != -1 and global_char_idx >= start_bold_idx and global_char_idx < end_bold_idx)
 
                         f_actual = font_bold_italic if is_bold else font_regular
                         draw.text((x_cursor, y), word, fill=color_texto, font=f_actual)
@@ -422,7 +419,7 @@ class ResPartner(models.Model):
                 for word in line_words:
                     temp_char_idx = text.find(word, temp_char_idx)
                     is_bold = (
-                                start_bold_idx != -1 and temp_char_idx >= start_bold_idx and temp_char_idx < end_bold_idx)
+                            start_bold_idx != -1 and temp_char_idx >= start_bold_idx and temp_char_idx < end_bold_idx)
                     f_actual = font_bold_italic if is_bold else font_regular
                     words_width += get_word_width(word, f_actual)
                     temp_char_idx += len(word)
@@ -436,7 +433,7 @@ class ResPartner(models.Model):
                 for word in line_words:
                     global_char_idx = text.find(word, global_char_idx)
                     is_bold = (
-                                start_bold_idx != -1 and global_char_idx >= start_bold_idx and global_char_idx < end_bold_idx)
+                            start_bold_idx != -1 and global_char_idx >= start_bold_idx and global_char_idx < end_bold_idx)
 
                     f_actual = font_bold_italic if is_bold else font_regular
                     draw.text((x_cursor, y), word, fill=color_texto, font=f_actual)
@@ -463,7 +460,41 @@ class ResPartner(models.Model):
         current_y = draw_justified_paragraph_with_bold_italic(bloque_cierre, "", font_body, font_name, current_y,
                                                               indent=indent_pixels)
 
+        # =========================================================================
+        # CONFIGURACIÓN EXCLUSIVA DEL PIE DE PÁGINA (SÓLO LUGAR Y FECHA AUTOMÁTICA)
+        # =========================================================================
+
+        # 1. Generar el mes y año dinámicamente en español según la fecha del sistema
+        meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ]
+        fecha_actual = datetime.now()
+        mes_nombre = meses[fecha_actual.month - 1]
+        ano_actual = fecha_actual.year
+
+        texto_fecha_pie = f"La Paz, {mes_nombre} de {ano_actual}"
+
+        # 2. Coordenada Y calibrada para que se estampe debajo de los sellos impresos de la plantilla
+        # Puedes modificar este número (ej: 820) si necesitas subir o bajar la línea de la fecha
+        y_fecha = 1500
+
+        # 3. Cargar la tipografía itálica estándar para la fecha del pie de página
+        try:
+            font_pie = ImageFont.truetype(font_path_italic, 30)
+        except IOError:
+            font_pie = font_body
+
+        # 4. Calcular el ancho exacto para lograr un centrado perfecto y simétrico en la tarjeta
+        w_fecha = get_word_width(texto_fecha_pie, font_pie)
+        x_fecha = (ancho_imagen - w_fecha) // 2
+
+        # 5. Pintar la fecha en la imagen
+        draw.text((x_fecha, y_fecha), texto_fecha_pie, fill=color_texto, font=font_pie)
+
+        # =========================================================================
         # 6. Conversión de la imagen resultante a binario para Odoo
+        # =========================================================================
         buffer = BytesIO()
         img.save(buffer, format="JPEG", quality=95)
         img_str = base64.b64encode(buffer.getvalue())
