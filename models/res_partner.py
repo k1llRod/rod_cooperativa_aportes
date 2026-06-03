@@ -487,7 +487,7 @@ class ResPartner(models.Model):
 
         # 4. Calcular el ancho exacto para lograr un centrado perfecto y simétrico en la tarjeta
         w_fecha = get_word_width(texto_fecha_pie, font_pie)
-        x_fecha = (ancho_imagen - w_fecha) // 2
+        x_fecha = ancho_imagen - margin_left - w_fecha
 
         # 5. Pintar la fecha en la imagen
         draw.text((x_fecha, y_fecha), texto_fecha_pie, fill=color_texto, font=font_pie)
