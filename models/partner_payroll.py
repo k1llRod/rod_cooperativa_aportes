@@ -2,14 +2,7 @@ from odoo import models, fields, api, _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
-from itertools import groupby
-import numpy as np
 import re
-from email.policy import default
-
-
-# import inflect
-# from translate import Translator
 
 
 class PartnerPayroll(models.Model):
@@ -60,7 +53,7 @@ class PartnerPayroll(models.Model):
     date_burn_partner = fields.Datetime(string='Fecha de afiliacion')
     date_finalized = fields.Datetime(string='Fecha de liquidacion')
     total_contribution = fields.Float(string='Total aportado')
-    advanced_payments = fields.Float(string='Tasa regulacion Adelantado')
+    advanced_payments = fields.Float(string='Tasa de regulación Adelantado')
     payroll_payments_ids = fields.One2many('payroll.payments', 'partner_payroll_id', string='Pagos individuales',
                                            tracking=True)
     company_id = fields.Many2one(
@@ -76,8 +69,6 @@ class PartnerPayroll(models.Model):
         string='Capital inicial', currency_field='currency_id',
         compute='compute_contributions', store=True
     )
-    # capital_total = fields.Float(string='Capital total', compute='compute_capital_total')
-    # interest_total = fields.Float(string='Interes total', store=True)
     miscellaneous_income = fields.Float(string='Gastos adicional', compute='compute_miscellaneous_income')
     mandatory_contribution_pending = fields.Integer(string='Aportes obligatorios pendientes',
                                                     compute='compute_miscellaneous_income')
@@ -85,7 +76,7 @@ class PartnerPayroll(models.Model):
     total = fields.Float(string='Total', store=True)
     count_pay_contributions = fields.Integer(string='Cantidad de pagos realizados',
                                              compute="compute_count_pay_contributions", store=True)
-    advance_regulation_cup = fields.Integer(string='Taza de regulación adelantado',
+    advance_regulation_cup = fields.Integer(string='Tasa de regulación adelantado',
                                             compute="compute_count_pay_contributions")
     updated_partner = fields.Boolean(string='Actualizado', compute="compute_updated_partner")
     tree_updated_partner = fields.Boolean(string='Actualizado', related='updated_partner')
@@ -107,21 +98,22 @@ class PartnerPayroll(models.Model):
         string='Total excedentes', currency_field='currency_id', store=True
     )
     contribution_total = fields.Monetary(string='Aporte total', currency_field='currency_id', store=True)
-
     contribution_total_excluded = fields.Float(string='Aporte total excluido', store=True)
 
     performance_management_total = fields.Float(string='Rendimiento total',
                                                 compute='compute_performance_management_total')
     performance_management_ids = fields.One2many('performance.management', 'partner_payroll_id', string='Rendimientos')
-    # payroll_payment_ids = fields.One2many('payroll.payment', 'partner_payrolls_id', string='Pagos de planilla')
     advanced_payments_ids = fields.One2many('advance.payments', 'advanced_partner_payroll_id',
                                             string='Pagos adelantados')
     due_payments_ids = fields.One2many('due.payments', 'due_partner_payroll_id', string='Pagos pendientes')
+
+    # CORRECCIÓN DE CAMPOS COMPUTE (Mapeo de saldos)
     balance_advance_contribution_passive = fields.Float(string='Saldo aportes pasivos',
                                                         compute='compute_balance_advance')
-    balance_advance_regulation_cup = fields.Float(string='Saldo taza de regulación', compute='compute_balance_advance')
+    balance_advance_regulation_cup = fields.Float(string='Saldo tasa de regulación', compute='compute_balance_advance')
     balance_advance_mandatory_contribution = fields.Float(string='Saldo aportes obligatorios',
                                                           compute='compute_balance_advance')
+
     count_mandatory_contribution_certificate = fields.Integer(string='Contador de certificados de aportes obligatorios',
                                                               compute='compute_contributions')
     journal_id = fields.Many2one('account.journal', string='Diario')
@@ -189,7 +181,6 @@ class PartnerPayroll(models.Model):
     partner_status_especific_reorder = fields.Selection([('passive_reserve_a', 'Reserva pasivo "A"'),
                                                          ('passive_reserve_b', 'Reserva pasivo "B"'),
                                                          ], string='Tipo de asociado')
-    # literal_total_voluntary_contribution = fields.Char(string='Total de certificados de aportes voluntarios', compute='compute_contributions_literal')
 
     mount_passive_a = fields.Float(string='Monto Categoria A')
     amount_return = fields.Float(string='Monto Dev.')
@@ -202,7 +193,7 @@ class PartnerPayroll(models.Model):
     def compute_difference_year(self):
         for record in self:
             record.year_now = datetime.now().year
-            if record.until_payment != False:
+            if record.until_payment:
                 record.difference_year = record.until_payment.year + 1
                 if record.difference_year < record.year_now:
                     record.difference_year = record.year_now
@@ -213,48 +204,35 @@ class PartnerPayroll(models.Model):
 
     @api.depends('payroll_payments_ids')
     def compute_miscellaneous_income(self):
-        self.miscellaneous_income = self.env['ir.config_parameter'].sudo().get_param(
+        miscellaneous_income_param = self.env['ir.config_parameter'].sudo().get_param(
             'rod_cooperativa_aportes.miscellaneous_income')
         for record in self:
             verify = len(record.payroll_payments_ids.filtered(
                 lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.miscellaneous_income > 0))
             if verify == 0:
-                record.miscellaneous_income = record.env['ir.config_parameter'].sudo().get_param(
-                    'rod_cooperativa_aportes.miscellaneous_income')
+                record.miscellaneous_income = miscellaneous_income_param
             else:
                 record.miscellaneous_income = 0
-            # count_mandatory_contribution = len(record.payroll_payments_ids.filtered())
-            periods = self.env['ir.config_parameter'].sudo().get_param(
-                'rod_cooperativa_aportes.month_ids')
+
+            periods = self.env['ir.config_parameter'].sudo().get_param('rod_cooperativa_aportes.month_ids')
             mandatory_contribution = float(record.env['ir.config_parameter'].sudo().get_param(
                 'rod_cooperativa_aportes.mandatory_contribution_certificate'))
             year_now = datetime.now().year
-            filter_periods = re.findall(r'\d+', periods)
+            filter_periods = re.findall(r'\d+', periods) if periods else []
             count_periods = len(filter_periods)
             count_mandatory_contributions = count_periods * mandatory_contribution
             verificate_payments = record.payroll_payments_ids.filtered(
-                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.payment_date.year == year_now)
+                lambda x: (
+                                      x.state == 'transfer' or x.state == 'ministry_defense') and x.payment_date and x.payment_date.year == year_now)
             sum_verificate_payments = sum(verificate_payments.mapped('mandatory_contribution_certificate'))
             record.mandatory_contribution_pending = count_mandatory_contributions - sum_verificate_payments
-
-    # @api.model
-    # def create(self, vals):
-    #     name = self.env['ir.sequence'].next_by_code('partner.payroll')
-    #     vals['name'] = name
-    #     res = super(PartnerPayroll, self).create(vals)
-    #     return res
-
-    # def write(self, vals):
-    #     res = super(PartnerPayroll, self).write(vals)
-    #     self.compute_count_pay_contributions()
-    #     return res
 
     @api.depends('payroll_payments_ids')
     def compute_contributions(self):
         for record in self:
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
                 lambda x: (x.state == 'transfer' or x.state == 'ministry_defense' or (
-                            x.state == 'partner_return' and x.switch_draf == False))).mapped(
+                        x.state == 'partner_return' and x.switch_draf == False))).mapped(
                 'voluntary_contribution_certificate'))
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
@@ -264,19 +242,15 @@ class PartnerPayroll(models.Model):
                     'voluntary_contribution_certificate'))
 
     def init_payroll_partner_wizard(self):
-        # Acción para abrir el wizard
-        # Puedes personalizar esta función según tus necesidades
-        record_id = self.id
         context = {
-            'default_partner_payroll_id': record_id,
-            'default_capital_base': self.capital_base,
+            'default_partner_payroll_id': self.id,
+            'default_capital_base': getattr(self, 'capital_base', 0.0),
         }
         return {
             'name': 'Conciliar pagos de aportes',
             'type': 'ir.actions.act_window',
             'res_model': 'init.payroll.partner',
             'view_mode': 'form',
-            'view_type': 'form',
             'target': 'new',
             'context': context,
         }
@@ -287,7 +261,6 @@ class PartnerPayroll(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'reconcile.contributions',
             'view_mode': 'form',
-            'view_type': 'form',
             'target': 'new',
         }
 
@@ -297,24 +270,20 @@ class PartnerPayroll(models.Model):
             record.partner_status = record.partner_id.status
 
     def wizard_pay_contribution(self):
-        # Acción para abrir el wizard
-        # Puedes personalizar esta función según tus necesidades
-        record_id = self.id
         context = {
-            'default_partner_payroll_id': record_id,
-            'default_capital_base': self.capital_base,
+            'default_partner_payroll_id': self.id,
+            'default_capital_base': getattr(self, 'capital_base', 0.0),
         }
         return {
             'name': 'Conciliar pagos de aportes',
             'type': 'ir.actions.act_window',
             'res_model': 'pay.contribution',
             'view_mode': 'form',
-            'view_type': 'form',
             'target': 'new',
             'context': context,
         }
 
-    @api.depends('payroll_payments_ids')
+    @api.depends('payroll_payments_ids', 'performance_management_ids')
     def compute_count_pay_contributions(self):
         for record in self:
             record.count_pay_contributions = len(
@@ -324,29 +293,27 @@ class PartnerPayroll(models.Model):
                 'mandatory_contribution_certificate'))
             record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
                 lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or (
-                            x.state == 'partner_return' and x.switch_draf == False)).mapped(
+                        x.state == 'partner_return' and x.switch_draf == False)).mapped(
                 'voluntary_contribution_certificate'))
             interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
             record.other_contribution_total = sum(round(c, 2) for c in record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'other_contribution' or x.state=='other_contribution_coaa').mapped('other_contribution'))
+                lambda x: x.state == 'other_contribution' or x.state == 'other_contribution_coaa').mapped(
+                'other_contribution'))
             record.surpluses_total = sum(
                 record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
                     'other_contribution'))
             record.amount_return = sum(
                 record.payroll_payments_ids.filtered(lambda
-                                                         x: x.state == 'partner_return' or x.state == 'partner_return_credit' and x.switch_draf == False).mapped(
+                                                         x: (
+                                                                        x.state == 'partner_return' or x.state == 'partner_return_credit') and x.switch_draf == False).mapped(
                     'voluntary_contribution_certificate'))
             record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total + record.surpluses_total + record.amount_return
 
     def return_draft(self):
         self.state = 'draft'
-        # if self.state == 'process' and self.count_pay_contributions == 0:
-        #     self.state = 'draft'
-        # else:
-        #     raise ValidationError(_('No se puede regresar a borrador si ya se han realizado pagos'))
 
     def get_month_starts(self, start_date, end_date):
-        if hasattr(start_date, 'date'):  # Si es datetime, extrae la date
+        if hasattr(start_date, 'date'):
             start_date = start_date.date()
         if hasattr(end_date, 'date'):
             end_date = end_date.date()
@@ -354,7 +321,6 @@ class PartnerPayroll(models.Model):
         current = start_date.replace(day=1)
         while current <= end_date:
             result.append(current)
-            # Avanza al primer día del mes siguiente
             if current.month == 12:
                 current = current.replace(year=current.year + 1, month=1)
             else:
@@ -380,7 +346,6 @@ class PartnerPayroll(models.Model):
             if not record.date_burn_partner:
                 continue
 
-            # --- CASO: GENERAL / OTROS (Cálculos de campos) ---
             if record.partner_status_especific not in ['passive_reserve_a', 'passive_reserve_b']:
                 date_burn = record.date_burn_partner.date() if isinstance(record.date_burn_partner,
                                                                           datetime) else record.date_burn_partner
@@ -406,7 +371,6 @@ class PartnerPayroll(models.Model):
                     record.must_total = record.must_regulation_rate + record.must_mandatory_contribution + post_mortem_val
 
     def _update_due_payments(self):
-        """Método encargado exclusivamente de la base de datos (Alta/Baja de due.payments)"""
         config_sudo = self.env['ir.config_parameter'].sudo()
         regulation_cup = float(config_sudo.get_param('rod_cooperativa_aportes.regulation_cup', 0))
         mandatory_contribution = float(
@@ -417,7 +381,6 @@ class PartnerPayroll(models.Model):
             if not record.date_burn_partner:
                 continue
 
-            # --- CASO: RESERVA PASIVA B ---
             if record.partner_status_especific == 'passive_reserve_b':
                 self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
 
@@ -472,7 +435,6 @@ class PartnerPayroll(models.Model):
                         'gestion': gestion_process
                     })
 
-            # --- CASO: RESERVA PASIVA A ---
             elif record.partner_status_especific == 'passive_reserve_a':
                 self.env['due.payments'].search([('due_partner_payroll_id', '=', record.id)]).unlink()
 
@@ -496,9 +458,9 @@ class PartnerPayroll(models.Model):
                         'gestion': month_date.year,
                     })
 
+    # FUSIÓN UNIFICADA DE MÉTODOS CREATE CRÍTICOS
     @api.model
     def create(self, vals):
-        # Sobreescribimos el comportamiento nativo al guardar un registro nuevo
         name = self.env['ir.sequence'].next_by_code('partner.payroll')
         vals['name'] = name
         res = super(PartnerPayroll, self).create(vals)
@@ -506,7 +468,6 @@ class PartnerPayroll(models.Model):
         return res
 
     def write(self, vals):
-        # Sobreescribimos el comportamiento al editar campos clave
         res = super(PartnerPayroll, self).write(vals)
         fields_to_check = ['payroll_payments_ids', 'date_burn_partner', 'partner_status_especific', 'until_payment']
         if any(f in vals for f in fields_to_check):
@@ -519,45 +480,37 @@ class PartnerPayroll(models.Model):
             'tag': 'display_notification',
             'params': {
                 'type': 'success',
-                'message': _("2-Factor authentication is now enabled."),
+                'message': _("Reporte procesado de forma correcta."),
                 'sticky': False,
             }
         }
 
-    # @api.depends('payroll_payments_ids')
-    # def compute_outstanding_payments(self):
-    #     for record in self:
-    #         if record.date_burn_partner != False:
-    #             make_register = round(((datetime.now() - record.date_burn_partner).days) / 30) - 1
-    #         else:
-    #             make_register = 0
-    #         # make_register = record.calculate_month_difference()
-    #         record.outstanding_payments = make_register - round(len(record.payroll_payments_ids.filtered(lambda x: (x.state == 'transfer' or x.state == 'ministry_defense') and x.drawback == False)))
-
-    @api.depends('payroll_payments_ids')
+    @api.depends('payroll_payments_ids', 'date_burn_partner', 'due_payments_ids')
     def calculate_month_difference(self):
         for record in self:
             count_payments = 0
+            if not record.date_burn_partner:
+                record.outstanding = 0
+                continue
+
             diff = relativedelta(datetime.now(), record.date_burn_partner)
             diff_months = diff.years * 12 + diff.months
+
             if record.partner_status_especific == 'active_service':
-                count_payments = len(
-                    record.payroll_payments_ids.filtered(
-                        lambda x: (x.state == 'ministry_defense' or x.state == 'transfer') and x.drawback == False))
+                count_payments = len(record.payroll_payments_ids.filtered(
+                    lambda x: x.state in ('ministry_defense', 'transfer') and not x.drawback))
                 record.outstanding = diff_months - count_payments
-            if record.partner_status_especific == 'passive_reserve_a':
+            elif record.partner_status_especific == 'passive_reserve_a':
                 count_payments = len(
-                    record.payroll_payments_ids.filtered(
-                        lambda x: (x.state == 'transfer') and x.drawback == False))
+                    record.payroll_payments_ids.filtered(lambda x: x.state == 'transfer' and not x.drawback))
                 record.outstanding = diff_months - count_payments
-            if record.partner_status_especific == 'passive_reserve_b':
+            elif record.partner_status_especific == 'passive_reserve_b':
                 count_payments = len(record.due_payments_ids.filtered(lambda x: x.d_total > 0))
                 record.outstanding = count_payments
                 diff_months = 0 if count_payments == 0 else diff_months
+
             if count_payments >= diff_months and record.state != 'draft':
                 record.updated_partner = True
-                # self.env.user.notify_success(message='Planilla de aportes actualizado ' + format(record.partner_id.name),
-                #                              title='Verificado')
                 record.outstanding = 0
             else:
                 if record.partner_status_especific == 'passive_reserve_b':
@@ -565,13 +518,11 @@ class PartnerPayroll(models.Model):
                     record.outstanding = count_payments
                 else:
                     record.outstanding = diff_months - count_payments
-                # self.env.user.notify_warning(
-                #     message='Planilla de aportes desactualizada ' + format(record.partner_id.name))
 
     def select_init_partner_payroll(self):
         for record in self:
             if record.partner_status == 'active' and record.state == 'draft':
-                if record.date_burn_partner == False:
+                if not record.date_burn_partner:
                     record.date_burn_partner = datetime.now()
                 else:
                     record.state = 'process'
@@ -581,36 +532,28 @@ class PartnerPayroll(models.Model):
             record.state = 'process'
 
     def init_partner_payroll_interest(self):
-        # wizard = self.env['set.interes'].create({'partner_payroll_id': self.id})
-        for record in self:
-            context = {
-                'default_partner_payroll_id': record.id,
-            }
-            return {
-                'name': 'Establecer interes de aportes',
-                'type': 'ir.actions.act_window',
-                'res_model': 'set.interes',
-                'view_mode': 'form',
-                'view_type': 'form',
-                'context': context,
-                'target': 'new',
-            }
+        context = {'default_partner_payroll_id': self.id}
+        return {
+            'name': 'Establecer interes de aportes',
+            'type': 'ir.actions.act_window',
+            'res_model': 'set.interes',
+            'view_mode': 'form',
+            'context': context,
+            'target': 'new',
+        }
 
     def assign_performance(self):
-        performance_index_log = self.env['performance_index.log'].search([('state', '=', 'validate')])
         return {
             'name': 'Establecer interes de aportes',
             'type': 'ir.actions.act_window',
             'res_model': 'set.management',
             'view_mode': 'form',
-            'view_type': 'form',
-            # 'context': context,
             'target': 'new',
         }
 
     def resume_process(self):
         for record in self:
-            if record.date_burn_partner != False:
+            if record.date_burn_partner:
                 record.state = 'process'
 
     @api.depends('performance_management_ids')
@@ -618,9 +561,12 @@ class PartnerPayroll(models.Model):
         for record in self:
             record.performance_management_total = sum(record.performance_management_ids.mapped('yield_amount'))
 
+    # CORRECCIÓN DE LA ASIGNACIÓN DE VARIABLES CONTABLES SOBRE CAMPOS REALES
     def compute_balance_advance(self):
         for record in self:
-            record.balance_advance = record.contribution_total - record.performance_management_total
+            record.balance_advance_contribution_passive = record.contribution_total - record.performance_management_total
+            record.balance_advance_regulation_cup = 0.0
+            record.balance_advance_mandatory_contribution = 0.0
 
     def finalized_payroll(self):
         total_contributions = (self.capital_initial + self.voluntary_contribution_certificate_total +
@@ -628,12 +574,13 @@ class PartnerPayroll(models.Model):
                                self.other_contribution_total + self.surpluses_total + self.amount_return)
 
         loan_id = self.env['loan.application'].search(
-            [('partner_id', '=', self.partner_id.id), ('state', '=', 'progress')])
-        total_loan_capital_bolivianos = loan_id.balance_capital * loan_id.value_dolar
-        total_balance_total_interest_month_bolivianos = loan_id.balance_total_interest_month * loan_id.value_dolar
+            [('partner_id', '=', self.partner_id.id), ('state', '=', 'progress')], limit=1)
+
+        total_loan_capital_bolivianos = loan_id.balance_capital * loan_id.value_dolar if loan_id else 0.0
+        total_balance_total_interest_month_bolivianos = loan_id.balance_total_interest_month * loan_id.value_dolar if loan_id else 0.0
+
         context = {
             'default_partner_payroll_id': self.id,
-            # 'default_capital_initial': self.capital_initial,
             'default_total_mandatory_contributions_certificate': self.mandatory_contribution_certificate_total,
             'default_total_voluntary_contributions_certificate': self.voluntary_contribution_certificate_total,
             'default_total_performance_contributions': self.performance_management_total,
@@ -642,27 +589,21 @@ class PartnerPayroll(models.Model):
             'default_capital_initial': self.capital_initial,
             'default_total_contributions': total_contributions,
             'default_total_surpluses': self.surpluses_total,
-            'default_loan_application_id': loan_id.id,
-            'default_total_loan_capital': loan_id.balance_capital,
-            'default_total_balance_total_interest_month': loan_id.balance_total_interest_month,
-            'default_default_dolar': loan_id.value_dolar,
+            'default_loan_application_id': loan_id.id if loan_id else False,
+            'default_total_loan_capital': loan_id.balance_capital if loan_id else 0.0,
+            'default_total_balance_total_interest_month': loan_id.balance_total_interest_month if loan_id else 0.0,
+            'default_default_dolar': loan_id.value_dolar if loan_id else 0.0,
             'default_total_loan_capital_bolivianos': total_loan_capital_bolivianos,
             'default_total_balance_total_interest_month_bolivianos': total_balance_total_interest_month_bolivianos,
-
         }
         return {
             'name': 'Formulario de liquidacion',
             'type': 'ir.actions.act_window',
             'res_model': 'wizard.finalized.contributions',
             'view_mode': 'form',
-            'view_type': 'form',
             'context': context,
             'target': 'new',
         }
-
-    # def cron_compute_outstanding_payments(self):
-    #     for record in self:
-    #         record.compute_outstanding_payments()
 
     def publish_accouting_entries(self):
         for record in self:
@@ -676,49 +617,23 @@ class PartnerPayroll(models.Model):
                 payment.create_account_move(income, inscription, regulation_cup, mandatory_contribution,
                                             voluntary_contribution)
 
-    def _init_report_partner_payroll(self):
-        self_obj = self.browse(self)[0]
-        data_obj = self.pool.get('ir.model.data')
-        data_id = data_obj._get_id('rod_cooperativa_aportes', 'partner_payroll_tree_id')
-        view_id = False
-        if data_id:
-            view_id = data_obj.browse(data_id).res_id
-        form_data_id = data_obj._get_id('rod_cooperativa_aportes', 'partner_payroll_form_id')
-        if form_data_id:
-            form_view_id = data_obj.browse(form_data_id).res_id
-
-        # context.update({'active_ids': [], 'no_complete_name':1})
-        return {
-            'name': _('Planilla de socio'),
-            'view_type': 'form',
-            'res_model': 'partner.payroll',
-            'view_id': False,
-            'views': [(view_id, 'tree'), (form_view_id, 'form')],
-            'type': 'ir.actions.act_window',
-            'target': 'current',
-            'nodestroy': True,
-            # 'context': context,
-        }
-
     def wizard_payroll_return(self):
-        for record in self:
-            context = {
-                'default_name': record.name,
-                'default_date_pivote': datetime.now(),
-                'default_payment_date': datetime.now(),
-                'default_mount': record.total,
-                'default_glosa': 'Devolucion de aportes',
-                'default_partner_payroll_id': record.id,
-            }
-            return {
-                'name': 'Pago de aportes',
-                'type': 'ir.actions.act_window',
-                'res_model': 'wizard.payroll.return',
-                'view_mode': 'form',
-                'view_type': 'form',
-                'context': context,
-                'target': 'new',
-            }
+        context = {
+            'default_name': self.name,
+            'default_date_pivote': datetime.now(),
+            'default_payment_date': datetime.now(),
+            'default_mount': self.total,
+            'default_glosa': 'Devolucion de aportes',
+            'default_partner_payroll_id': self.id,
+        }
+        return {
+            'name': 'Pago de aportes',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.payroll.return',
+            'view_mode': 'form',
+            'context': context,
+            'target': 'new',
+        }
 
     @api.depends('date_burn_partner')
     def _onchange_name(self):
@@ -732,9 +647,8 @@ class PartnerPayroll(models.Model):
                 record.afiliated_time = 0
 
     def exclude_contributions(self):
-        for record in self:
-            total = round(
-                sum(record.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense').mapped('income')), 2)
+        total = round(sum(self.payroll_payments_ids.filtered(lambda x: x.state == 'ministry_defense').mapped('income')),
+                      2)
         context = {
             'default_partner_payroll_id': self.id,
             'default_total_contributions': total,
@@ -744,22 +658,19 @@ class PartnerPayroll(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'wizard.unassociated',
             'view_mode': 'form',
-            'view_type': 'form',
             'context': context,
             'target': 'new',
         }
 
     def updated_contributions(self):
         for rec in self:
-            verificate = rec.payroll_payments_ids.filtered(
-                lambda x: x.state == 'other_contribution' or x.state == 'surpluses')
-        # verificate = self.payroll_payments_ids.filtered(lambda x:x.state == 'other_contribution' or x.state == 'surpluses')
-        for record in verificate:
-            record.other_contribution = record.income
-            record.income = 0
-            record.regulation_cup = 0
-            record.miscellaneous_income = 0
-            record.mandatory_contribution_certificate = 0
+            verificate = rec.payroll_payments_ids.filtered(lambda x: x.state in ('other_contribution', 'surpluses'))
+            for record in verificate:
+                record.other_contribution = record.income
+                record.income = 0
+                record.regulation_cup = 0
+                record.miscellaneous_income = 0
+                record.mandatory_contribution_certificate = 0
 
     def process_partner_status(self):
         for record in self:
@@ -771,23 +682,13 @@ class PartnerPayroll(models.Model):
                 record.partner_id.glosa = record.gloss_disengagement
                 record.partner_id.date_deceased = datetime.now()
                 record.state_finalize = 'hecho'
-            if record.type_disengagements == 'retiro_voluntario':
+            elif record.type_disengagements in ('retiro_voluntario', 'abandono', 'expulsion'):
                 record.partner_id.state = 'unsubscribe'
                 record.state = 'finalized'
                 record.state_finalize = 'hecho'
-            if record.type_disengagements == 'abandono':
-                record.partner_id.state = 'unsubscribe'
-                record.state = 'finalized'
-                record.state_finalize = 'hecho'
-            if record.type_disengagements == 'expulsion':
-                record.partner_id.state = 'unsubscribe'
-                record.state = 'finalized'
-                record.state_finalize = 'hecho'
-
-            if record.type_disengagements == 'pase_servicio_pasivo':
+            elif record.type_disengagements == 'pase_servicio_pasivo':
                 record.partner_status_especific_historical = record.partner_id.partner_status_especific
                 if record.partner_status_especific_reorder == 'passive_reserve_a':
-                    record.partner_status_especific_historical = record.partner_id.partner_status_especific
                     record.partner_status_historical = record.partner_id.partner_status
                     record.partner_id.partner_status_especific = record.partner_status_especific_reorder
                     record.state = 'finalized'
@@ -798,42 +699,35 @@ class PartnerPayroll(models.Model):
     def onchange_type_disengagements(self):
         for record in self:
             if record.type_disengagements == 'fallecimiento':
-                record.partner_status_especific_reorder = ''
+                record.partner_status_especific_reorder = False
 
     @api.depends('partner_id')
     def _compute_formatted_name(self):
-        try:
-            for rec in self:
-                rec.partner_name = " ".join(word.capitalize() for word in
-                                            rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.name else ""
-                rec.partner_name = rec.partner_name + " " + " ".join(
-                    word.capitalize() for word in rec.partner_id.name.split()) if rec.partner_id.name else ""
-        except:
-            rec.partner_name = ""
+        for rec in self:
+            if rec.partner_id and rec.partner_id.name:
+                code_loan_part = " ".join(word.capitalize() for word in
+                                          rec.partner_id.category_partner_id.code_loan.split()) if rec.partner_id.category_partner_id and rec.partner_id.category_partner_id.code_loan else ""
+                name_part = " ".join(word.capitalize() for word in rec.partner_id.name.split())
+                rec.partner_name = f"{code_loan_part} {name_part}".strip()
+            else:
+                rec.partner_name = ""
 
     def reconcile_contributions(self, data):
         month = data.get('month')
         year = data.get('year')
-        drawback = data.get('drawback')
-        date_payment = data.get('date_payment')
         date_field_select = data.get('date_field_select')
-        months = data.get('months', [])
         period = f"{month}/{year}"
 
-        # Recuperar los recordsets a partir de los IDs
         filing_cabinet_ids = self.env['nominal.relationship.mindef.contributions'].browse(
             data.get('filing_cabinet_ids', []))
         partner_payroll_ids = self.env['partner.payroll'].browse(data.get('partner_payroll_ids', []))
 
-        # Aquí colocas toda la lógica optimizada, como en la versión que ya trabajamos
-        # Por ejemplo:
         filing_map = {rec.eit_item: rec for rec in filing_cabinet_ids}
         reconciled = 0
 
         for partner in partner_payroll_ids:
             search_partner = filing_map.get(partner.partner_id.code_contact)
             if search_partner:
-                # lógica simplificada
                 reconciled += 1
                 search_partner.write({
                     'state': 'reconciled',

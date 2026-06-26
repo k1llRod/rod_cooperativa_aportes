@@ -7,153 +7,91 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div class="app_settings_block" data-string="Aportes" string="Cooperativa de ahorro y credito de vinculo laboral" >
-                    <h2>Valores para tabla de aportes</h2>
+                <div class="app_settings_block"
+                     data-string="Aportes"
+                     string="Modulo de Aportes"
+                     data-key="rod_cooperativa_aportes"> <h2>Valores para tabla de aportes</h2>
                     <div class="row mt16 o_settings_container" name="taxes_setting_container">
-                        <div class="col-12 col-lg-6 o_setting_box"
-                            id="default_sales_tax_setting"
-                            title="Valores para parametrizar aportes.">
+
+                        <div class="col-12 col-lg-6 o_setting_box" id="coop_aportes_values_setting" title="Valores para parametrizar aportes.">
                             <div class="o_setting_right_pane">
                                 <div class="content-group mt16">
-                                    <label string="Taza de regulación" for="regulation_cup"/>
-                                    <div class="text-muted">
-                                        Establecer taza de regulación.
-                                    </div>
-                                    <div>
-                                        <field name="regulation_cup" colspan="4" nolabel="1"/>
-                                    </div>
+                                    <label string="Tasa de regulación" for="regulation_cup"/>
+                                    <div class="text-muted">Establecer tasa de regulación.</div>
+                                    <div><field name="regulation_cup" class="oe_inline"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Certificado de aporte obligatorio"
-                                               for="mandatory_contribution_certificate"/>
-                                        <div class="text-muted">
-                                            Establecer Certificado de aporte obligatorio.
-                                        </div>
-                                        <div>
-                                            <field name="mandatory_contribution_certificate" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Certificado de aporte obligatorio" for="mandatory_contribution_certificate"/>
+                                    <div class="text-muted">Establecer Certificado de aporte obligatorio.</div>
+                                    <div><field name="mandatory_contribution_certificate" class="oe_inline"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Ingresos diversos" for="miscellaneous_income"/>
-                                        <div class="text-muted">
-                                            Establecer divesos ingresos.
-                                        </div>
-                                        <div>
-                                            <field name="miscellaneous_income" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Ingresos diversos" for="miscellaneous_income"/>
+                                    <div class="text-muted">Establecer diversos ingresos.</div>
+                                    <div><field name="miscellaneous_income" class="oe_inline"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Meses cobro de certificados" for="month_ids"/>
-                                        <div class="text-muted">
-
-                                        </div>
-                                        <div>
-                                            <field name="month_ids" widget="many2many_tags"/>
-                                        </div>
-<!--                                        <field name="month_ids" colspan="4" nolabel="1"/>-->
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Meses cobro de certificados" for="month_ids"/>
+                                    <div class="text-muted">Meses asignados para el cobro.</div>
+                                    <div><field name="month_ids" widget="many2many_tags"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Capital base minimo" for="capital_minimum"/>
-                                        <div class="text-muted">
-                                        </div>
-                                        <div>
-                                            <field name="capital_minimum" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Capital base mínimo" for="capital_minimum"/>
+                                    <div class="text-muted">Monto mínimo base.</div>
+                                    <div><field name="capital_minimum" class="oe_inline"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                         <label string="Aporte situacion pasiva" for="contribution_passive"/>
-                                        <div>
-                                            <field name="contribution_passive" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Aporte situación pasiva" for="contribution_passive"/>
+                                    <div class="text-muted">Porcentaje/Monto situación pasiva.</div>
+                                    <div><field name="contribution_passive" class="oe_inline"/></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-6 o_setting_box"
-                            id="default_sales_tax_setting"
-                            title="Valores para parametrizar aportes.">
+
+                        <div class="col-12 col-lg-6 o_setting_box" id="coop_aportes_accounts_setting" title="Configuración contable para aportes.">
                             <div class="o_setting_right_pane">
                                 <div class="content-group mt16">
                                     <label string="Ingreso" for="account_income_id"/>
-                                    <div class="text-muted">
-                                        Cuenta de ingresos de aportes.
-                                    </div>
-                                    <div>
-                                        <field name="account_income_id" colspan="4" nolabel="1"/>
-                                    </div>
+                                    <div class="text-muted">Cuenta de ingresos de aportes.</div>
+                                    <div><field name="account_income_id" options="{'no_create': True}"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Cuenta de inscripcion AFCOOP"
-                                               for="account_inscription_id"/>
-                                        <div class="text-muted">
-                                            Establecer cuenta contable para inscripción.
-                                        </div>
-                                        <div>
-                                            <field name="account_inscription_id" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Cuenta de inscripción AFCOOP" for="account_inscription_id"/>
+                                    <div class="text-muted">Establecer cuenta contable para inscripción.</div>
+                                    <div><field name="account_inscription_id" options="{'no_create': True}"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Ingresos diversos" for="account_regulation_cup_id"/>
-                                        <div class="text-muted">
-                                            Establecer cuenta contable para tasa de regulacion AFCOOP.
-                                        </div>
-                                        <div>
-                                            <field name="account_regulation_cup_id" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                        <label string="Cuenta de certificado obligatorio" for="account_mandatory_contribution_id"/>
-                                        <div class="text-muted">
-                                            Establecer cuenta contable para aportes obligatorios AFCOOP.
-                                        </div>
-                                        <div>
-                                            <field name="account_mandatory_contribution_id" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Ingresos diversos" for="account_regulation_cup_id"/>
+                                    <div class="text-muted">Establecer cuenta contable para tasa de regulación AFCOOP.</div>
+                                    <div><field name="account_regulation_cup_id" options="{'no_create': True}"/></div>
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <div>
-                                    <div class="content-group mt16">
-                                         <label string="Cuenta de certificado voluntario" for="account_voluntary_contribution_id"/>
-                                        <div class="text-muted">
-                                            Establecer cuenta contable para aportes voluntarios AFCOOP.
-                                        </div>
-                                        <div>
-                                            <field name="account_voluntary_contribution_id" colspan="4" nolabel="1"/>
-                                        </div>
-                                    </div>
+                                <div class="content-group mt16">
+                                    <label string="Cuenta de certificado obligatorio" for="account_mandatory_contribution_id"/>
+                                    <div class="text-muted">Establecer cuenta contable para aportes obligatorios AFCOOP.</div>
+                                    <div><field name="account_mandatory_contribution_id" options="{'no_create': True}"/></div>
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div class="content-group mt16">
+                                    <label string="Cuenta de certificado voluntario" for="account_voluntary_contribution_id"/>
+                                    <div class="text-muted">Establecer cuenta contable para aportes voluntarios AFCOOP.</div>
+                                    <div><field name="account_voluntary_contribution_id" options="{'no_create': True}"/></div>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +101,6 @@
             </xpath>
         </field>
     </record>
-
     <record id="rod_cooperativa_aportes.action_cooperativa_aportes_configuration" model="ir.actions.act_window">
         <field name="name">Ajustes de la cooperativa aportes</field>
         <field name="type">ir.actions.act_window</field>
@@ -171,6 +108,4 @@
         <field name="view_mode">form</field>
         <field name="target">inline</field>
     </record>
-
-
 </odoo>

@@ -204,6 +204,7 @@ class PayrollPayments(models.Model):
     def return_draft(self):
         self.state = 'draft'
         self.switch_draf = False
+        self.partner_payroll_id.compute_count_pay_contributions()
 
     def extract_numbers(self, text):
         numbers = re.findall(r'\d+', text)
@@ -311,6 +312,7 @@ class PayrollPayments(models.Model):
                 record.partner_payroll_id.state = 'process'
             record.state = 'contribution_interest'
             record.switch_draf = True
+            record.partner_payroll_id.compute_count_pay_contributions()
 
     def draft_massive(self):
         for record in self:
@@ -418,17 +420,24 @@ class PayrollPayments(models.Model):
             record.mandatory_contribution_certificate = 0
             record.voluntary_contribution_certificate = 0
             record.state = 'no_contribution'
+            record.partner_payroll_id.compute_count_pay_contributions()
+
 
     def capital_initial_a(self):
         for record in self:
             record.state = 'capital_initial'
+            record.partner_payroll_id.compute_count_pay_contributions()
 
     def other_contributions(self):
         for record in self:
             record.state = 'other_contribution'
+            record.partner_payroll_id.compute_count_pay_contributions()
+
     def surpluses(self):
         for record in self:
             record.state = 'surpluses'
+            record.partner_payroll_id.compute_count_pay_contributions()
+
     def disengagement(self):
         for record in self:
             record.state = 'disengagement'
@@ -490,7 +499,9 @@ class PayrollPayments(models.Model):
     def partner_devolution(self):
         for record in self:
             record.state = 'partner_return'
+            record.partner_payroll_id.compute_count_pay_contributions()
 
     def partner_devolution_credit(self):
         for record in self:
             record.state = 'partner_return_credit'
+            record.partner_payroll_id.compute_count_pay_contributions()

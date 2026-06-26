@@ -338,39 +338,47 @@
                                             </t>
                                         </t>
                                     </tbody>
-                                    <tbody style="font-size:12px;border-top: 1px solid black;">
+                                    <tbody style="font-size:12px; border-top: 1px solid black;">
                                         <tr>
                                             <td colspan="3"></td>
                                             <td>
+                                                <!-- Evaluamos los ingresos según el tipo de asociado -->
                                                 <t t-if="o.partner_status_especific == 'active_service'">
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income')),2)"/>
+                                                    <span t-esc="sum(o.payroll_payments_ids.mapped('income'))"
+                                                          t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                 </t>
-                                                <t t-if="o.partner_status_especific == 'passive_reserve_b'">
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income_passive')),2)"/>
-                                                </t>
-                                                <t t-if="o.partner_status_especific == 'passive_reserve_a'">
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.mapped('income_passive')),2)"/>
+                                                <!-- Unificamos las reservas pasivas A y B en un solo t-if usando 'in' -->
+                                                <t t-if="o.partner_status_especific in ('passive_reserve_a', 'passive_reserve_b')">
+                                                    <span t-esc="sum(o.payroll_payments_ids.mapped('income_passive'))"
+                                                          t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                 </t>
                                             </td>
+
                                             <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                 <td>
-                                                    <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest').mapped('voluntary_contribution_certificate')),2)"/>
+                                                    <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state == 'contribution_interest').mapped('voluntary_contribution_certificate'))"
+                                                          t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                 </td>
                                             </t>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('miscellaneous_income')),2)"/>
+                                                <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('transfer', 'ministry_defense')).mapped('miscellaneous_income'))"
+                                                      t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
+                                                <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('transfer', 'ministry_defense')).mapped('regulation_cup'))"
+                                                      t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('mandatory_contribution_certificate')),2)"/>
+                                                <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('transfer', 'ministry_defense')).mapped('mandatory_contribution_certificate'))"
+                                                      t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(acumulador1,2)"/>
+                                                <span t-esc="acumulador1"
+                                                      t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(acumulador,2)"/>
+                                                <span t-esc="acumulador"
+                                                      t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -410,18 +418,17 @@
                                             <strong>Total aportes obligatorios:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense' or x.state =='partner_return' or x.state=='partner_return_credit').mapped('mandatory_contribution_certificate')),2)"/>
+                                            <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('transfer', 'ministry_defense', 'partner_return', 'partner_return_credit')).mapped('mandatory_contribution_certificate'))"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
-
                                     </tr>
                                     <tr>
                                         <td>
                                             <strong>Total aportes voluntarios:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(acumulador1,2)"/>
-<!--                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='ministry_defense').mapped('voluntary_contribution_certificate')),2)"/>-->
-<!--                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')), 2)"/>-->
+                                            <span t-esc="acumulador1"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -429,8 +436,8 @@
                                             <strong>Total otros aportes:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='other_contribution' or x.state=='other_contribution_coaa' or x.state=='surpluses').mapped('other_contribution')),2)"/>
-<!--                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('voluntary_contribution_certificate')), 2)"/>-->
+                                            <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('other_contribution', 'other_contribution_coaa', 'surpluses')).mapped('other_contribution'))"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -438,7 +445,8 @@
                                             <strong>Total:</strong>
                                         </td>
                                         <td style="border-top:1px solid black;">
-                                            <span t-esc="round(acumulador,2)"/>
+                                            <span t-esc="acumulador"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
                                     </tr>
                                 </table>
@@ -450,7 +458,8 @@
                                             <strong>Total capital inicio:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='contribution_interest' or x.state=='capital_initial').mapped('voluntary_contribution_certificate')),2)"/>
+                                            <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('contribution_interest', 'capital_initial')).mapped('voluntary_contribution_certificate'))"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -458,7 +467,8 @@
                                             <strong>Inscripcion AFCOOP:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.mapped('miscellaneous_income')),2)"/>
+                                            <span t-esc="sum(o.payroll_payments_ids.mapped('miscellaneous_income'))"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -466,7 +476,8 @@
                                             <strong>Total tasa de regulación AFCOOP:</strong>
                                         </td>
                                         <td>
-                                            <span t-esc="round(sum(o.payroll_payments_ids.filtered(lambda x:x.state=='transfer' or x.state=='ministry_defense').mapped('regulation_cup')),2)"/>
+                                            <span t-esc="sum(o.payroll_payments_ids.filtered(lambda x: x.state in ('transfer', 'ministry_defense')).mapped('regulation_cup'))"
+                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                         </td>
                                     </tr>
                                 </table>
