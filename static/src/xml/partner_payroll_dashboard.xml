@@ -26,9 +26,9 @@
 
             <div class="flex-fill py-2 rounded-sm o_dashboard_action"
                  style="background-color: #ffebee; margin: 0 5px; cursor: pointer;"
-                 context='{"search_default_group_partner_status": 1}'>
-                <div class="text-uppercase small text-muted font-weight-bold">Pendientes / Agrupar</div>
-                <div class="h3 font-weight-bold my-1 text-danger"><t t-esc="values.outstanding || 0"/></div>
+                 context='{"search_default_payroll_state_finalized": 1}'> <!-- 👈 Cambiado a filtro directo -->
+                <div class="text-uppercase small text-muted font-weight-bold">Liquidados</div>
+                <div class="h3 font-weight-bold my-1 text-danger"><t t-esc="values.finalized || 0"/></div>
             </div>
 
         </div>
