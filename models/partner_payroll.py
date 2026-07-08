@@ -738,3 +738,23 @@ class PartnerPayroll(models.Model):
         return {
             'message': f'Se conciliaron {reconciled} registros del periodo {period}.'
         }
+
+    @api.model
+    def retrieve_dashboard_data(self):
+        """ Retorna las deudas y cantidades de socios para los bloques del Dashboard """
+        self.check_access_rights('read')
+
+        # 1. Conteo por especificaciones de asociados
+        active_service = self.search_count([('partner_status_especific', '=', 'active_service')])
+        passive_a = self.search_count([('partner_status_especific', '=', 'passive_reserve_a')])
+        passive_b = self.search_count([('partner_status_especific', '=', 'passive_reserve_b')])
+
+        # 2. Conteo de cuántas planillas tienen cuotas pendientes en mora/atraso
+        outstanding = self.search_count([('outstanding', '>', 0)])
+
+        return {
+            'active_service': active_service,
+            'passive_a': passive_a,
+            'passive_b': passive_b,
+            'outstanding': outstanding,
+        }

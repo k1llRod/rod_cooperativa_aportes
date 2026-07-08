@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="rod_cooperativa_aportes.PartnerPayrollDashboard">
+        <div class="o_partner_payroll_dashboard d-flex p-3 bg-view border-bottom text-center">
+
+            <div class="flex-fill border-right py-2 rounded-sm o_dashboard_action"
+                 style="background-color: #e3f2fd; margin: 0 5px; cursor: pointer;"
+                 context='{"search_default_partner_active_service": 1}'>
+                <div class="text-uppercase small text-muted font-weight-bold">Servicio Activo</div>
+                <div class="h3 font-weight-bold my-1 text-primary"><t t-esc="values.active_service || 0"/></div>
+            </div>
+
+            <div class="flex-fill border-right py-2 rounded-sm o_dashboard_action"
+                 style="background-color: #fff8e1; margin: 0 5px; cursor: pointer;"
+                 context='{"search_default_partner_passive_reserve_a": 1}'>
+                <div class="text-uppercase small text-muted font-weight-bold">Pasivo Cat. A</div>
+                <div class="h3 font-weight-bold my-1 text-warning"><t t-esc="values.passive_a || 0"/></div>
+            </div>
+
+            <div class="flex-fill border-right py-2 rounded-sm o_dashboard_action"
+                 style="background-color: #f1f8e9; margin: 0 5px; cursor: pointer;"
+                 context='{"search_default_partner_passive_reserve_b": 1}'>
+                <div class="text-uppercase small text-muted font-weight-bold">Pasivo Cat. B</div>
+                <div class="h3 font-weight-bold my-1 text-success"><t t-esc="values.passive_b || 0"/></div>
+            </div>
+
+            <div class="flex-fill py-2 rounded-sm o_dashboard_action"
+                 style="background-color: #ffebee; margin: 0 5px; cursor: pointer;"
+                 context='{"search_default_group_partner_status": 1}'>
+                <div class="text-uppercase small text-muted font-weight-bold">Pendientes / Agrupar</div>
+                <div class="h3 font-weight-bold my-1 text-danger"><t t-esc="values.outstanding || 0"/></div>
+            </div>
+
+        </div>
+    </t>
+</templates>

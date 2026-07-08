@@ -207,13 +207,18 @@
 
 
         <!-- Vista de la tabla de aportes -->
-        <record model="ir.actions.server" id="rod_cooperativa_aportes.action_payments_reports">
+        <record model="ir.actions.act_window" id="action_payments_reports">
             <field name="name">Reporte de pagos</field>
-            <field name="model_id" ref="rod_cooperativa_aportes.model_payroll_payments"/>
-            <field name="type">ir.actions.server</field>
-            <field name="state">code</field>
-            <field name="code">
-                action = model._payments_reports()
+            <field name="res_model">payroll.payments</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_payroll_payments_tree_inherit"/>
+            <field name="search_view_id" ref="view_payroll_payments_filter"/>
+            <field name="context">{
+                'search_default_partner_active_service': 1,
+                'search_default_group_period': 1,
+                'search_default_group_state': 1,
+                'search_default_filter_current_year': 1,
+                }
             </field>
         </record>
         <record id="view_payroll_payments_tree_inherit" model="ir.ui.view">
@@ -292,6 +297,8 @@
                     <separator/>
                     <filter string="Fecha Pivote" name="filter_date_pivote" date="date_pivote"/>
                     <filter string="Fecha de Pago" name="filter_payment_date" date="payment_date"/>
+                    <filter string="Año Actual" name="filter_current_year"
+                            domain="[('date_pivote', '&gt;=', context_today().strftime('%Y-01-01')), ('date_pivote', '&lt;=', context_today().strftime('%Y-12-31'))]"/>
                     <separator/>
 
                     <filter string="Borrador" name="state_draft" domain="[('state', '=', 'draft')]"/>

@@ -6,7 +6,7 @@
             <field name="name">partner.payroll.tree</field>
             <field name="model">partner.payroll</field>
             <field name="arch" type="xml">
-                <tree create="0">
+                <tree create="0" js_class="partner_payroll_dashboard_list">
                     <header>
                         <button name="import_payroll" string="Conciliar" class="oe_highlight" type="object"/>
                         <button name="assign_performance" string="Asignar rendimiento" type="object"
@@ -21,15 +21,15 @@
                     <field name="partner_state"/>
                     <field name="capital_initial"/>
                     <field name="partner_status_especific"/>
-                    <field name="date_registration" optional="hide"/>
-                    <field name="date_burn_partner" optional="hide"/>
-                    <field name="advanced_payments" optional="hide"/>
-                    <field name="count_pay_contributions" optional="hide"/>
+                    <field name="date_registration" optional="show"/>
+                    <field name="date_burn_partner" optional="show"/>
+                    <field name="advanced_payments" optional="show"/>
+                    <field name="count_pay_contributions" optional="show"/>
 <!--                    <field name="outstanding_payments" optional="hide"/>-->
                     <field name="outstanding"/>
-                    <field name="voluntary_contribution_certificate_total" optional="hide"/>
-                    <field name="mandatory_contribution_certificate_total" optional="hide"/>
-                    <field name="performance_management_total"/>
+                    <field name="voluntary_contribution_certificate_total" optional="show"/>
+                    <field name="mandatory_contribution_certificate_total" optional="show"/>
+<!--                    <field name="performance_management_total"/>-->
                     <field name="contribution_total"/>
                     <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'progress'"
                            widget="badge"/>
@@ -331,9 +331,13 @@
         <!-- Accion para visualizar loan.application -->
 
         <record id="action_partner_payroll" model="ir.actions.act_window">
-            <field name="name">Aportes</field>
+            <field name="name">Kardex de aportes</field>
             <field name="res_model">partner.payroll</field>
-            <field name="view_mode">tree,form,pivot</field>
+            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="search_view_id" ref="partner_payroll_view_search_cooperativa"/>
+            <field name="context">{
+                'search_default_group_partner_status': 1
+            }</field>
         </record>
 
         <record id="action_init_partner_payroll" model="ir.actions.server">
@@ -376,6 +380,47 @@
             <field name="state">code</field>
             <field name="code">
                 action = records.updated_contributions()
+            </field>
+        </record>
+
+        <record id="partner_payroll_dashboard_view" model="ir.ui.view">
+            <field name="name">partner.payroll.dashboard</field>
+            <field name="model">partner.payroll</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_dashboard" create="0">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">Resumen de Aportes General</div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-4 o_kanban_primary_bottom" style="border-right: 1px solid #dee2e6;">
+                                        <div>
+                                            <strong>Socios Totales:</strong>
+                                            <span class="badge badge-pill badge-info">150</span>
+                                        </div>
+                                        <div class="mt8">
+                                            <strong>En Servicio Activo:</strong>
+                                            <span class="badge badge-pill badge-success">120</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-8">
+                                        <p class="text-muted text-center">Gráfico de Crecimiento de Fondos (Gestión
+                                            Actual)
+                                        </p>
+                                        <div class="o_dashboard_graph">
+                                            <field name="contribution_total" widget="dashboard_graph" graph_type="bar"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
             </field>
         </record>
 

@@ -76,4 +76,14 @@
         'reports/report_mindef_xlsx.xml',
         # 'reports/report_wrd.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            # 1. Cargamos el archivo de comportamiento lógico (JS)
+            'rod_cooperativa_aportes/static/src/js/partner_payroll_dashboard.js',
+        ],
+        'web.assets_qweb': [
+            # 2. Cargamos la plantilla de diseño de las tarjetas (QWeb XML)
+            'rod_cooperativa_aportes/static/src/xml/partner_payroll_dashboard.xml',
+        ],
+    },
 }

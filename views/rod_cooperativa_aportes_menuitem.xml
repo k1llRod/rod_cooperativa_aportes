@@ -44,7 +44,7 @@
                 sequence="3"
                 />
       <menuitem id="rod_cooperativa_aportes.rod_cooperativa_aportes_reports_payments"
-                name="Depositos"
+                name="Depositoss"
                 parent="rod_cooperativa_aportes.rod_cooperativa_aportes_reports"
                 sequence="1"
                 action="rod_cooperativa_aportes.action_payments_reports"/>
