@@ -314,6 +314,9 @@
                             string="Asociados Pasivo categoria 'B'"
                             domain="[('partner_status_especific','=','passive_reserve_b'),
                                     ('state','=','process')]"/>
+                    <filter name="payroll_state_finalized"
+                            string="Planillas Liquidadas"
+                            domain="[('state', '=', 'finalized')]"/>
 
 
                     <group expand="0" string="Group By">
@@ -323,6 +326,12 @@
                         <filter string="Por ciudad"
                                 name="group_city"
                                 context="{'group_by': 'city'}"/>
+                        <filter string="Por estado"
+                                name="group_state"
+                                context="{'group_by': 'state'}"
+                        />
+
+
                     </group>
                 </search>
             </field>
