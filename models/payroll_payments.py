@@ -106,6 +106,11 @@ class PayrollPayments(models.Model):
     journal_id = fields.Many2one('account.journal', string='Diario')
 
     account_move_id = fields.Many2one('account.move', string='Asiento contable')
+    account_move_line_ids = fields.One2many(
+        related='account_move_id.line_ids',
+        string='Apuntes Contables',
+        readonly=True
+    )
 
     capital_initial = fields.Float(string='Capital inicial')
     state_account = fields.Selection([('draft', 'Borrador'), ('posted', 'Contabilizado'), ('cancel', 'Cancelado')], default='draft', related='account_move_id.state', store=True)

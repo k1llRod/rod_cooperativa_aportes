@@ -158,6 +158,18 @@
                                         <field name="account_voluntary_contribution_id"/>
                                     </group>
                                 </group>
+                                <separator string="Apuntes Contables del Asiento"/>
+                                <field name="account_move_id" invisible="1"/>
+                                <field name="account_move_line_ids" readonly="1"
+                                       attrs="{'invisible': [('account_move_id', '=', False)]}">
+                                    <tree string="Apuntes Contables" create="false" edit="false" delete="false">
+                                        <field name="account_id" string="Cuenta"/>
+                                        <field name="partner_id" string="Socio / Contacto" optional="hide"/>
+                                        <field name="name" string="Etiqueta / Concepto" optional="hide"/>
+                                        <field name="debit" sum="Total Debe"/>
+                                        <field name="credit" sum="Total Haber"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
