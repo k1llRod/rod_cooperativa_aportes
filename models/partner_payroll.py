@@ -283,31 +283,73 @@ class PartnerPayroll(models.Model):
             'context': context,
         }
 
-    @api.depends('payroll_payments_ids', 'performance_management_ids')
+    @api.depends(
+        'payroll_payments_ids.state',
+        'payroll_payments_ids.mandatory_contribution_certificate',
+        'payroll_payments_ids.voluntary_contribution_certificate',
+        'payroll_payments_ids.other_contribution',
+        'payroll_payments_ids.switch_draf',
+        'performance_management_ids.yield_amount',
+        'capital_initial'
+    )
     def compute_count_pay_contributions(self):
+        """
+        Calcula el total consolidado de aportes del socio, certificados obligatorios,
+        voluntarios, rendimientos COAA, y descuenta devoluciones/créditos.
+        """
         for record in self:
+            # 1. Obtenemos todos los pagos del socio
+            payments = record.payroll_payments_ids
+
+            # 2. Cantidad de aportes válidos procesados
             record.count_pay_contributions = len(
-                record.payroll_payments_ids.filtered(lambda x: x.state != 'draft' and x.state != 'no_contribution'))
-            record.mandatory_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'transfer' or x.state == 'ministry_defense').mapped(
-                'mandatory_contribution_certificate'))
-            record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'transfer' or x.state == 'ministry_defense' or (
-                        x.state == 'partner_return' and x.switch_draf == False)).mapped(
-                'voluntary_contribution_certificate'))
-            interest_total = sum(record.performance_management_ids.mapped('yield_amount'))
-            record.other_contribution_total = sum(round(c, 2) for c in record.payroll_payments_ids.filtered(
-                lambda x: x.state == 'other_contribution' or x.state == 'other_contribution_coaa').mapped(
-                'other_contribution'))
-            record.surpluses_total = sum(
-                record.payroll_payments_ids.filtered(lambda x: x.state == 'surpluses').mapped(
-                    'other_contribution'))
-            record.amount_return = sum(
-                record.payroll_payments_ids.filtered(lambda
-                                                         x: (
-                                                                        x.state == 'partner_return' or x.state == 'partner_return_credit') and x.switch_draf == False).mapped(
-                    'voluntary_contribution_certificate'))
-            record.contribution_total = record.voluntary_contribution_certificate_total + record.mandatory_contribution_certificate_total + interest_total + record.capital_initial + record.other_contribution_total + record.surpluses_total + record.amount_return
+                payments.filtered(lambda x: x.state not in ('draft', 'no_contribution'))
+            )
+
+            # 3. Certificados Obligatorios (Transferencias y Ministerio de Defensa)
+            record.mandatory_contribution_certificate_total = round(sum(
+                payments.filtered(lambda x: x.state in ('transfer', 'ministry_defense')).mapped(
+                    'mandatory_contribution_certificate')
+            ), 2)
+
+            # 4. Certificados Voluntarios (Transferencias, MINDEF o Devolución sin borrador)
+            record.voluntary_contribution_certificate_total = round(sum(
+                payments.filtered(lambda x: x.state in ('transfer', 'ministry_defense') or (not x.switch_draf)).mapped(
+                    'voluntary_contribution_certificate')
+            ), 2)
+
+            # 5. Rendimientos COAA / Rendimientos de Gestión
+            interest_total = round(sum(record.performance_management_ids.mapped('yield_amount')), 2)
+
+            # 6. Otros Aportes (Cooperativa y COAA)
+            record.other_contribution_total = round(sum(
+                payments.filtered(lambda x: x.state in ('other_contribution', 'other_contribution_coaa')).mapped(
+                    'other_contribution')
+            ), 2)
+
+            # 7. Excedentes
+            record.surpluses_total = round(sum(
+                payments.filtered(lambda x: x.state == 'surpluses').mapped('other_contribution')
+            ), 2)
+
+            # 8. Devoluciones a Socios (Monto que reduce el patrimonio del socio)
+            record.amount_return = round(sum(
+                payments.filtered(
+                    lambda x: x.state in ('partner_return', 'partner_return_credit') and not x.switch_draf).mapped(
+                    'voluntary_contribution_certificate')
+            ), 2)
+
+            # 🚀 9. CÁLCULO FINAL CONSOLIDADO (Restando devoluciones 'amount_return')
+            record.contribution_total = round(
+                record.voluntary_contribution_certificate_total +
+                record.mandatory_contribution_certificate_total +
+                interest_total +
+                (record.capital_initial or 0.0) +
+                record.other_contribution_total +
+                record.surpluses_total +
+                record.amount_return,
+                2
+            )
 
     def return_draft(self):
         self.state = 'draft'
