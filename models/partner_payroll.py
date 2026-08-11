@@ -314,7 +314,7 @@ class PartnerPayroll(models.Model):
 
             # 4. Certificados Voluntarios (Transferencias, MINDEF o Devolución sin borrador)
             record.voluntary_contribution_certificate_total = round(sum(
-                payments.filtered(lambda x: x.state in ('transfer', 'ministry_defense') or (not x.switch_draf)).mapped(
+                payments.filtered(lambda x: x.state in ('transfer', 'ministry_defense')).mapped(
                     'voluntary_contribution_certificate')
             ), 2)
 
@@ -332,12 +332,17 @@ class PartnerPayroll(models.Model):
                 payments.filtered(lambda x: x.state == 'surpluses').mapped('other_contribution')
             ), 2)
 
+            return_payments = payments.filtered(
+                lambda x: x.state in ('partner_return', 'partner_return_credit') and not x.switch_draf
+            )
+
             # 8. Devoluciones a Socios (Monto que reduce el patrimonio del socio)
-            record.amount_return = round(sum(
-                payments.filtered(
-                    lambda x: x.state in ('partner_return', 'partner_return_credit') and not x.switch_draf).mapped(
-                    'voluntary_contribution_certificate')
-            ), 2)
+            record.amount_return = round(
+                sum(return_payments.mapped('voluntary_contribution_certificate')) +
+                sum(return_payments.mapped('mandatory_contribution_certificate')) +
+                sum(return_payments.mapped('other_contribution')),
+                2
+            )
 
             # 🚀 9. CÁLCULO FINAL CONSOLIDADO (Restando devoluciones 'amount_return')
             record.contribution_total = round(
