@@ -230,10 +230,10 @@ class PartnerPayroll(models.Model):
     @api.depends('payroll_payments_ids')
     def compute_contributions(self):
         for record in self:
-            record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
-                lambda x: (x.state == 'transfer' or x.state == 'ministry_defense' or (
-                        x.state == 'partner_return' and x.switch_draf == False))).mapped(
-                'voluntary_contribution_certificate'))
+            # record.voluntary_contribution_certificate_total = sum(record.payroll_payments_ids.filtered(
+            #     lambda x: (x.state == 'transfer' or x.state == 'ministry_defense' or (
+            #             x.state == 'partner_return' and x.switch_draf == False))).mapped(
+            #     'voluntary_contribution_certificate'))
             record.count_mandatory_contribution_certificate = len(
                 record.payroll_payments_ids.filtered(lambda x: x.mandatory_contribution_certificate > 0))
             record.capital_initial = sum(
