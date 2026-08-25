@@ -252,47 +252,57 @@
                                                     <td>
                                                         <t t-esc="p.period_register"/>
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <t t-if="p.income">
-                                                            <t t-esc="p.income"/>
+                                                    <td class="align-middle text-center">
+                                                        <t t-if="p.income and p.income &gt; 0">
+                                                            <span t-esc="p.income"
+                                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                         </t>
-                                                        <t t-if="p.income_passive">
-                                                            <t t-esc="p.income_passive"/>
+                                                        <t t-elif="p.income_passive and p.income_passive &gt; 0">
+                                                            <span t-esc="p.income_passive"
+                                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                         </t>
-                                                        <t t-else="p.income > 0 and p.income_passive > 0">
-                                                            0
+                                                        <t t-else="">
+                                                            <span>0,00</span>
                                                         </t>
-                                                        <!--                                                    <span t-field="p.income"/>-->
                                                     </td>
                                                     <t t-if="o.partner_status_especific != 'passive_reserve_b'">
                                                         <td class="align-middle">
                                                             <t t-if="p.state == 'contribution_interest' or p.state == 'capital_initial'">
-                                                                <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
+<!--                                                                <span t-esc="round(p.voluntary_contribution_certificate,2)"/>-->
+                                                                <span t-esc="p.voluntary_contribution_certificate"
+                                                                  t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                             </t>
 
                                                             <t t-else="p.state == 'contribution_interest'">
-                                                                0
+                                                                <span>0,00</span>
                                                             </t>
                                                         </td>
                                                     </t>
-                                                    <td class="align-middle">
-                                                        <span t-field="p.miscellaneous_income"/>
+                                                    <td class="align-middle text-right">
+                                                        <span t-esc="p.miscellaneous_income or 0.0"
+                                                              t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <span t-field="p.regulation_cup"/>
+                                                    <td class="align-middle text-right">
+                                                        <span t-esc="p.regulation_cup or 0.0"
+                                                              t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <span t-field="p.mandatory_contribution_certificate"/>
+                                                    <td class="align-middle text-right">
+                                                        <span t-esc="p.mandatory_contribution_certificate or 0.0"
+                                                              t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <span t-esc="round(p.voluntary_contribution_certificate,2)"/>
-                                                        <t t-set="acumulador1"
-                                                           t-value="acumulador1 + round(p.voluntary_contribution_certificate, 2)"/>
+                                                    <td class="align-middle text-right">
+                                                        <t t-set="vol_contrib"
+                                                           t-value="round(p.voluntary_contribution_certificate or 0.0, 2)"/>
+                                                        <span t-esc="vol_contrib"
+                                                              t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
+                                                        <t t-set="acumulador1" t-value="acumulador1 + vol_contrib"/>
                                                     </td>
-                                                    <td class="align-middle">
-                                                        <span t-esc="round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate + p.other_contribution,2)"/>
-                                                        <t t-set="acumulador"
-                                                           t-value="acumulador + round(p.voluntary_contribution_certificate + p.mandatory_contribution_certificate + p.other_contribution,2)"/>
+                                                    <td class="align-middle text-right">
+                                                        <t t-set="row_total_contrib"
+                                                           t-value="round((p.voluntary_contribution_certificate or 0.0) + (p.mandatory_contribution_certificate or 0.0) + (p.other_contribution or 0.0), 2)"/>
+                                                        <span t-esc="row_total_contrib"
+                                                              t-options='{"widget": "float", "precision": 2, "thousands_sep": ".", "decimal_sep": ","}'/>
+                                                        <t t-set="acumulador" t-value="acumulador + row_total_contrib"/>
                                                     </td>
                                                     <td class="align-middle" t-attf-style="
                                                                                       background: #{ '#a6edcc' if p.state == 'other_contribution'
